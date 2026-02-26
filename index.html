@@ -22,11 +22,13 @@
   --danger: #FF3B30; 
   --early: #007AFF; 
   --purple: #AF52DE; 
-  --shadow: 0 6px 16px rgba(0,0,0,0.06);
+  --shadow: 0 6px 16px rgba(0,0,0,0.05);
   --done-bg: rgba(52, 199, 89, 0.04);
   --done-border: rgba(52, 199, 89, 0.3);
   --prog-daily: linear-gradient(90deg, #32D74B, #28CD41);
   --prog-month: linear-gradient(90deg, #0A84FF, #007AFF);
+  --soft-btn-bg: rgba(0, 122, 255, 0.1);
+  --soft-btn-text: #007AFF;
 }
 
 /* --- KARANLIK (DARK) MOD RENKLERİ --- */
@@ -48,6 +50,8 @@
     --done-border: rgba(50, 215, 75, 0.3);
     --prog-daily: linear-gradient(90deg, #30D158, #32D74B);
     --prog-month: linear-gradient(90deg, #0A84FF, #64D2FF);
+    --soft-btn-bg: rgba(10, 132, 255, 0.15);
+    --soft-btn-text: #64D2FF;
   }
 }
 
@@ -64,8 +68,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 
 /* BAŞLIK */
 .header-compact { text-align: center; margin-bottom: 12px; background: var(--card); padding: 12px; border-radius: 20px; border: 1px solid var(--line); box-shadow: var(--shadow); }
-.app-title { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; display: flex; justify-content: center; align-items: center; gap: 8px; }
-.app-title span { font-size: 14px; font-weight: 700; color: var(--muted); }
+.app-title { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
+.app-title .greeting { font-size: 15px; font-weight: 700; color: var(--muted); }
+.app-title .name-tag { white-space: nowrap; }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 8px; }
 .clock-text { font-size: 12px; font-weight: 700; color: var(--muted); }
 .sync-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: var(--line); color: var(--text); }
@@ -82,11 +87,12 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .w-icon-big { font-size: 22px; }
 
 .w-center { flex: 1; display: flex; justify-content: center; }
-.loc-btn { background: var(--line); color: var(--text); padding: 6px 12px; border-radius: 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); transition: transform 0.2s; white-space: nowrap; }
+.loc-btn { background: var(--line); color: var(--text); padding: 6px 12px; border-radius: 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: transform 0.2s; white-space: nowrap; }
 .loc-btn:active { transform: scale(0.95); }
 
 .w-right { flex: 1; display: flex; justify-content: flex-end; }
-.w-toggle { background: var(--early); color: white; font-size: 10px; font-weight: 800; padding: 6px 10px; border-radius: 12px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3); }
+/* YENİ ZARİF BUTON */
+.w-toggle { background: var(--soft-btn-bg); color: var(--soft-btn-text); font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
 
 /* Açılır Teşhis Kutusu */
 .w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; }
@@ -98,34 +104,44 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .prog-wrapper { display: flex; flex-direction: column; gap: 16px; }
 .prog-item { display: flex; flex-direction: column; gap: 8px; }
 .prog-header { display: flex; justify-content: space-between; align-items: flex-end; }
-.prog-title { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; color: var(--text); }
-.prog-stats { display: flex; align-items: baseline; gap: 4px; }
-.prog-pct { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
+.prog-title { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+.prog-stats { display: flex; align-items: baseline; gap: 6px; }
+.prog-pct { font-size: 16px; font-weight: 900; letter-spacing: -0.5px; }
 .prog-frac { font-size: 12px; font-weight: 700; color: var(--muted); }
 
-.prog-track { background: var(--line); height: 12px; border-radius: 6px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
-.prog-fill { height: 100%; border-radius: 6px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+/* YENİ İNCE VE YUVARLAK BARLAR */
+.prog-track { background: var(--line); height: 8px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+.prog-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
 .fill-daily { background: var(--prog-daily); box-shadow: 0 0 10px rgba(50, 215, 75, 0.4); }
 .fill-month { background: var(--prog-month); box-shadow: 0 0 10px rgba(10, 132, 255, 0.4); }
 
-/* EŞİT BOYUTLU İLAÇ KARTLARI IZGARASI */
+/* --- EŞİT BOYUTLU İLAÇ KARTLARI --- */
 .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; align-items: start; }
 .card { background: var(--card); border-radius: 20px; padding: 14px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: var(--shadow); min-height: 140px; transition: all 0.3s ease; overflow: hidden; }
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); }
 
-/* OTOMATİK DARALMA MANTIĞI */
-.card.collapsed { min-height: 68px !important; max-height: 68px !important; cursor: pointer; }
-.card.collapsed .meds-container { opacity: 0; pointer-events: none; }
-
-.drug-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; text-transform: uppercase; }
-.badge { align-self: flex-start; padding: 5px 8px; border-radius: 8px; font-weight: 800; font-size: 9px; text-transform: uppercase; margin-bottom: 6px; }
+/* YENİ KART BAŞLIĞI VE ETİKET HİZALAMASI */
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.drug-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; text-transform: uppercase; margin: 0; }
+.badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 9px; text-transform: uppercase; margin: 0; }
 .badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
 .badge-wait { background: var(--line); color: var(--muted); }
 
+/* YENİ ÖZEL ÇİZİM SVG CHECKBOXLAR */
+.check-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
+.check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
+.check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 6px; transition: opacity 0.3s; }
-.history-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 11px; border-bottom: 1px dashed var(--line); }
+.history-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 12px; font-weight: 600; border-bottom: 1px dashed var(--line); }
 .history-item:last-child { border-bottom: none; }
+.med-left-group { display: flex; align-items: center; gap: 8px; }
 .mono { font-size: 10px; color: var(--muted); font-weight: 600; font-style: italic;}
+
+/* OTOMATİK DARALMA MANTIĞI */
+.card.collapsed { min-height: 54px !important; max-height: 54px !important; cursor: pointer; }
+.card.collapsed .meds-container { opacity: 0; pointer-events: none; }
+.card.collapsed .card-header { margin-bottom: 0; }
 
 /* MİNİK BUTONU */
 .minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 64px; height: 64px; border-radius: 32px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); border: 1px solid var(--line); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
@@ -142,7 +158,10 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div id="alertsArea"></div>
 
 <div class="header-compact">
-    <div class="app-title"><span id="greetingText">Günaydın,</span> Nurten Sultan 🌼</div>
+    <div class="app-title">
+        <span class="greeting" id="greetingText">Günaydın,</span> 
+        <span class="name-tag">Nurten Sultan 🌼</span>
+    </div>
     <div class="header-info">
         <div id="clock" class="clock-text">--:--</div>
         <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
@@ -173,7 +192,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div class="premium-card prog-wrapper">
     <div class="prog-item">
         <div class="prog-header">
-            <div class="prog-title">📊 Günlük İlerleme</div>
+            <div class="prog-title">Günlük İlerleme</div>
             <div class="prog-stats">
                 <span class="prog-pct" id="perf-pct" style="color: var(--accent);">%0</span>
                 <span class="prog-frac" id="perf-frac">(0/0)</span>
@@ -186,7 +205,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
     
     <div class="prog-item">
         <div class="prog-header">
-            <div class="prog-title">📅 Aylık İlerleme</div>
+            <div class="prog-title">Aylık İlerleme</div>
             <div class="prog-stats">
                 <span class="prog-pct" style="color: var(--early);">%45</span>
             </div>
@@ -209,6 +228,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbybibVR75b918CBOMRlpEJu
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
+
+// SVG İkon Tanımları (Özel Çizimler)
+const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
 
 // GREETING
 const now = new Date();
@@ -354,10 +376,15 @@ function ekraniCiz() {
             const isDone = apiData[m.key] === "İçildi";
             if(isDone) { tKT++; sTC++; }
             
-            const icon = isDone ? `<span style="color:var(--accent); font-size:15px;">✅</span>` : `<span style="font-size:15px;">⚪</span>`;
+            // YENİ ÖZEL ÇİZİM CHECKBOX
+            const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
+            
             medsHTML += `
                 <div class="history-item">
-                    <span style="display:flex; align-items:center; gap:6px; font-weight:700;">${icon} ${m.name}</span>
+                    <div class="med-left-group">
+                        ${iconHTML}
+                        <span>${m.name}</span>
+                    </div>
                     <span class="mono">${m.purpose}</span>
                 </div>`; 
         });
@@ -368,10 +395,13 @@ function ekraniCiz() {
         const cardClass = isAllDone ? "done-card collapsed" : "";
         const onClick = isAllDone ? `onclick="this.classList.toggle('collapsed')"` : "";
 
+        // YENİ KART BAŞLIĞI DÜZENİ (ETİKET SAĞA ALINDI)
         tArea += `
             <div class="card ${cardClass}" ${onClick}>
-                <div class="drug-name">${s.icon} ${s.title}</div>
-                <div class="badge ${badgeClass}">${badgeText}</div>
+                <div class="card-header">
+                    <div class="drug-name">${s.icon} ${s.title}</div>
+                    <div class="badge ${badgeClass}">${badgeText}</div>
+                </div>
                 <div class="meds-container">
                     ${medsHTML}
                 </div>
