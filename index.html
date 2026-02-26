@@ -58,13 +58,17 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 10px 10px 85px 10px; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
-/* GÜVENLİK KALKANI */
+/* GÜVENLİK KALKANI (Daha belirgin yanıp sönme) */
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
 .safety-shield { display: none; padding: 12px; text-align: center; font-weight: 800; font-size: 13px; border-radius: 14px; box-shadow: var(--shadow); letter-spacing: 0.3px; color: white; }
-.shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2s infinite; }
-.shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s infinite; }
-.shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2s infinite; }
+.shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
+.shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
+.shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
 .shield-blue { background: linear-gradient(135deg, #0a84ff 0%, #0040dd 100%); }
+
+@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 /* BAŞLIK */
 .header-compact { text-align: center; margin-bottom: 12px; background: var(--card); padding: 12px; border-radius: 20px; border: 1px solid var(--line); box-shadow: var(--shadow); }
@@ -78,21 +82,20 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 /* PREMIUM KART YAPISI */
 .premium-card { background: var(--card); border-radius: 20px; padding: 16px; border: 1px solid var(--line); margin-bottom: 12px; box-shadow: var(--shadow); }
 
-/* --- PREMIUM HAVA DURUMU --- */
+/* --- PREMIUM HAVA DURUMU (Hizalama Düzeltildi) --- */
 .weather-details { margin: 0; padding: 0; }
 .weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; }
 .weather-details summary::-webkit-details-marker { display: none; }
 
-.w-left { flex: 1; display: flex; align-items: center; gap: 6px; color: var(--early); font-weight: 800; font-size: 15px; }
-.w-icon-big { font-size: 22px; }
+.w-left { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; color: var(--early); font-weight: 800; font-size: 15px; white-space: nowrap; }
+.w-icon-big { font-size: 22px; display: flex; align-items: center; }
 
-.w-center { flex: 1; display: flex; justify-content: center; }
-.loc-btn { background: var(--line); color: var(--text); padding: 6px 12px; border-radius: 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: transform 0.2s; white-space: nowrap; }
+.w-center { flex: 1; display: flex; justify-content: center; overflow: hidden; padding: 0 4px; }
+.loc-btn { background: var(--line); color: var(--text); padding: 6px 12px; border-radius: 14px; font-size: 11px; font-weight: 800; text-decoration: none; display: flex; align-items: center; gap: 4px; transition: transform 0.2s; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .loc-btn:active { transform: scale(0.95); }
 
-.w-right { flex: 1; display: flex; justify-content: flex-end; }
-/* YENİ ZARİF BUTON */
-.w-toggle { background: var(--soft-btn-bg); color: var(--soft-btn-text); font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; }
+.w-right { flex: 0 0 auto; display: flex; justify-content: flex-end; }
+.w-toggle { background: var(--soft-btn-bg); color: var(--soft-btn-text); font-size: 11px; font-weight: 800; padding: 6px 12px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; white-space: nowrap; }
 
 /* Açılır Teşhis Kutusu */
 .w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; }
@@ -100,7 +103,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .w-adv-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.5; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- PREMIUM İLERLEME BARLARI --- */
+/* --- PREMIUM İLERLEME BARLARI (Kesirler eklendi) --- */
 .prog-wrapper { display: flex; flex-direction: column; gap: 16px; }
 .prog-item { display: flex; flex-direction: column; gap: 8px; }
 .prog-header { display: flex; justify-content: space-between; align-items: flex-end; }
@@ -109,25 +112,24 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .prog-pct { font-size: 16px; font-weight: 900; letter-spacing: -0.5px; }
 .prog-frac { font-size: 12px; font-weight: 700; color: var(--muted); }
 
-/* YENİ İNCE VE YUVARLAK BARLAR */
 .prog-track { background: var(--line); height: 8px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
 .prog-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
 .fill-daily { background: var(--prog-daily); box-shadow: 0 0 10px rgba(50, 215, 75, 0.4); }
 .fill-month { background: var(--prog-month); box-shadow: 0 0 10px rgba(10, 132, 255, 0.4); }
 
-/* --- EŞİT BOYUTLU İLAÇ KARTLARI --- */
+/* --- EŞİT BOYUTLU İLAÇ KARTLARI (Kutu Bozulması Giderildi) --- */
 .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; align-items: start; }
 .card { background: var(--card); border-radius: 20px; padding: 14px; border: 1px solid var(--line); display: flex; flex-direction: column; box-shadow: var(--shadow); min-height: 140px; transition: all 0.3s ease; overflow: hidden; }
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); }
 
-/* YENİ KART BAŞLIĞI VE ETİKET HİZALAMASI */
-.card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.drug-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; text-transform: uppercase; margin: 0; }
-.badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 9px; text-transform: uppercase; margin: 0; }
+/* KART BAŞLIĞI - Dikey Hizalama */
+.card-header { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 10px; width: 100%; }
+.drug-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; text-transform: uppercase; margin: 0; white-space: nowrap; }
+.badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 9px; text-transform: uppercase; margin: 0; white-space: nowrap; }
 .badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
 .badge-wait { background: var(--line); color: var(--muted); }
 
-/* YENİ ÖZEL ÇİZİM SVG CHECKBOXLAR */
+/* Özel SVG İkonlar */
 .check-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
 .check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
 .check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
@@ -138,8 +140,8 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .med-left-group { display: flex; align-items: center; gap: 8px; }
 .mono { font-size: 10px; color: var(--muted); font-weight: 600; font-style: italic;}
 
-/* OTOMATİK DARALMA MANTIĞI */
-.card.collapsed { min-height: 54px !important; max-height: 54px !important; cursor: pointer; }
+/* OTOMATİK DARALMA - Sabit Yükseklik */
+.card.collapsed { min-height: 66px !important; max-height: 66px !important; cursor: pointer; }
 .card.collapsed .meds-container { opacity: 0; pointer-events: none; }
 .card.collapsed .card-header { margin-bottom: 0; }
 
@@ -148,9 +150,6 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: 95px; right: 20px; background: var(--early); color: #fff; padding: 16px; border-radius: 18px; font-size: 13px; font-weight: 800; display: none; z-index: 1001; width: 220px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); line-height: 1.4; text-align: center; }
 
-@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
-@keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
-@keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
@@ -171,9 +170,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div class="premium-card">
     <details class="weather-details">
         <summary>
-            <div class="w-left" id="wBrief">
+            <div class="w-left">
                 <span class="w-icon-big" id="wMainIcon">🌥️</span> 
-                <span id="wTempText">--°C</span>
+                <span id="wTempText">--°C | %--</span>
             </div>
             <div class="w-center">
                 <a href="https://share.google/XZEP3J5L3bhQtAij8" target="_blank" class="loc-btn">📍 Avrupark Hayat</a>
@@ -207,11 +206,12 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
         <div class="prog-header">
             <div class="prog-title">Aylık İlerleme</div>
             <div class="prog-stats">
-                <span class="prog-pct" style="color: var(--early);">%45</span>
+                <span class="prog-pct" id="month-pct" style="color: var(--early);">%45</span>
+                <span class="prog-frac" id="month-frac">(68/150)</span>
             </div>
         </div>
         <div class="prog-track">
-            <div class="prog-fill fill-month" style="width: 45%;"></div>
+            <div id="month-bar" class="prog-fill fill-month" style="width: 45%;"></div>
         </div>
     </div>
 </div>
@@ -376,7 +376,6 @@ function ekraniCiz() {
             const isDone = apiData[m.key] === "İçildi";
             if(isDone) { tKT++; sTC++; }
             
-            // YENİ ÖZEL ÇİZİM CHECKBOX
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
             
             medsHTML += `
@@ -395,7 +394,7 @@ function ekraniCiz() {
         const cardClass = isAllDone ? "done-card collapsed" : "";
         const onClick = isAllDone ? `onclick="this.classList.toggle('collapsed')"` : "";
 
-        // YENİ KART BAŞLIĞI DÜZENİ (ETİKET SAĞA ALINDI)
+        // ROZET BAŞLIĞIN ALTINA ALINDI (KAYMA ÖNLENDİ)
         tArea += `
             <div class="card ${cardClass}" ${onClick}>
                 <div class="card-header">
