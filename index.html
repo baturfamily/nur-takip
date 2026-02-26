@@ -3,187 +3,292 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-<title>Şifa Günlüğü</title>
+<title>Nurten İlaç Paneli</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Şifa Günlüğü">
+<meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
 <style>
-/* --- ŞİFA GÜNLÜĞÜ: SICAK, ORGANİK VE YATIŞTIRICI RENKLER --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
-  --bg: #FDFBF7; /* Sıcak krem / Sayfa rengi */
+  --bg: #F4F4F7; 
   --card: #FFFFFF; 
-  --text-main: #4A403A; /* Göz yormayan acı kahve / Mocha */
-  --text-muted: #8C827A; /* Yumuşak boz / Kum rengi */
-  --line: rgba(74, 64, 58, 0.08);
+  --text: #2C2C2E; 
+  --muted: #8E8E93; 
+  --line: rgba(0,0,0,0.06);
+  --accent: #34C759; 
+  --warning: #FF9500; 
+  --danger: #FF3B30; 
+  --early: #007AFF; 
+  --purple: #AF52DE; 
   
-  --accent-green: #6B9071; /* Adaçayı Yeşili (Şifa ve huzur) */
-  --accent-blue: #6482AD; /* Gök mavisi */
-  --accent-orange: #D98359; /* Yumuşak kiremit / Toprak */
-  --accent-purple: #9E7BB5; /* Lavanta */
-  
-  /* Biten İlaçlar İçin Ferah Zemin */
-  --done-bg: #F2F7F4;
-  --done-border: #C8E0CD;
-  --done-text: #4E7355;
+  --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
+  --vip-text: #FFFFFF;
+  --vip-muted: #A0AAB5;
+  --vip-gold: #F1C40F;
+  --vip-shadow: 0 12px 24px rgba(0,0,0,0.15);
 
-  --shadow-soft: 0 8px 24px rgba(74, 64, 58, 0.06);
+  --card-border: rgba(0,0,0,0.03);
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+  --done-bg: rgba(52, 199, 89, 0.04);
+  --done-border: rgba(52, 199, 89, 0.3);
+  --prog-daily: linear-gradient(90deg, #32D74B, #28CD41);
+  --prog-month: linear-gradient(90deg, #0A84FF, #007AFF);
+  --wait-badge-bg: rgba(0,0,0,0.05);
+  --wait-badge-text: #636366; 
 }
 
-/* Gece Modu: Gözleri tamamen dinlendiren Kahve/Antrasit tonları */
+/* --- KARANLIK (DARK) MOD RENKLERİ --- */
 @media (prefers-color-scheme: dark) {
   :root { 
-    --bg: #1A1614; /* Derin sıcak antrasit */
-    --card: #241F1C; 
-    --text-main: #EAE6DF; /* Kırık beyaz / Krem */
-    --text-muted: #A39B94; 
-    --line: rgba(234, 230, 223, 0.08);
+    --bg: #0B0B0E; 
+    --card: #1C1C1E; 
+    --text: #EAEBEE; 
+    --muted: #98989D; 
+    --line: rgba(255,255,255,0.08);
+    --accent: #32D74B; 
+    --warning: #FF9D0A; 
+    --danger: #FF453A; 
+    --early: #0A84FF; 
+    --purple: #BF5AF2;
     
-    --accent-green: #7BA882; 
-    --accent-blue: #7BA0D4; 
-    --accent-orange: #E89E76; 
-    --accent-purple: #B692CF; 
-    
-    --done-bg: rgba(107, 144, 113, 0.15);
-    --done-border: rgba(107, 144, 113, 0.3);
-    --done-text: #A0C7A6;
+    --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
+    --vip-text: #FFFFFF;
+    --vip-muted: #98989D;
+    --vip-gold: #F1C40F;
+    --vip-shadow: 0 12px 30px rgba(0,0,0,0.5);
 
-    --shadow-soft: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --card-border: rgba(255,255,255,0.05);
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.4);
+
+    --done-bg: rgba(50, 215, 75, 0.05);
+    --done-border: rgba(50, 215, 75, 0.3);
+    --prog-daily: linear-gradient(90deg, #30D158, #32D74B);
+    --prog-month: linear-gradient(90deg, #0A84FF, #64D2FF);
+    --wait-badge-bg: rgba(255,255,255,0.1);
+    --wait-badge-text: #D1D1D6; 
   }
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text-main); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, sans-serif; padding: 20px 16px 100px 16px; -webkit-font-smoothing: antialiased; transition: background 0.4s, color 0.4s; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 12px 12px 85px 12px; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
-/* 1. ZARİF KARŞILAMA (KPI, Grafik vs. Yok. Sadece sevgi var) */
-.header { margin-bottom: 24px; padding-top: 10px; }
-.greeting-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin: 0 0 4px 0; color: var(--text-main); }
-.date-subtitle { font-size: 15px; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
-.sync-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
-@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+/* GÜVENLİK KALKANI */
+#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.safety-shield { display: none; padding: 14px; text-align: center; font-weight: 800; font-size: 14px; border-radius: 16px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; }
+.shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
+.shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
+.shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
+.shield-blue { background: linear-gradient(135deg, #0a84ff 0%, #0040dd 100%); }
 
-/* 2. GÜNLÜK ŞİFA NOTU (Hava durumu ve teşhisin açık mektup hali) */
-.daily-note-card { background: var(--card); border-radius: 24px; padding: 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--line); margin-bottom: 24px; position: relative; overflow: hidden; }
-/* Yumuşak bir köşe deseni */
-.daily-note-card::before { content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px; background: radial-gradient(circle top right, rgba(217, 131, 89, 0.1), transparent); border-radius: 0 24px 0 100px; pointer-events: none; }
+@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-.note-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.note-title { font-size: 14px; font-weight: 800; color: var(--accent-orange); text-transform: uppercase; letter-spacing: 1px; }
-.note-weather { font-size: 16px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+/* VIP BAŞLIK KARTI */
+.vip-header { background: var(--vip-bg); border-radius: 24px; padding: 20px 16px; margin-bottom: 14px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
 
-.note-body { font-size: 16px; font-weight: 500; line-height: 1.6; color: var(--text-main); }
+.app-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1;}
+.app-title .greeting { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
+.app-title .name-tag { white-space: nowrap; color: var(--vip-text); }
+.header-info { display: flex; justify-content: center; align-items: center; gap: 8px; position: relative; z-index: 1;}
+.clock-text { font-size: 13px; font-weight: 700; color: var(--vip-muted); }
+.sync-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); }
 
-/* ÖZEL GÜN ALARMLARI (İğne, Kortizon vs. Şık Kalkanlar) */
-#alertsArea { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-.alert-box { display: none; padding: 16px 20px; border-radius: 20px; font-size: 15px; font-weight: 700; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 12px; line-height: 1.4; }
-.alert-blue { background: var(--accent-blue); }
-.alert-purple { background: var(--accent-purple); }
-.alert-red { background: var(--accent-orange); } /* Kıpkırmızı yerine göz yormayan kiremit */
-.alert-yellow { background: #D4A373; }
+/* TÜM KARTLARIN ORTAK SINIFI */
+.premium-card { 
+    background: var(--card); 
+    border-radius: 24px; 
+    padding: 18px; 
+    border: 1px solid var(--card-border); 
+    margin-bottom: 14px; 
+    box-shadow: var(--card-shadow); 
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
 
-/* 3. ZAMAN ÇİZELGESİ (Tek Sütun, Yukarıdan Aşağıya Kitap Gibi) */
-.timeline-container { display: flex; flex-direction: column; gap: 16px; }
+/* --- PREMIUM HAVA DURUMU DÜZENİ --- */
+.weather-details { margin: 0; padding: 0; }
+.weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 6px; }
+.weather-details summary::-webkit-details-marker { display: none; }
 
-.time-block { background: var(--card); border-radius: 24px; padding: 20px; box-shadow: var(--shadow-soft); border: 1px solid var(--line); transition: all 0.3s ease; }
+.w-left { flex: 1; color: var(--muted); font-weight: 700; font-size: 11px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-center { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 900; font-size: 14px; white-space: nowrap; }
+.w-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
 
-/* VAKİT BAŞLIĞI */
-.time-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--line); }
-.time-title { font-size: 18px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
-.time-badge { font-size: 13px; font-weight: 800; color: var(--text-muted); background: var(--bg); padding: 4px 10px; border-radius: 12px; }
+.w-icon-big { font-size: 20px; display: flex; align-items: center; margin-right: 2px; }
+.w-divider { color: var(--line); margin: 0 2px; font-weight: 400;}
 
-/* İLAÇ LİSTESİ (Çok büyük ve ferah) */
-.med-list { display: flex; flex-direction: column; gap: 16px; }
-.med-item { display: flex; align-items: flex-start; gap: 14px; }
+.w-toggle { 
+    background: var(--bg); 
+    color: var(--text); 
+    font-size: 12px; 
+    font-weight: 800; 
+    padding: 6px 12px; 
+    border-radius: 14px; 
+    display: flex; 
+    align-items: center; 
+    gap: 4px; 
+    transition: 0.2s; 
+    white-space: nowrap; 
+}
 
-.med-icon { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--line); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
-.med-icon.checked { background-color: var(--accent-green); border-color: var(--accent-green); color: white; }
-.med-icon svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+/* AÇILIR TEŞHİS KUTUSU (Okunabilirlik İçin Büyütüldü) */
+.w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 16px; padding: 18px; display: flex; gap: 14px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; }
+.w-adv-icon { font-size: 28px; } /* İkon büyütüldü */
+.w-adv-text { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.5; } /* Yazı daha büyük ve belirgin */
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-.med-text-group { display: flex; flex-direction: column; gap: 4px; }
-.med-name { font-size: 17px; font-weight: 800; color: var(--text-main); line-height: 1.3; }
-.med-desc { font-size: 14px; font-weight: 600; color: var(--text-muted); font-style: italic; }
+/* --- PREMIUM İLERLEME BARLARI --- */
+.prog-wrapper { display: flex; flex-direction: column; gap: 18px; }
+.prog-item { display: flex; flex-direction: column; gap: 8px; }
+.prog-header { display: flex; justify-content: space-between; align-items: flex-end; }
+.prog-title { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+.prog-stats { display: flex; align-items: baseline; gap: 6px; }
+.prog-pct { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
+.prog-frac { font-size: 12px; font-weight: 700; color: var(--muted); }
 
-/* BİTEN İLAÇLAR (Kompakt ve Huzurlu Görünüm - Gözü Yormaz) */
-.time-block.completed { background: var(--done-bg); border-color: var(--done-border); padding: 16px 20px; box-shadow: none; display: flex; flex-direction: row; align-items: center; justify-content: space-between; cursor: pointer; }
-.time-block.completed .time-header { border: none; margin: 0; padding: 0; }
-.time-block.completed .med-list { display: none; }
-.time-block.completed .time-title { color: var(--done-text); font-size: 16px; }
-.time-block.completed .time-badge { background: transparent; color: var(--done-text); font-weight: 800; font-size: 14px; }
+.prog-track { background: var(--bg); height: 10px; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+.prog-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.fill-daily { background: var(--prog-daily); box-shadow: 0 0 10px rgba(50, 215, 75, 0.4); }
+.fill-month { background: var(--prog-month); box-shadow: 0 0 10px rgba(10, 132, 255, 0.4); }
 
-/* MİNİK BUTONU (Sevgi Dolu) */
-.minik-btn { position: fixed; bottom: 24px; right: 24px; background: var(--card); width: 68px; height: 68px; border-radius: 34px; display: flex; align-items: center; justify-content: center; font-size: 34px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid var(--line); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
-.minik-btn:active { transform: scale(0.9); }
-.minik-bubble { position: fixed; bottom: 105px; right: 24px; background: var(--accent-orange); color: #fff; padding: 20px; border-radius: 24px 24px 0 24px; font-size: 16px; font-weight: 600; display: none; z-index: 1001; width: 300px; box-shadow: 0 12px 35px rgba(217, 131, 89, 0.4); line-height: 1.5; text-align: left; }
+/* --- MASONRY (BAĞIMSIZ SÜTUN) DÜZENİ İLAÇ KARTLARI --- */
+.masonry-grid { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+.masonry-col { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; }
+
+.card { display: flex; flex-direction: column; padding: 16px; margin-bottom: 0;}
+.card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
+
+/* KART BAŞLIĞI */
+.card-header { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 12px; width: 100%; }
+.drug-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; text-transform: uppercase; margin: 0; white-space: nowrap; color: var(--text); }
+
+.badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
+.badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
+.badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); }
+
+/* OK ANİMASYONU İÇİN CLASS */
+.exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 10px; }
+.card.collapsed .exp-arrow { transform: rotate(180deg); } 
+
+/* Özel SVG İkonlar */
+.check-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
+.check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
+.check-icon svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+/* İLAÇ LİSTESİ */
+.meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
+.history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
+.history-item:last-child { border-bottom: none; }
+
+.med-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
+.drug-title { font-size: 15px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
+.drug-purpose { font-size: 13px; color: var(--muted); font-weight: 600; font-style: italic; }
+
+/* OTOMATİK DARALMA */
+.card.collapsed { cursor: pointer; }
+.card.collapsed .meds-container { display: none; }
+.card.collapsed .card-header { margin-bottom: 0; }
+
+/* MİNİK BUTONU VE BÜYÜTÜLMÜŞ TOAST */
+.minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 64px; height: 64px; border-radius: 32px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
+.minik-button:active { transform: scale(0.9); }
+.minik-toast { position: fixed; bottom: 95px; right: 20px; background: var(--early); color: #fff; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 800; display: none; z-index: 1001; width: 280px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); line-height: 1.5; text-align: left; }
 </style>
 </head>
-<body onclick="document.getElementById('minikBubble').style.display = 'none'">
-
-<div class="header">
-    <div class="greeting-title" id="greetingText">Günaydın, Nurten Sultan</div>
-    <div class="date-subtitle">
-        <span class="sync-dot"></span>
-        <span id="clockText">Bağlanıyor...</span>
-    </div>
-</div>
+<body onclick="document.getElementById('minikToast').style.display = 'none'">
 
 <div id="alertsArea"></div>
 
-<div class="daily-note-card">
-    <div class="note-header">
-        <div class="note-title">Günün Notu</div>
-        <div class="note-weather" id="wBasicText">--°C</div>
+<div class="vip-header">
+    <div class="app-title">
+        <span class="greeting" id="greetingText">Günaydın,</span> 
+        <span class="name-tag">Nurten Sultan 🌼</span>
     </div>
-    <div class="note-body" id="wAdviceText">
-        Sağlık asistanın verileri inceliyor, birazdan sana bugünün tavsiyesini hazırlayacak...
+    <div class="header-info">
+        <div id="clock" class="clock-text">--:--</div>
+        <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
     </div>
 </div>
 
-<div class="timeline-container" id="timelineArea">
-    </div>
+<div class="premium-card">
+    <details class="weather-details">
+        <summary>
+            <div class="w-left">
+                📍 Avrupark Hayat
+            </div>
+            <div class="w-center">
+                <span class="w-icon-big" id="wMainIcon">🌥️</span> 
+                <span id="wTempText">--°C</span>
+                <span class="w-divider">•</span>
+                <span id="wHumText">%-- Nem</span>
+            </div>
+            <div class="w-right">
+                <div class="w-toggle">Öneriler <span style="font-size: 9px; margin-left: 2px;">▼</span></div>
+            </div>
+        </summary>
+        <div class="w-advice-box" id="wAdviceBox">
+            <div class="w-adv-icon" id="wAdvIcon">🩺</div>
+            <div class="w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
+        </div>
+    </details>
+</div>
 
-<div class="minik-btn" onclick="event.stopPropagation(); mewMsg()">🐈</div>
-<div class="minik-bubble" id="minikBubble">Miyav! ❤️</div>
+<div class="premium-card prog-wrapper">
+    <div class="prog-item">
+        <div class="prog-header">
+            <div class="prog-title">Günlük İlerleme</div>
+            <div class="prog-stats">
+                <span class="prog-pct" id="perf-pct" style="color: var(--accent);">%0</span>
+                <span class="prog-frac" id="perf-frac">(0/0)</span>
+            </div>
+        </div>
+        <div class="prog-track">
+            <div id="perf-bar" class="prog-fill fill-daily" style="width: 0%;"></div>
+        </div>
+    </div>
+    
+    <div class="prog-item">
+        <div class="prog-header">
+            <div class="prog-title">Aylık İlerleme</div>
+            <div class="prog-stats">
+                <span class="prog-pct" id="month-pct" style="color: var(--early);">%45</span>
+                <span class="prog-frac" id="month-frac">(68/150)</span>
+            </div>
+        </div>
+        <div class="prog-track">
+            <div id="month-bar" class="prog-fill fill-month" style="width: 45%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="masonry-grid">
+    <div class="masonry-col" id="col-left"></div>
+    <div class="masonry-col" id="col-right"></div>
+</div>
+
+<div class="minik-button" onclick="event.stopPropagation(); mewMsg()">🐾</div>
+<div class="minik-toast" id="minikToast">Miyav! ❤️</div>
 
 <script>
-// API URL BURAYA
+// KENDİ LİNKİNİ BURAYA YAPIŞTIRMAYI UNUTMA
 const API_URL = "https://script.google.com/macros/s/AKfycbybibVR75b918CBOMRlpEJu699hHSvOvCFXD6qRAL-JUxmK95HIUcF5onhEQjrIbF67Wg/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
 
+// SVG İkon Tanımları
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
-const svgCheckCircle = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
 
-// ZAMAN VE SELAMLAMA YÖNETİMİ
-function saniyeTiktak() {
-    const dNow = new Date();
-    const hour = dNow.getHours();
-    
-    // Annemiz için hitap
-    let gMsg = "İyi Geceler";
-    if(hour >= 5 && hour < 12) gMsg = "Günaydın";
-    else if(hour >= 12 && hour < 17) gMsg = "Tünaydın";
-    else if(hour >= 17 && hour < 22) gMsg = "İyi Akşamlar";
-    
-    document.getElementById('greetingText').innerText = `${gMsg}, Nurten Sultan`;
+// GREETING
+const now = new Date();
+const hour = now.getHours();
+let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
+document.getElementById('greetingText').innerText = `${gMsg},`;
 
-    // Saat ve Canlılık
-    const clockEl = document.getElementById('clockText');
-    const dateStr = dNow.getDate() + " " + dNow.toLocaleDateString('tr-TR', {month:'long'}) + " " + dNow.toLocaleDateString('tr-TR', {weekday:'long'});
-    const timeStr = String(dNow.getHours()).padStart(2,'0') + ':' + String(dNow.getMinutes()).padStart(2,'0');
-    
-    const farkSaniye = sonBasariZamani > 0 ? Math.floor((Date.now() - sonBasariZamani) / 1000) : 999;
-    
-    if (sonBasariZamani === 0) {
-        clockEl.innerText = `${dateStr} • Bağlanıyor...`;
-    } else if (farkSaniye < 60) {
-        clockEl.innerText = `${dateStr} • ${timeStr} (Canlı)`;
-    } else {
-        clockEl.innerText = `${dateStr} • ${timeStr} (Bağlantı Bekleniyor)`;
-    }
-}
-
-// ŞİFA NOTU (HAVA & TEŞHİS)
+// GELİŞMİŞ HAVA DURUMU & TEŞHİS 
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
@@ -191,62 +296,143 @@ async function fetchWeather() {
         const t = data.current.temperature_2m, h = data.current.relative_humidity_2m;
         
         let icon = "🌥️";
-        let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu ve rahat hissedeceğin denge durumundasın. Günün tadını çıkar!`;
+        let advIcon = "🩺";
+        let advColor = "var(--accent)";
+        let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu ve rahat hissedeceğin denge durumundasın. Keyfini çıkar!`;
+        
+        // Akıllı Sıcaklık Rengi
+        let tempColor = "var(--text)";
+        if (t < 10) tempColor = "#007AFF"; 
+        else if (t < 20) tempColor = "#34C759"; 
+        else if (t < 28) tempColor = "#FF9500"; 
+        else tempColor = "#FF3B30"; 
+
+        // Akıllı Nem Rengi
+        let humColor = "var(--text)";
+        if (h < 40) humColor = "#FF9500"; 
+        else if (h <= 60) humColor = "#34C759"; 
+        else if (h <= 75) humColor = "#32ADE6"; 
+        else humColor = "#AF52DE"; 
         
         if (h > 70 && t < 15) { 
-            icon = "🌧️"; 
-            adv = `Dışarıda soğuk ve nemli bir hava var (%${h} Nem). Nem ve soğuk birleştiğinde eklem sıvılarının basıncı değişir; bu da romatizmal ağrılarını tetikleyebilir. Lütfen dizlerini sıcak tutmaya ve bugün kendini hiç yormamaya özen göster.`; 
+            icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
+            adv = `Hava soğuk ve nemli (%${h}). Nem ve soğuk birleştiğinde eklem sıvılarının basıncı değişir; bu durum romatizmal ağrıları tetikleyebilir. Lütfen dizlerini sıcak tutmaya ve kendini yormamaya özen göster.`; 
         }
         else if (t < 12) { 
-            icon = "🥶"; 
-            adv = `Dışarısı oldukça soğuk (${t}°C). Soğuk hava eklemleri sertleştirdiği ve Sjögren kaynaklı göz kuruluğunu artırdığı için eklemlerini mutlaka sıcak tutmalı, rüzgara çıkarsan damlalarını sıklaştırmalısın.`; 
+            icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)";
+            adv = `Dışarısı oldukça soğuk (${t}°C). Soğuk hava eklemleri sertleştirdiği ve Sjögren kaynaklı göz kuruluğunu artırdığı için eklemlerini mutlaka sıcak tutmalı, rüzgar varsa damlalarını kullanmalısın.`; 
         }
         else if (h > 75) { 
-            icon = "🌫️"; 
-            adv = `Dışarıda nem oranı çok yüksek (%${h}). Yüksek nem eklemlerde ağırlık hissi ve sabah tutukluğunu artırabileceği için bugün fiziksel olarak kendini fazla zorlamamaya dikkat etmelisin.`; 
+            icon = "🌫️"; advIcon = "💧"; advColor = "var(--purple)";
+            adv = `Nem oranı çok yüksek (%${h}). Yüksek nem eklemlerde ağırlık hissi ve sabah tutukluğunu artırabileceği için bugün fiziksel olarak kendini fazla zorlamamaya dikkat etmelisin.`; 
         }
         else if (t > 28) { 
-            icon = "☀️"; 
-            adv = `Hava oldukça sıcak (${t}°C). Yüksek ısı vücuttaki sıvı kaybını hızlandırıp ağız ve göz kuruluğunu artırır. Bu yüzden bol bol su içmeyi ve göz damlalarını her zamankinden sık kullanmayı lütfen unutma.`; 
+            icon = "☀️"; advIcon = "🕶️"; advColor = "var(--warning)";
+            adv = `Hava oldukça sıcak (${t}°C). Yüksek ısı vücuttaki sıvı kaybını hızlandırıp ağız ve göz kuruluğunu artırır. Bu yüzden bol bol su içmeyi ve göz damlalarını her zamankinden sık kullanmayı unutma.`; 
         }
         
-        document.getElementById('wBasicText').innerText = `${icon} ${t}°C`;
-        document.getElementById('wAdviceText').innerText = adv;
+        document.getElementById('wMainIcon').innerText = icon;
+        
+        const tEl = document.getElementById('wTempText');
+        tEl.innerText = `${t}°C`;
+        tEl.style.color = tempColor;
+
+        const hEl = document.getElementById('wHumText');
+        hEl.innerText = `%${h} Nem`;
+        hEl.style.color = humColor;
+
+        document.getElementById('wAdvIcon').innerText = advIcon;
+        document.getElementById('wAdvice').innerText = adv;
+        document.getElementById('wAdviceBox').style.borderLeftColor = advColor;
     } catch(e) { }
 }
+fetchWeather();
 
-// MİNİK'İN AKILLI CÜMLE MOTORU (100.000 İhtimal, Tek Paragraf)
+// YENİ: MİNİK İÇİN DİNAMİK "TEK CÜMLE" KOMBİNASYON MOTORU
 function mewMsg() {
-    const arrA = ["Nenesinin kuzusu,", "Güzeller güzeli annem,", "Benim canım nenem,", "Nurten Sultanım,", "Pamuk nenem,", "Canımın içi,", "En sevdiğim insan,", "Tatlı annem,", "Kraliçem,", "Sarı papatyam,"];
-    const arrB = ["ben Virbac mamamı lıkır lıkır yedim", "az önce Göker'le güzelce oyun oynadık", "Alper abim başımı şefkatle okşadı", "Keppra'mı hiç itiraz etmeden uslu uslu içtim", "kalbimin ilacını uslu uslu aldım", "camdan kuşları seyrederken seni düşündüm", "patilerimi temizleyip yanına gelmeye hazırlanıyorum", "astımım bugün çok iyi, nefesim pırıl pırıl", "yumuşacık yatağımda gerinirken aklıma sen geldin", "burnumu nemlendirip bıyıklarımı düzelttim"];
-    const arrC = ["ve şimdi gözüm senin ilaçlarında", "ve sıra senin kendi şifanı almanda", "ve sen de suyunu lıkır lıkır içmelisin", "ve ilaçlarını eksiksiz içtiğini biliyorum", "ve biz ailecek birbirimize çok iyi bakıyoruz", "ve senin de damlalarını aksatmadığını görmek istiyorum", "ve eklemlerin ağrımasın diye o sıcak dizlerine kıvrılacağım", "ve romatizman yormasın diye bugün kendini hiç yormamanı istiyorum", "ve Sjögren kurutmasın diye bol su içmeni bekliyorum", "ve birlikte her gün daha da iyi oluyoruz"];
-    const arrD = ["seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", "bıyıklarım senin için neşeyle titriyor! 😻", "ben hep senin gölgendeyim! ✨", "akşama yanına gelip o güzel ellerini yalayacağım! 🐈", "mırıl mırıl mırıldanarak sana kocaman şifa gönderiyorum! 🎶", "senin o güzel yüzün hiç asılmasın! 🌼", "patilerimle boynuna kocaman sarılıyorum! 🐾", "bugün de dünyanın en şanslı kedisiyim çünkü sen varsın! 🥰", "kalbimin atışı hep senin için! ❤️"];
+    // Havuz 1: Hitaplar (10)
+    const arrA = [
+        "Nenesinin kuzusu,", "Güzeller güzeli annem,", "Benim canım nenem,", 
+        "Nurten Sultanım,", "Pamuk nenem,", "Canımın içi,", 
+        "En sevdiğim insan,", "Tatlı annem,", "Kraliçem,", "Sarı papatyam,"
+    ];
+    // Havuz 2: Minik'in Kendi Durumu (10)
+    const arrB = [
+        "ben Virbac mamamı lıkır lıkır yedim", "az önce Göker'le güzelce oyun oynadık", 
+        "Alper abim başımı şefkatle okşadı", "Keppra'mı hiç itiraz etmeden uslu uslu içtim", 
+        "kalbimin ilacını (Enalapril) uslu uslu aldım", "camdan kuşları seyrederken seni düşündüm", 
+        "patilerimi temizleyip yanına gelmeye hazırlanıyorum", "astımım bugün çok iyi, nefesim pırıl pırıl", 
+        "yumuşacık yatağımda gerinirken aklıma sen geldin", "burnumu nemlendirip bıyıklarımı düzelttim"
+    ];
+    // Havuz 3: Anneye Özel Tavsiye/Bağlantı (10)
+    const arrC = [
+        "ve şimdi gözüm senin panonun üstünde", "ve sıra senin kendi şifanı almanda", 
+        "ve sen de sularını lıkır lıkır içmelisin", "ve ilaçlarını eksiksiz içtiğini biliyorum", 
+        "ve biz ailecek birbirimize çok iyi bakıyoruz", "ve senin de damlalarını aksatmadığını görmek istiyorum", 
+        "ve eklemlerin ağrımasın diye o sıcak dizlerine kıvrılacağım", "ve romatizman yormasın diye bugün kendini hiç yormamanı istiyorum", 
+        "ve Sjögren kurutmasın diye bol su içmeni bekliyorum", "ve birlikte her gün daha da iyi oluyoruz"
+    ];
+    // Havuz 4: Sevgi / Kapanış (10)
+    const arrD = [
+        "seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", 
+        "bıyıklarım senin için neşeyle titriyor! 😻", "ben hep senin gölgendeyim! ✨", 
+        "akşama yanına gelip o güzel ellerini yalayacağım! 🐈", "mırıl mırıl mırıldanarak sana kocaman şifa gönderiyorum! 🎶", 
+        "senin o güzel yüzün hiç asılmasın! 🌼", "patilerimle boynuna kocaman sarılıyorum! 🐾", 
+        "bugün de dünyanın en şanslı kedisiyim çünkü sen varsın! 🥰", "kalbimin atışı hep senin için! ❤️"
+    ];
 
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-    const msg = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)}, ${pick(arrD)}`;
+    
+    // Tüm havuzlardan çekip tek, akıcı ve uzun bir cümle oluşturuyoruz (Araya <br> koymuyoruz)
+    const finalMessage = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)}, ${pick(arrD)}`;
 
-    const t = document.getElementById('minikBubble');
-    t.innerHTML = msg;
+    const t = document.getElementById('minikToast');
+    t.innerHTML = finalMessage;
     t.style.display = 'block';
 }
 
-// PROGRAM HESAPLAYICI (Değişmedi)
+// SAAT VE CANLI SENKRONİZASYON
+function saniyeTiktak() {
+    const syncElement = document.getElementById('last-sync');
+    const clockElement = document.getElementById('clock');
+    const simdi = Date.now();
+    const dNow = new Date();
+    
+    clockElement.textContent = dNow.getDate() + " " + dNow.toLocaleDateString('tr-TR', {month:'short'}) + " • " + String(dNow.getHours()).padStart(2,'0') + ':' + String(dNow.getMinutes()).padStart(2,'0');
+
+    const farkSaniye = sonBasariZamani > 0 ? Math.floor((simdi - sonBasariZamani) / 1000) : 999;
+    
+    if (sonBasariZamani === 0) {
+        syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)";
+    } else if (farkSaniye < 20) {
+        const d = new Date(sonBasariZamani);
+        const sn = String(d.getSeconds()).padStart(2,'0');
+        syncElement.innerHTML = `🟢 Canlı (${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${sn})`;
+        syncElement.style.color = "#4ADE80"; 
+    } else if (farkSaniye < 60) {
+        syncElement.innerHTML = `🟡 Gecikme: ${farkSaniye} sn`; syncElement.style.color = "var(--vip-gold)";
+    } else {
+        syncElement.innerHTML = `🔴 Bağlantı Yok`; syncElement.style.color = "#FF453A";
+    }
+}
+
+// PROGRAM HESAPLAYICI
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
-      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Tüberküloz Koruması' }] },
-      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Genel Destek' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren Sendromu' }] },
-      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'B12 Vitamini' }] },
-      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizma & Sjögren' }] },
-      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: 'Hepatit Koruması' }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: 'Sjögren Sendromu' }] }
+      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Tbc' }] },
+      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Destek' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren' }] },
+      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'B12' }] },
+      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizma' }] },
+      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: 'Hepatit' }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: 'Sjögren' }] }
     ];
     
     const dS = new Date(2026, 1, 16); 
-    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: 'İltihap Baskılayıcı (Kortizon)' });
-    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: 'D Vitamini' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: 'Folik Asit' }); }
-    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: 'Romatizma İğnesi' });
+    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: 'Kortizon' });
+    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: 'Vit D' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: 'Folik' }); }
+    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: 'İğne' });
     const cS = new Date(2026, 1, 12);
-    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Biyolojik Tedavi' });
+    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Biyolojik' });
     return p;
 }
 
@@ -255,7 +441,7 @@ async function veriCek() {
     if (fetchDevamEdiyor) return;
     fetchDevamEdiyor = true;
     
-    const todayStr = String(new Date().getDate()).padStart(2, '0') + '.' + String(new Date().getMonth() + 1).padStart(2, '0') + '.' + new Date().getFullYear();
+    const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
     try {
         const res = await fetch(`${API_URL}?tarih=${todayStr}`);
         if (!res.ok) throw new Error("Ağ Hatası");
@@ -266,74 +452,82 @@ async function veriCek() {
 }
 
 function ekraniCiz() {
-    const todayProg = getDailyProgram(new Date());
+    const todayProg = getDailyProgram(now);
     
-    // UYARILAR
     let alertsHTML = "";
     todayProg.forEach(s => {
         s.meds.forEach(m => {
-            if(m.key === 'SABAH_TOK_DELTA') alertsHTML += `<div class="alert-box alert-red">🚨 Bugün Deltacortril (Kortizon) Günü</div>`;
-            if(m.key === 'SABAH_TOK_COLEDAN') if(!alertsHTML.includes('Vitamin')) alertsHTML += `<div class="alert-box alert-yellow">☀️ Bugün Vitamin ve Folbiol Günü</div>`;
-            if(m.key === 'GECE_METOARTCON') alertsHTML += `<div class="alert-box alert-blue">🧬 Bugün Metoartcon İğne Günü</div>`;
-            if(m.key === 'GECE_CIMZIA') alertsHTML += `<div class="alert-box alert-purple">💉 Bugün Cimzia İğne Günü! Şifa olsun.</div>`;
+            if(m.key === 'SABAH_TOK_DELTA') alertsHTML += `<div class="safety-shield shield-red" style="display:block;">🚨 Bugün Deltacortril Günü</div>`;
+            if(m.key === 'SABAH_TOK_COLEDAN') if(!alertsHTML.includes('Vitamin')) alertsHTML += `<div class="safety-shield shield-yellow" style="display:block;">☀️ Bugün Vitamin ve Folbiol Günü</div>`;
+            if(m.key === 'GECE_METOARTCON') alertsHTML += `<div class="safety-shield shield-blue" style="display:block;">🧬 Bugün Metoartcon İğne Günü</div>`;
+            if(m.key === 'GECE_CIMZIA') alertsHTML += `<div class="safety-shield shield-purple" style="display:block;">💉 Bugün Cimzia İğne Günü! Şifa olsun.</div>`;
         });
     });
     document.getElementById('alertsArea').innerHTML = alertsHTML;
 
-    // TEK SÜTUN ZAMAN ÇİZELGESİ OLUŞTURMA
-    let timelineHTML = "";
+    // SÜTUN BAZLI (MASONRY) HTML DAĞILIMI
+    let leftColHTML = "";
+    let rightColHTML = "";
+    let tMT = 0, tKT = 0;
 
-    todayProg.forEach((s) => {
-        let isAllDone = true;
+    todayProg.forEach((s, index) => {
+        let sTC = 0; 
         let medsHTML = "";
         
         s.meds.forEach(m => { 
+            tMT++; 
             const isDone = apiData[m.key] === "İçildi";
-            if(!isDone) isAllDone = false;
+            if(isDone) { tKT++; sTC++; }
             
-            const iconHTML = isDone ? `<div class="med-icon checked">${svgCheck}</div>` : `<div class="med-icon"></div>`;
+            const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
             
             medsHTML += `
-                <div class="med-item">
+                <div class="history-item">
                     ${iconHTML}
-                    <div class="med-text-group">
-                        <span class="med-name">${m.name}</span>
-                        <span class="med-desc">${m.purpose}</span>
+                    <div class="med-info">
+                        <span class="drug-title">${m.name}</span>
+                        <span class="drug-purpose">${m.purpose}</span>
                     </div>
                 </div>`; 
         });
         
-        // EĞER O VAKİT TAMAMLANDIYSA KART KÜÇÜLÜP YEŞİL BİR BANT HALİNE GELİR!
-        if(isAllDone) {
-            timelineHTML += `
-            <div class="time-block completed" onclick="this.classList.toggle('completed')">
-                <div class="time-title">${svgCheckCircle} ${s.title} İlaçları Alındı</div>
-                <div class="time-badge">Geri Al ▼</div>
-                <div class="med-list" style="margin-top:20px; width:100%;">${medsHTML}</div>
-            </div>`;
-        } else {
-            // EĞER TAMAMLANMADIYSA KART BÜYÜK VE AÇIK HALDE DURUR
-            timelineHTML += `
-            <div class="time-block">
-                <div class="time-header">
-                    <div class="time-title">${s.icon} ${s.title}</div>
-                    <div class="time-badge">BEKLİYOR</div>
+        const isAllDone = (sTC === s.meds.length);
+        const badgeClass = isAllDone ? "badge-safe" : "badge-wait";
+        
+        const badgeText = isAllDone ? `TAMAMLANDI <span class="exp-arrow">▲</span>` : "BEKLİYOR";
+        
+        const cardClass = isAllDone ? "done-card collapsed" : "";
+        const onClick = isAllDone ? `onclick="this.classList.toggle('collapsed')"` : "";
+
+        const cardElement = `
+            <div class="premium-card card ${cardClass}" ${onClick}>
+                <div class="card-header">
+                    <div class="drug-name">${s.icon} ${s.title}</div>
+                    <div class="badge ${badgeClass}">${badgeText}</div>
                 </div>
-                <div class="med-list">
+                <div class="meds-container">
                     ${medsHTML}
                 </div>
             </div>`;
-        }
+            
+        if (index % 2 === 0) leftColHTML += cardElement;
+        else rightColHTML += cardElement;
     });
     
-    document.getElementById('timelineArea').innerHTML = timelineHTML;
+    document.getElementById('col-left').innerHTML = leftColHTML;
+    document.getElementById('col-right').innerHTML = rightColHTML;
+
+    const dP = tMT > 0 ? Math.round((tKT/tMT)*100) : 0;
+    document.getElementById('perf-pct').innerText = `%${dP}`;
+    document.getElementById('perf-frac').innerText = `(${tKT}/${tMT})`;
+    document.getElementById('perf-bar').style.width = dP + '%';
 }
 
-// BAŞLATMA
-fetchWeather();
+// 10 Saniyede bir güncelle (aktifken)
 veriCek();
 setInterval(veriCek, 10000); 
 setInterval(saniyeTiktak, 1000); 
+// Ekran açık hale geldiğinde anında güncelle
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === 'visible') veriCek(); });
 </script>
 </body>
