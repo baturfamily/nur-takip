@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
 <style>
-/* --- AÇIK (LIGHT) MOD RENKLERİ - SADE VE TEMİZ --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
   --bg: #F4F4F7; 
   --card: #FFFFFF; 
@@ -22,14 +22,12 @@
   --early: #007AFF; 
   --purple: #AF52DE; 
   
-  /* VIP BAŞLIK (Koyu Grafit) */
   --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
   --vip-text: #FFFFFF;
   --vip-muted: #A0AAB5;
   --vip-gold: #F1C40F;
   --vip-shadow: 0 12px 24px rgba(0,0,0,0.15);
 
-  /* KART GÖLGELERİ (Porselen beyazı ve yumuşak süzülme) */
   --card-border: rgba(0,0,0,0.03);
   --card-shadow: 0 10px 30px rgba(0,0,0,0.06);
 
@@ -110,17 +108,18 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
     overflow: hidden;
 }
 
-/* --- PREMIUM HAVA DURUMU --- */
+/* --- PREMIUM HAVA DURUMU DÜZENİ --- */
 .weather-details { margin: 0; padding: 0; }
-.weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
+.weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 6px; }
 .weather-details summary::-webkit-details-marker { display: none; }
 
-.w-left { flex: 0 1 auto; color: var(--muted); font-weight: 700; font-size: 12px; white-space: nowrap; display: flex; align-items: center; }
-.w-center { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; gap: 6px; font-weight: 900; font-size: 16px; white-space: nowrap; }
-.w-right { flex: 0 1 auto; display: flex; justify-content: flex-end; align-items: center; }
+/* Flex 1 ile sağ ve sol eşitlenip ortanın tam merkeze oturması sağlandı */
+.w-left { flex: 1; color: var(--muted); font-weight: 700; font-size: 11px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-center { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 900; font-size: 14px; white-space: nowrap; }
+.w-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
 
-.w-icon-big { font-size: 22px; display: flex; align-items: center; }
-.w-divider { color: var(--line); margin: 0 4px; font-weight: 400;}
+.w-icon-big { font-size: 20px; display: flex; align-items: center; margin-right: 2px; }
+.w-divider { color: var(--line); margin: 0 2px; font-weight: 400;}
 
 .w-toggle { 
     background: var(--bg); 
@@ -176,17 +175,19 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .card.collapsed .exp-arrow { transform: rotate(180deg); } 
 
 /* Özel SVG İkonlar */
-.check-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
+.check-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
 .check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
-.check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.check-icon svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
-/* İLAÇ LİSTESİ SIKIŞMA ÇÖZÜMÜ */
-.meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; transition: opacity 0.3s; }
-.history-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; font-weight: 700; border-bottom: 1px dashed var(--line); color: var(--text); gap: 8px; }
+/* YENİ: İLAÇ LİSTESİ ÇARPIŞMA ÖNLEYİCİ (ALTLI ÜSTLÜ TASARIM) */
+.meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
+.history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
 .history-item:last-child { border-bottom: none; }
-.med-left-group { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
-.med-left-group span { white-space: normal; line-height: 1.2; word-break: break-word; } /* Sıkışmak yerine alt satıra iner */
-.mono { font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic; white-space: nowrap; flex-shrink: 0; text-align: right; }
+
+/* İsim üstte, açıklama altta olacak şekilde dikey kutu */
+.med-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
+.drug-title { font-size: 13px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
+.drug-purpose { font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic; }
 
 /* OTOMATİK DARALMA */
 .card.collapsed { cursor: pointer; }
@@ -223,7 +224,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
             <div class="w-center">
                 <span class="w-icon-big" id="wMainIcon">🌥️</span> 
                 <span id="wTempText">--°C</span>
-                <span class="w-divider">|</span>
+                <span class="w-divider">•</span>
                 <span id="wHumText">%-- Nem</span>
             </div>
             <div class="w-right">
@@ -289,7 +290,7 @@ const hour = now.getHours();
 let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
 document.getElementById('greetingText').innerText = `${gMsg},`;
 
-// GELİŞMİŞ HAVA DURUMU & TEŞHİS (DİNAMİK RENKLER EKLENDİ)
+// GELİŞMİŞ HAVA DURUMU & TEŞHİS (DİNAMİK VE UYUMLU RENKLER)
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
@@ -301,19 +302,19 @@ async function fetchWeather() {
         let advColor = "var(--accent)";
         let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından rahat bir gün.`;
         
-        // Akıllı Sıcaklık Rengi
+        // Akıllı Sıcaklık Rengi (Apple Uyumlu)
         let tempColor = "var(--text)";
-        if (t < 10) tempColor = "#0A84FF"; // Soğuk: Mavi
-        else if (t < 20) tempColor = "#32D74B"; // Ilık: Yeşil
-        else if (t < 28) tempColor = "#FF9D0A"; // Sıcak: Turuncu
-        else tempColor = "#FF453A"; // Çok Sıcak: Kırmızı
+        if (t < 10) tempColor = "#007AFF"; // Soğuk: Apple Blue
+        else if (t < 20) tempColor = "#34C759"; // Ilık: Apple Green
+        else if (t < 28) tempColor = "#FF9500"; // Sıcak: Apple Orange
+        else tempColor = "#FF3B30"; // Çok Sıcak: Apple Red
 
-        // Akıllı Nem Rengi
+        // Akıllı Nem Rengi (Apple Uyumlu)
         let humColor = "var(--text)";
-        if (h < 40) humColor = "#FF9D0A"; // Kuru: Turuncu
-        else if (h <= 60) humColor = "#32D74B"; // Normal: Yeşil
-        else if (h <= 75) humColor = "#0A84FF"; // Nemli: Mavi
-        else humColor = "#BF5AF2"; // Çok Nemli: Mor (Romatizma tetikleyici)
+        if (h < 40) humColor = "#FF9500"; // Kuru: Apple Orange
+        else if (h <= 60) humColor = "#34C759"; // Normal: Apple Green
+        else if (h <= 75) humColor = "#32ADE6"; // Nemli: Apple Light Blue
+        else humColor = "#AF52DE"; // Çok Nemli: Apple Purple
         
         if (h > 70 && t < 15) { 
             icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
@@ -334,7 +335,6 @@ async function fetchWeather() {
         
         document.getElementById('wMainIcon').innerText = icon;
         
-        // Sıcaklık ve Nem ayrı ayrı yazdırılıp renkleri atanıyor
         const tEl = document.getElementById('wTempText');
         tEl.innerText = `${t}°C`;
         tEl.style.color = tempColor;
@@ -455,13 +455,14 @@ function ekraniCiz() {
             
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
             
+            // YENİ TASARIM: İLAÇ İSMİ ÜSTTE, AÇIKLAMA ALTTA
             medsHTML += `
                 <div class="history-item">
-                    <div class="med-left-group">
-                        ${iconHTML}
-                        <span>${m.name}</span>
+                    ${iconHTML}
+                    <div class="med-info">
+                        <span class="drug-title">${m.name}</span>
+                        <span class="drug-purpose">${m.purpose}</span>
                     </div>
-                    <span class="mono">${m.purpose}</span>
                 </div>`; 
         });
         
