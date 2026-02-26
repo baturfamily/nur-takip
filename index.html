@@ -14,23 +14,28 @@
   --bg: #F2F2F7; 
   --card: #FFFFFF; 
   --text: #1C1C1E; 
-  --text-inverse: #FFFFFF;
   --muted: #8E8E93; 
-  --line: rgba(0,0,0,0.06);
+  --line: rgba(0,0,0,0.08);
   --accent: #34C759; 
   --warning: #FF9500; 
   --danger: #FF3B30; 
   --early: #007AFF; 
   --purple: #AF52DE; 
   
-  /* YENİ: SICAK KAŞMİR VE ROSE GOLD WIDGET (Yormaz, Elit ve Belirgin) */
-  --widget-bg: linear-gradient(145deg, #FFF0E6 0%, #F5DAC2 100%);
-  --widget-border: rgba(210, 150, 110, 0.4);
-  --widget-shadow: 0 10px 24px rgba(200, 130, 90, 0.15);
-  --widget-inset: inset 0 2px 4px rgba(255, 255, 255, 0.9);
+  /* YENİ: VIP TİTANYUM BAŞLIK KARTI */
+  --vip-bg: linear-gradient(135deg, #2C3E50 0%, #000000 100%);
+  --vip-text: #FFFFFF;
+  --vip-muted: #A0AAB5;
+  --vip-gold: #F1C40F;
+  --vip-shadow: 0 12px 24px rgba(0,0,0,0.25);
+
+  /* YENİ: DERİN GÖLGELİ WIDGETLAR */
+  --widget-bg: #FFFFFF;
+  --widget-border: rgba(0,0,0,0.03);
+  --widget-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
 
   --shadow: 0 6px 16px rgba(0,0,0,0.05);
-  --done-bg: rgba(52, 199, 89, 0.04);
+  --done-bg: rgba(52, 199, 89, 0.05);
   --done-border: rgba(52, 199, 89, 0.3);
   --prog-daily: linear-gradient(90deg, #32D74B, #28CD41);
   --prog-month: linear-gradient(90deg, #0A84FF, #007AFF);
@@ -46,7 +51,6 @@
     --bg: #0b0f17; 
     --card: #121a27; 
     --text: #eaf0ff; 
-    --text-inverse: #000000;
     --muted: #a9b4cc; 
     --line: rgba(255,255,255,.08);
     --accent: #32D74B; 
@@ -55,14 +59,18 @@
     --early: #0A84FF; 
     --purple: #BF5AF2;
     
-    /* YENİ: KOYU MOKA WIDGET (Uzay siyahı yerine elit kahve/bronz) */
-    --widget-bg: linear-gradient(145deg, #32211C 0%, #1A100C 100%);
-    --widget-border: rgba(255, 160, 110, 0.15);
-    --widget-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-    --widget-inset: inset 0 2px 4px rgba(255, 255, 255, 0.05);
+    --vip-bg: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+    --vip-text: #F8FAFC;
+    --vip-muted: #94A3B8;
+    --vip-gold: #FBBF24;
+    --vip-shadow: 0 12px 30px rgba(0,0,0,0.6);
+
+    --widget-bg: #1A2235;
+    --widget-border: rgba(255,255,255,0.05);
+    --widget-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
 
     --shadow: 0 8px 20px rgba(0,0,0,0.4);
-    --done-bg: rgba(50, 215, 75, 0.04);
+    --done-bg: rgba(50, 215, 75, 0.05);
     --done-border: rgba(50, 215, 75, 0.3);
     --prog-daily: linear-gradient(90deg, #30D158, #32D74B);
     --prog-month: linear-gradient(90deg, #0A84FF, #64D2FF);
@@ -74,11 +82,11 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 10px 10px 85px 10px; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 12px 12px 85px 12px; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
 /* GÜVENLİK KALKANI */
-#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
-.safety-shield { display: none; padding: 12px; text-align: center; font-weight: 800; font-size: 13px; border-radius: 14px; box-shadow: var(--shadow); letter-spacing: 0.3px; color: white; }
+#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.safety-shield { display: none; padding: 14px; text-align: center; font-weight: 800; font-size: 13px; border-radius: 16px; box-shadow: var(--shadow); letter-spacing: 0.3px; color: white; }
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
 .shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
 .shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
@@ -88,55 +96,50 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 @keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* YENİ VE 3D DERİNLİKLİ WIDGET KARTLARI (BAŞLIK, HAVA, İLERLEME) */
-.premium-widget { 
-    background: var(--widget-bg); 
-    border-radius: 20px; 
-    padding: 16px; 
-    border: 1px solid var(--widget-border); 
-    margin-bottom: 12px; 
-    /* Hem dış gölge hem de 3D bombeli görünüm veren iç gölge (inset) */
-    box-shadow: var(--widget-shadow), var(--widget-inset); 
-}
-.header-compact { text-align: center; padding: 12px; }
+/* YENİ: VIP BAŞLIK KARTI */
+.vip-header { background: var(--vip-bg); border-radius: 24px; padding: 20px 16px; margin-bottom: 14px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+/* VIP Kart İçi Parlama Efekti */
+.vip-header::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none; }
 
-/* BAŞLIK */
-.app-title { font-size: 21px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
-.app-title .greeting { font-size: 15px; font-weight: 700; color: var(--muted); }
-.app-title .name-tag { white-space: nowrap; }
-.header-info { display: flex; justify-content: center; align-items: center; gap: 8px; }
-.clock-text { font-size: 12px; font-weight: 700; color: var(--muted); }
-.sync-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: rgba(0,0,0,0.05); color: var(--text); border: 1px solid rgba(0,0,0,0.05);}
+.app-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1;}
+.app-title .greeting { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
+.app-title .name-tag { white-space: nowrap; color: var(--vip-text); }
+.header-info { display: flex; justify-content: center; align-items: center; gap: 8px; position: relative; z-index: 1;}
+.clock-text { font-size: 13px; font-weight: 700; color: var(--vip-muted); }
+.sync-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.15); color: var(--vip-text); backdrop-filter: blur(4px); }
+
+/* YENİ: DERİN WIDGET KARTLARI (HAVA, İLERLEME) */
+.premium-widget { background: var(--widget-bg); border-radius: 24px; padding: 18px; border: 1px solid var(--widget-border); margin-bottom: 14px; box-shadow: var(--widget-shadow); }
 
 /* --- PREMIUM HAVA DURUMU --- */
 .weather-details { margin: 0; padding: 0; }
 .weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
 .weather-details summary::-webkit-details-marker { display: none; }
 
-.w-left { flex: 0 1 auto; color: var(--text); font-weight: 800; font-size: 12px; white-space: nowrap; display: flex; align-items: center; }
-.w-center { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; gap: 6px; color: var(--early); font-weight: 800; font-size: 15px; white-space: nowrap; }
+.w-left { flex: 0 1 auto; color: var(--muted); font-weight: 700; font-size: 12px; white-space: nowrap; display: flex; align-items: center; }
+.w-center { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; gap: 6px; color: var(--text); font-weight: 900; font-size: 16px; white-space: nowrap; }
 .w-right { flex: 0 1 auto; display: flex; justify-content: flex-end; align-items: center; }
 
-.w-icon-big { font-size: 20px; display: flex; align-items: center; }
-.w-toggle { background: var(--card); color: var(--text); font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.05); }
+.w-icon-big { font-size: 22px; display: flex; align-items: center; }
+.w-toggle { background: var(--soft-btn-bg); color: var(--soft-btn-text); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; white-space: nowrap; }
 
 /* Açılır Teşhis Kutusu */
-.w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);}
+.w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 16px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; }
 .w-adv-icon { font-size: 24px; }
 .w-adv-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.5; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
 /* --- PREMIUM İLERLEME BARLARI --- */
-.prog-wrapper { display: flex; flex-direction: column; gap: 16px; padding: 14px; }
+.prog-wrapper { display: flex; flex-direction: column; gap: 18px; }
 .prog-item { display: flex; flex-direction: column; gap: 8px; }
 .prog-header { display: flex; justify-content: space-between; align-items: flex-end; }
-.prog-title { font-size: 13px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
+.prog-title { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
 .prog-stats { display: flex; align-items: baseline; gap: 6px; }
-.prog-pct { font-size: 16px; font-weight: 900; letter-spacing: -0.5px; }
+.prog-pct { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
 .prog-frac { font-size: 12px; font-weight: 700; color: var(--muted); }
 
-.prog-track { background: rgba(0,0,0,0.06); height: 8px; border-radius: 4px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
-.prog-fill { height: 100%; border-radius: 4px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.prog-track { background: var(--line); height: 10px; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
+.prog-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
 .fill-daily { background: var(--prog-daily); box-shadow: 0 0 10px rgba(50, 215, 75, 0.4); }
 .fill-month { background: var(--prog-month); box-shadow: 0 0 10px rgba(10, 132, 255, 0.4); }
 
@@ -186,7 +189,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 
 <div id="alertsArea"></div>
 
-<div class="premium-widget header-compact">
+<div class="vip-header">
     <div class="app-title">
         <span class="greeting" id="greetingText">Günaydın,</span> 
         <span class="name-tag">Nurten Sultan 🌼</span>
@@ -197,7 +200,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
     </div>
 </div>
 
-<div class="premium-widget" style="padding: 12px 16px;">
+<div class="premium-widget">
     <details class="weather-details">
         <summary>
             <div class="w-left">
@@ -335,16 +338,16 @@ function saniyeTiktak() {
     const farkSaniye = sonBasariZamani > 0 ? Math.floor((simdi - sonBasariZamani) / 1000) : 999;
     
     if (sonBasariZamani === 0) {
-        syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--warning)";
+        syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)";
     } else if (farkSaniye < 20) {
         const d = new Date(sonBasariZamani);
         const sn = String(d.getSeconds()).padStart(2,'0');
         syncElement.innerHTML = `🟢 Canlı (${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${sn})`;
-        syncElement.style.color = "var(--accent)";
+        syncElement.style.color = "#4ADE80"; /* Parlak Yeşil */
     } else if (farkSaniye < 60) {
-        syncElement.innerHTML = `🟡 Gecikme: ${farkSaniye} sn`; syncElement.style.color = "var(--warning)";
+        syncElement.innerHTML = `🟡 Gecikme: ${farkSaniye} sn`; syncElement.style.color = "var(--vip-gold)";
     } else {
-        syncElement.innerHTML = `🔴 Bağlantı Yok`; syncElement.style.color = "var(--danger)";
+        syncElement.innerHTML = `🔴 Bağlantı Yok`; syncElement.style.color = "#FF453A";
     }
 }
 
