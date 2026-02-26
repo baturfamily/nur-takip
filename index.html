@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
 <style>
-/* --- AÇIK (LIGHT) MOD RENKLERİ (VARSAYILAN) --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
   --bg: #F2F2F7; 
   --card: #FFFFFF; 
@@ -17,14 +17,16 @@
   --text-inverse: #FFFFFF;
   --muted: #8E8E93; 
   --line: rgba(0,0,0,0.06);
-  --accent: #34C759; /* Yeşil */
-  --warning: #FF9500; /* Turuncu */
-  --danger: #FF3B30; /* Kırmızı */
-  --early: #007AFF; /* Mavi */
-  --purple: #AF52DE; /* Mor */
-  --shadow: 0 4px 12px rgba(0,0,0,0.06);
-  --done-bg: rgba(52, 199, 89, 0.05);
-  --done-border: rgba(52, 199, 89, 0.4);
+  --accent: #34C759; 
+  --warning: #FF9500; 
+  --danger: #FF3B30; 
+  --early: #007AFF; 
+  --purple: #AF52DE; 
+  --shadow: 0 4px 12px rgba(0,0,0,0.05);
+  --done-bg: rgba(52, 199, 89, 0.04);
+  --done-border: rgba(52, 199, 89, 0.3);
+  --advice-bg: rgba(0, 122, 255, 0.05);
+  --advice-border: rgba(0, 122, 255, 0.15);
 }
 
 /* --- KARANLIK (DARK) MOD RENKLERİ --- */
@@ -44,6 +46,8 @@
     --shadow: 0 4px 15px rgba(0,0,0,0.4);
     --done-bg: rgba(74, 222, 128, 0.03);
     --done-border: rgba(74, 222, 128, 0.3);
+    --advice-bg: rgba(96, 165, 250, 0.05);
+    --advice-border: rgba(96, 165, 250, 0.15);
   }
 }
 
@@ -69,11 +73,19 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 /* BİLEŞİK BİLGİ KARTLARI (HAVA & İLERLEME) */
 .extra-card { background: var(--card); border-radius: 14px; padding: 12px; border: 1px solid var(--line); margin-bottom: 10px; box-shadow: var(--shadow); }
 .extra-card details { margin-top: 0; border-top: none; padding-top: 0; }
-.extra-card summary { font-size: 13px; font-weight: 800; margin: 0; padding: 0; border: none; cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; }
-.weather-brief { display: flex; align-items: center; gap: 6px; color: var(--early); }
-.loc-badge { font-size: 10px; background: var(--line); padding: 3px 6px; border-radius: 6px; color: var(--muted); font-weight: 700; }
-.show-text { font-size: 10px; color: var(--muted); font-weight: 700; background: var(--line); padding: 4px 8px; border-radius: 6px; }
-.weather-advice { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 600; }
+.extra-card summary { cursor: pointer; list-style: none; outline: none; }
+.extra-card summary::-webkit-details-marker { display: none; }
+
+/* 3'LÜ HAVA DURUMU DÜZENİ */
+.weather-summary { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.w-left { flex: 1; display: flex; justify-content: flex-start; align-items: center; gap: 4px; color: var(--early); font-weight: 800; font-size: 13px; white-space: nowrap; }
+.w-center { flex: 1; display: flex; justify-content: center; }
+.w-right { flex: 1; display: flex; justify-content: flex-end; }
+
+.loc-badge { font-size: 10px; background: var(--line); padding: 4px 8px; border-radius: 6px; color: var(--muted); font-weight: 700; text-decoration: none; white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis; display: inline-block; text-align: center;}
+.show-text { font-size: 10px; color: var(--text); font-weight: 700; background: var(--line); padding: 4px 8px; border-radius: 6px; white-space: nowrap; display: flex; align-items: center; gap: 4px;}
+.weather-advice { margin-top: 12px; padding: 12px; border-radius: 10px; background: var(--advice-bg); border: 1px solid var(--advice-border); font-size: 12px; color: var(--text); line-height: 1.5; font-weight: 600; display: flex; gap: 10px; align-items: flex-start; }
+.adv-icon { font-size: 18px; }
 
 /* İLERLEME BARLARI */
 .perf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
@@ -81,14 +93,14 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .perf-label { font-size: 12px; font-weight: 800; width: 95px; }
 .bar-bg { flex: 1; background: var(--line); height: 8px; border-radius: 4px; overflow: hidden; }
 .bar-fill { height: 100%; transition: width 1s ease-in-out; }
-.perf-val { font-size: 12px; font-weight: 800; font-family: ui-monospace, monospace; width: 35px; text-align: right; }
+.perf-val { font-size: 12px; font-weight: 800; font-family: ui-monospace, monospace; width: 45px; text-align: right; }
 
 /* EŞİT BOYUTLU İLAÇ KARTLARI IZGARASI */
 .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; align-items: start; }
 .card { 
   background: var(--card); border-radius: 16px; padding: 12px; border: 1px solid var(--line); 
   display: flex; flex-direction: column; box-shadow: var(--shadow);
-  min-height: 135px; /* Kartların eşit boyutta durmasını sağlar */
+  min-height: 135px; /* KARTLARIN EŞİT BOYDA DURMASINI SAĞLAR */
   transition: all 0.3s ease; overflow: hidden;
 }
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); }
@@ -130,13 +142,19 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 
 <div class="extra-card">
     <details>
-        <summary>
-            <div class="weather-brief" id="wBrief">
-                <span>🌥️ --°C | Nem: %--</span>
+        <summary class="weather-summary">
+            <div class="w-left" id="wBrief">🌥️ --°C | %--</div>
+            <div class="w-center">
+                <a href="https://share.google/XZEP3J5L3bhQtAij8" target="_blank" class="loc-badge">📍 Avrupark Hayat</a>
             </div>
-            <span class="loc-badge">📍 Avrupark Hayat Sitesi</span>
+            <div class="w-right">
+                <div class="show-text">Öneriler <span>▼</span></div>
+            </div>
         </summary>
-        <div class="weather-advice" id="wAdvice">Hava durumu verisi yükleniyor...</div>
+        <div class="weather-advice">
+            <span class="adv-icon" id="wAdvIcon">🩺</span>
+            <span id="wAdvice">Hava durumu teşhisleri yükleniyor...</span>
+        </div>
     </details>
 </div>
 
@@ -172,20 +190,37 @@ const hour = now.getHours();
 let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
 document.getElementById('greetingText').innerText = `${gMsg},`;
 
-// HAVA DURUMU
+// GELİŞMİŞ HAVA DURUMU & HASTALIK TEŞHİS MOTORU
 async function fetchWeather() {
     try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.04&longitude=28.67&current=temperature_2m,relative_humidity_2m');
+        // Avrupark Hayat Sitesi civarı tam koordinatlar (Esenyurt/Hoşdere)
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
         const data = await res.json();
         const t = data.current.temperature_2m, h = data.current.relative_humidity_2m;
         
         let icon = "🌥️";
-        let adv = "Hava bugün senin için gayet uygun görünüyor.";
-        if (h > 75) { icon = "🌫️"; adv = `Nem oranı yüksek (%${h}); Romatizma nedeniyle eklemlerini sıcak tutmalı, dizlerini korumaya özen göstermelisin.`; }
-        else if (t < 12) { icon = "🥶"; adv = `Hava soğuk; eklemlerini sıcak tutmalı, Sjögren nedeniyle gözlerini rüzgardan korumayı ihmal etmemelisin.`; }
-        else if (t > 30) { icon = "☀️"; adv = `Hava sıcak; Sjögren kuruluğu artabilir, bol su içip göz damlalarını her zamankinden daha sık kullanmalısın.`; }
+        let advIcon = "🩺";
+        let adv = "Hava bugün senin için gayet güzel görünüyor. Romatizma ve Sjögren açısından rahat bir gün, fırsat bulursan biraz yürüyüş yapabilirsin.";
         
-        document.getElementById('wBrief').innerHTML = `<span>${icon} ${t}°C | Nem: %${h}</span>`;
+        if (h > 70 && t < 15) { 
+            icon = "🌧️"; advIcon = "⚠️";
+            adv = `Hava soğuk ve nemli (%${h}). Romatizmal eklem ağrıların artabilir; dizlerini sıcak tutmaya ve kendini yormamaya özen göster.`; 
+        }
+        else if (t < 12) { 
+            icon = "🥶"; advIcon = "🧣";
+            adv = `Dışarısı oldukça soğuk (${t}°C). Eklemlerini mutlaka sıcak tutmalısın. Rüzgar varsa Sjögren kaynaklı göz kuruluğuna karşı damlalarını yanına al.`; 
+        }
+        else if (h > 75) { 
+            icon = "🌫️"; advIcon = "💧";
+            adv = `Nem oranı çok yüksek (%${h}). Bu durum romatizmanı tetikleyebilir, bugün fiziksel olarak kendini fazla zorlama.`; 
+        }
+        else if (t > 28) { 
+            icon = "☀️"; advIcon = "🕶️";
+            adv = `Hava oldukça sıcak. Sjögren nedeniyle ağız ve göz kuruluğun artabilir. Bol bol su içmeyi ve göz damlalarını sık kullanmayı unutma.`; 
+        }
+        
+        document.getElementById('wBrief').innerHTML = `${icon} ${t}°C | %${h}`;
+        document.getElementById('wAdvIcon').innerText = advIcon;
         document.getElementById('wAdvice').innerHTML = adv;
     } catch(e) { }
 }
@@ -206,7 +241,7 @@ function mewMsg() {
     t.style.display = 'block';
 }
 
-// SAAT VE SENKRONİZASYON (TİK-TAK)
+// SAAT VE SENKRONİZASYON
 function saniyeTiktak() {
     const syncElement = document.getElementById('last-sync');
     const clockElement = document.getElementById('clock');
@@ -305,7 +340,6 @@ function ekraniCiz() {
         const badgeClass = isAllDone ? "badge-safe" : "badge-wait";
         const badgeText = isAllDone ? "TAMAMLANDI ▼" : "BEKLİYOR";
         
-        // EĞER TAMAMLANDIYSA KARTI DARALT (collapsed) VE TIKLANABİLİR YAP
         const cardClass = isAllDone ? "done-card collapsed" : "";
         const onClick = isAllDone ? `onclick="this.classList.toggle('collapsed')"` : "";
 
@@ -323,15 +357,15 @@ function ekraniCiz() {
 
     // 3. GÜNLÜK İLERLEME BARI
     const dP = tMT > 0 ? Math.round((tKT/tMT)*100) : 0;
-    document.getElementById('perf-pct').innerText = `%${dP}`;
+    document.getElementById('perf-pct').innerText = `%${dP} (${tKT}/${tMT})`;
     document.getElementById('perf-bar').style.width = dP + '%';
     
     if (dP === 100) {
         document.getElementById('perf-bar').style.backgroundColor = "var(--accent)";
         document.getElementById('perf-pct').style.color = "var(--accent)";
     } else {
-        document.getElementById('perf-bar').style.backgroundColor = "var(--accent)";
-        document.getElementById('perf-pct').style.color = "var(--accent)";
+        document.getElementById('perf-bar').style.backgroundColor = "var(--early)";
+        document.getElementById('perf-pct').style.color = "var(--early)";
     }
 }
 
