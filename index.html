@@ -13,7 +13,7 @@
 :root {
   --bg: #F4F4F7; 
   --card: #FFFFFF; 
-  --text: #2C2C2E; /* Keskin siyah yerine göz dinlendiren koyu antrasit */
+  --text: #2C2C2E; 
   --muted: #8E8E93; 
   --line: rgba(0,0,0,0.06);
   --accent: #34C759; 
@@ -42,9 +42,9 @@
 /* --- KARANLIK (DARK) MOD RENKLERİ - PARLAMA ÖNLEYİCİ KURŞUNİ ZEMİN --- */
 @media (prefers-color-scheme: dark) {
   :root { 
-    --bg: #0B0B0E; /* Zifiri siyah yerine göz dinlendiren derin kurşuni */
+    --bg: #0B0B0E; 
     --card: #1C1C1E; 
-    --text: #EAEBEE; /* Işık patlamasını önleyen kırık beyaz */
+    --text: #EAEBEE; 
     --muted: #98989D; 
     --line: rgba(255,255,255,0.08);
     --accent: #32D74B; 
@@ -173,20 +173,18 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 10px; }
 .card.collapsed .exp-arrow { transform: rotate(180deg); } 
 
-/* Özel SVG İkonlar (Orijinal boyutunda zarif kaldı) */
+/* Özel SVG İkonlar */
 .check-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
 .check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
 .check-icon svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
-/* İLAÇ LİSTESİ - BÜYÜTÜLMÜŞ TİPOGRAFİ */
+/* İLAÇ LİSTESİ SIKIŞMA ÇÖZÜMÜ */
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
 .history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
 .history-item:last-child { border-bottom: none; }
 
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
-/* İlaç adı büyütüldü (13px -> 15px) */
 .drug-title { font-size: 15px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
-/* Açıklama büyütüldü (11px -> 13px) */
 .drug-purpose { font-size: 13px; color: var(--muted); font-weight: 600; font-style: italic; }
 
 /* OTOMATİK DARALMA */
@@ -197,7 +195,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 /* MİNİK BUTONU */
 .minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 64px; height: 64px; border-radius: 32px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
 .minik-button:active { transform: scale(0.9); }
-.minik-toast { position: fixed; bottom: 95px; right: 20px; background: var(--early); color: #fff; padding: 16px; border-radius: 18px; font-size: 13px; font-weight: 800; display: none; z-index: 1001; width: 220px; box-shadow: 0 8px 25px rgba(0,0,0,0.3); line-height: 1.4; text-align: center; }
+.minik-toast { position: fixed; bottom: 95px; right: 20px; background: var(--early); color: #fff; padding: 16px; border-radius: 18px; font-size: 13px; font-weight: 800; display: none; z-index: 1001; width: 260px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); line-height: 1.5; text-align: left; }
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
@@ -290,7 +288,7 @@ const hour = now.getHours();
 let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
 document.getElementById('greetingText').innerText = `${gMsg},`;
 
-// GELİŞMİŞ HAVA DURUMU & TEŞHİS (DİNAMİK VE UYUMLU RENKLER)
+// GELİŞMİŞ HAVA DURUMU & TEŞHİS (MANTIK + İFADE BİRLEŞTİRİLDİ)
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
@@ -300,37 +298,38 @@ async function fetchWeather() {
         let icon = "🌥️";
         let advIcon = "🩺";
         let advColor = "var(--accent)";
-        let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından rahat bir gün.`;
+        let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu ve rahat hissedeceğin denge durumundasın. Keyfini çıkar!`;
         
-        // Akıllı Sıcaklık Rengi (Apple Uyumlu)
+        // Akıllı Sıcaklık Rengi
         let tempColor = "var(--text)";
-        if (t < 10) tempColor = "#007AFF"; // Soğuk: Apple Blue
-        else if (t < 20) tempColor = "#34C759"; // Ilık: Apple Green
-        else if (t < 28) tempColor = "#FF9500"; // Sıcak: Apple Orange
-        else tempColor = "#FF3B30"; // Çok Sıcak: Apple Red
+        if (t < 10) tempColor = "#007AFF"; 
+        else if (t < 20) tempColor = "#34C759"; 
+        else if (t < 28) tempColor = "#FF9500"; 
+        else tempColor = "#FF3B30"; 
 
-        // Akıllı Nem Rengi (Apple Uyumlu)
+        // Akıllı Nem Rengi
         let humColor = "var(--text)";
-        if (h < 40) humColor = "#FF9500"; // Kuru: Apple Orange
-        else if (h <= 60) humColor = "#34C759"; // Normal: Apple Green
-        else if (h <= 75) humColor = "#32ADE6"; // Nemli: Apple Light Blue
-        else humColor = "#AF52DE"; // Çok Nemli: Apple Purple
+        if (h < 40) humColor = "#FF9500"; 
+        else if (h <= 60) humColor = "#34C759"; 
+        else if (h <= 75) humColor = "#32ADE6"; 
+        else humColor = "#AF52DE"; 
         
+        // Mantıkla Birleşen Akıllı Teşhisler
         if (h > 70 && t < 15) { 
             icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
-            adv = `Hava soğuk ve nemli (%${h}). Romatizmal eklem ağrıların artabilir; dizlerini sıcak tutmaya ve yorulmamaya özen göster.`; 
+            adv = `Hava soğuk ve nemli (%${h}). Nem ve soğuk birleştiğinde eklem sıvılarının basıncı değişir; bu durum romatizmal ağrıları tetikleyebilir. Lütfen dizlerini sıcak tutmaya ve kendini yormamaya özen göster.`; 
         }
         else if (t < 12) { 
             icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)";
-            adv = `Dışarısı oldukça soğuk (${t}°C). Eklemlerini mutlaka sıcak tutmalısın. Rüzgar varsa Sjögren kaynaklı göz kuruluğuna karşı damlalarını al.`; 
+            adv = `Dışarısı oldukça soğuk (${t}°C). Soğuk hava eklemleri sertleştirdiği ve Sjögren kaynaklı göz kuruluğunu artırdığı için eklemlerini mutlaka sıcak tutmalı, rüzgar varsa damlalarını kullanmalısın.`; 
         }
         else if (h > 75) { 
             icon = "🌫️"; advIcon = "💧"; advColor = "var(--purple)";
-            adv = `Nem oranı çok yüksek (%${h}). Bu durum romatizmanı tetikleyebilir, bugün fiziksel olarak kendini fazla zorlama.`; 
+            adv = `Nem oranı çok yüksek (%${h}). Yüksek nem eklemlerde ağırlık hissi ve sabah tutukluğunu artırabileceği için bugün fiziksel olarak kendini fazla zorlamamaya dikkat etmelisin.`; 
         }
         else if (t > 28) { 
             icon = "☀️"; advIcon = "🕶️"; advColor = "var(--warning)";
-            adv = `Hava oldukça sıcak. Sjögren nedeniyle ağız ve göz kuruluğun artabilir. Bol bol su içmeyi ve göz damlalarını sık kullanmayı unutma.`; 
+            adv = `Hava oldukça sıcak (${t}°C). Yüksek ısı vücuttaki sıvı kaybını hızlandırıp ağız ve göz kuruluğunu artırır. Bu yüzden bol bol su içmeyi ve göz damlalarını her zamankinden sık kullanmayı unutma.`; 
         }
         
         document.getElementById('wMainIcon').innerText = icon;
@@ -350,18 +349,53 @@ async function fetchWeather() {
 }
 fetchWeather();
 
-// MİNİK TOAST
+// YENİ: MİNİK İÇİN DİNAMİK CÜMLE KOMBİNASYON MOTORU (100.000 Benzersiz İhtimal)
 function mewMsg() {
-    const msgs = [
-        "Nenesinin kuzusu, ilaçlarını içmen beni dünyanın en mutlu kuzusu yapıyor.",
-        "Göker'e söyledim, sana bugün her zamankinden daha iyi bakacak.",
-        "Sen gülünce benim bıyıklarım titriyor sevinçten, hep gül!",
-        "Eklemlerin ağrımasın diye yanına kıvrılıp orayı ısıtacağım.",
-        "Cimzia günü gelince sakın korkma, ben senin dizinin dibindeyim.",
-        "Mamanı yedin mi? Suyun taze mi? Nenesinin kuzusu takibindeyim!"
+    const arrA = [
+        "Nenesinin kuzusu,", "Güzeller güzeli annem,", "Benim canım nenem,", 
+        "Miyav! Dünyanın en iyi ninesi,", "Nurten Sultanım,", "Pamuk nenem,", 
+        "Canımın içi,", "En sevdiğim insan,", "Tatlı annem,", "Kraliçem,"
     ];
+    const arrB = [
+        "şimdi Virbac mamamı lıkır lıkır yedim,", "az önce Göker'le güzelce oyun oynadık,", 
+        "Alper abim başımı şefkatle okşadı,", "ilacımı (Keppra) hiç itiraz etmeden içtim,", 
+        "kalbimin ilacını (Enalapril) uslu uslu aldım,", "camdan kuşları seyrederken seni düşündüm,", 
+        "patilerimi temizleyip yanına gelmeye hazırlanıyorum,", "yumuşacık yatağımda gerinirken aklıma sen geldin,", 
+        "astımım bugün çok iyi, nefesim pırıl pırıl,", "burnumu nemlendirip bıyıklarımı düzelttim,"
+    ];
+    const arrC = [
+        "sıra senin ilaçlarında.", "şimdi iyileşme sırası sende.", "gözüm sürekli senin panonun üstünde.", 
+        "Göker'e tembihledim seni hiç üzmeyecek.", "Alper abime de söyledim, sana çok iyi bakacağız.", 
+        "senin de ilaçlarını eksiksiz içtiğini biliyorum.", "biz ailecek birbirimize çok iyi bakıyoruz.", 
+        "senin de damlalarını aksatmadığını görmek istiyorum.", "hadi sen de sularını lıkır lıkır iç.", "birlikte şifa buluyoruz."
+    ];
+    const arrD = [
+        "Eklemlerin hiç ağrımasın diye o sıcak dizlerine kıvrılacağım.", 
+        "Cimzia günü gelince sakın korkma, ben hep senin dizinin dibindeyim.", 
+        "Göz damlalarını sıkarsan gözlerin benimkiler gibi ışıl ışıl parlar.", 
+        "Kortizon günlerinde lütfen tuzdan uzak dur, tıpkı benim diyet mamam gibi.", 
+        "Vitaminlerini iç ki benimle daha çok oyun oynayabilecek enerjin olsun.", 
+        "Romatizman yormasın diye bugün kendini hiç yorma olur mu?", 
+        "Sjögren kurutmasın diye bol su iç, ben de kendi suyumu içiyorum.", 
+        "Metoartcon iğneni olduktan sonra sana mırıl mırıl masaj yapacağım.", 
+        "Hepatit korumanı ve vitaminlerini alınca benim de içim rahat ediyor.", 
+        "İlaçlarını içmen beni dünyanın en mutlu kedisi yapıyor."
+    ];
+    const arrE = [
+        "Seni minik kalbimle çok ama çok seviyorum! ❤️", "Islak burnumla yanaklarından öpüyorum. 🐾", 
+        "Bıyıklarım senin için neşeyle titriyor! 😻", "Sen yeter ki iyi ol, ben hep senin gölgendeyim. ✨", 
+        "Akşama yanına gelip o güzel ellerini yalayacağım. 🐈", "Mırıl mırıl mırıldanarak sana kocaman şifa gönderiyorum. 🎶", 
+        "Hadi gülümse, senin o güzel yüzün hiç asılmasın. 🌼", "Patilerimle boynuna kocaman sarılıyorum. 🐾", 
+        "Bugün de dünyanın en şanslı kedisiyim çünkü sen varsın! 🥰", "Kalbimin atışı hep senin için! ❤️"
+    ];
+
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+    
+    // Rastgele parçaları birleştirerek tam bir paragraf oluşturuyoruz.
+    const finalMessage = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)} <br><br>${pick(arrD)} ${pick(arrE)}`;
+
     const t = document.getElementById('minikToast');
-    t.innerText = msgs[Math.floor(Math.random() * msgs.length)];
+    t.innerHTML = finalMessage;
     t.style.display = 'block';
 }
 
