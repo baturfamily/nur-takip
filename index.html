@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>İlaç Takip</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="İlaç Takip">
+
+<style>
+  :root {
+    --bg-color: #F2F2F7; --card-bg: #FFFFFF; 
+    --text-primary: #1C1C1E; --text-secondary: #636366; 
+    --accent-blue: #007AFF; --success-green: #34C759; --success-bg: #E8FAF0; 
+    --border-color: rgba(0,0,0,0.05); --shadow: 0 4px 12px rgba(0,0,0,0.05);
+    --purple: #AF52DE; --teal: #30B0C7; --warning-orange: #FF9500; --danger-red: #FF3B30;
+    --toast-bg: #1C1C1E; --toast-text: #FFFFFF;
+    --weather-bg: linear-gradient(135deg, #7FA2CE 0%, #A0B9D9 100%);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { 
+      --bg-color: #000000; --card-bg: #1C1C1E; --text-primary: #F2F2F7; --text-secondary: #AEAEB2; 
+      --success-bg: #052a14; --border-color: #2C2C2E;
+      --toast-bg: #F2F2F7; --toast-text: #1C1C1E;
+      --weather-bg: linear-gradient(135deg, #2A3B4C 0%, #3E546C 100%);
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background-color: var(--bg-color); color: var(--text-primary); margin: 0; padding: 20px 20px 140px 20px; -webkit-font-smoothing: antialiased; }
+  
+  @keyframes breathe {
+    0%, 100% { opacity: 0.85; transform: scale(1); box-shadow: var(--shadow); }
+    50% { opacity: 1; transform: scale(1.03); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+  }
+  
+  #alertContainer { display: none; flex-direction: column; margin-bottom: 25px; }
+  .alert-box { 
+    background: var(--card-bg); border-left: 6px solid var(--accent-blue); 
+    border-radius: 18px; padding: 16px; margin-bottom: 15px; box-shadow: var(--shadow); 
+    animation: breathe 3s ease-in-out infinite; 
+  }
+  .alert-box:last-child { margin-bottom: 0; }
+  .alert-box.delta { border-left-color: var(--danger-red); background: linear-gradient(to right, var(--card-bg), rgba(255, 59, 48, 0.08)); }
+  .alert-box.vitd { border-left-color: var(--warning-orange); background: linear-gradient(to right, var(--card-bg), rgba(255, 149, 0, 0.08)); }
+  .alert-box.submex { border-left-color: var(--teal); background: linear-gradient(to right, var(--card-bg), rgba(48, 176, 199, 0.08)); }
+  .alert-box.cimzia { border-left-color: var(--purple); background: linear-gradient(to right, var(--card-bg), rgba(175, 82, 222, 0.08)); }
+  .alert-header { display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 17px; }
+  .alert-icon { font-size: 24px; }
+  .alert-desc { font-size: 14px; color: var(--text-secondary); margin-top: 5px; padding-left: 36px; font-weight: 500; }
+
+  #weatherArea { 
+    background: var(--weather-bg); border-radius: 24px; padding: 20px; margin-bottom: 25px; 
+    display: none; align-items: center; gap: 18px; box-shadow: var(--shadow); color: #FFFFFF;
+  }
+  .weather-icon { font-size: 38px; }
+  .weather-info { flex: 1; }
+  .weather-loc { font-size: 12px; font-weight: 800; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 2px; }
+  .weather-temp { font-size: 19px; font-weight: 800; color: #FFFFFF; }
+  .weather-msg { font-size: 14px; font-weight: 600; line-height: 1.4; color: #FFFFFF; margin-top: 6px; }
+
+  .header { margin-bottom: 25px; }
+  .header p { margin: 0; color: var(--text-secondary); font-size: 14px; text-transform: uppercase; font-weight: 700; }
+  .header h1 { margin: 5px 0 0; font-size: 30px; font-weight: 800; line-height: 1.1; }
+
+  .stats-container { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 25px; }
+  .stat-card { background: var(--card-bg); border-radius: 24px; padding: 18px; box-shadow: var(--shadow); border: 1px solid var(--border-color); min-height: 130px; display: flex; flex-direction: column; justify-content: space-between; }
+  .stat-label { font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; }
+  .daily-val { font-size: 34px; font-weight: 800; color: var(--accent-blue); }
+  .daily-sub { font-size: 12px; font-weight: 700; color: var(--text-secondary); line-height: 1.3; }
+  .progress-track { background-color: var(--border-color); height: 8px; border-radius: 10px; overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; background: var(--accent-blue); width: 0%; transition: width 1s ease; }
+
+  .timeline { display: grid; gap: 14px; }
+  .med-card { background: var(--card-bg); border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border-color); overflow: hidden; transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1); max-height: 1000px; }
+  
+  .card-top { display: flex; align-items: center; justify-content: space-between; padding: 20px; min-height: 50px; }
+  .card-left { display: flex; align-items: center; gap: 16px; flex: 1; }
+  .icon-box { width: 48px; height: 48px; background: var(--bg-color); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; }
+  
+  .title-group { display: flex; flex-direction: column; }
+  .card-title { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+  .card-time { font-size: 13px; color: var(--accent-blue); font-weight: 700; margin-top: 2px; }
+  
+  .card-right { display: flex; align-items: center; gap: 10px; }
+  .status-pill { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; background: var(--bg-color); color: var(--text-secondary); }
+  .expand-icon { color: var(--text-secondary); transition: transform 0.4s ease; display: none; font-size: 14px; }
+
+  .med-details { padding: 0 20px 20px 20px; border-top: 1px solid var(--border-color); opacity: 1; transition: opacity 0.3s ease; }
+  .med-item { font-size: 15px; color: var(--text-secondary); margin-top: 15px; line-height: 1.6; }
+  .med-purpose { font-size: 13px; opacity: 0.7; font-style: italic; }
+
+  .is-done { background-color: var(--success-bg); }
+  .is-done .icon-box { background: var(--success-green); color: white; }
+  .is-done .status-pill { background: rgba(52, 199, 89, 0.2); color: var(--success-green); }
+  .is-done .expand-icon { display: block; }
+  
+  .collapsed { max-height: 88px !important; cursor: pointer; }
+  .collapsed .med-details { opacity: 0; pointer-events: none; }
+  .collapsed .expand-icon { transform: rotate(0deg); }
+  .med-card.is-done:not(.collapsed) .expand-icon { transform: rotate(180deg); }
+
+  .minik-button { position: fixed; bottom: 35px; right: 25px; background: var(--card-bg); width: 68px; height: 68px; border-radius: 34px; display: flex; align-items: center; justify-content: center; font-size: 36px; box-shadow: 0 8px 30px rgba(0,0,0,0.2); border: 1px solid var(--border-color); z-index: 1000; cursor: pointer; }
+  .minik-toast { 
+    position: fixed; bottom: 115px; right: 25px; 
+    background: var(--toast-bg); color: var(--toast-text);
+    padding: 20px; border-radius: 24px; font-size: 15px; font-weight: 700; 
+    display: none; animation: slideUp 0.3s ease; z-index: 1001; width: 260px; 
+    text-align: center; box-shadow: var(--shadow); line-height: 1.5; 
+  }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body onclick="document.getElementById('minikToast').style.display = 'none'">
+
+  <div id="weatherArea">
+    <div class="weather-icon" id="wIcon">🌥️</div>
+    <div class="weather-info">
+      <div class="weather-loc">Avrupark Hayat Sitesi</div>
+      <div class="weather-temp" id="wTemp">--°C | Nem: %--</div>
+      <div class="weather-msg" id="wMsg">Hava durumu yükleniyor...</div>
+    </div>
+  </div>
+
+  <div id="alertContainer"></div>
+  <div class="header"><p id="dateDisplay"></p><h1 id="greetingText">Nurten Sultan</h1></div>
+
+  <div class="stats-container">
+    <div class="stat-card">
+      <div class="stat-label">GÜNLÜK HEDEF</div>
+      <div class="daily-val" id="progressText">%0</div>
+      <div class="daily-sub" id="remainingText">Yükleniyor...</div>
+      <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+    </div>
+  </div>
+
+  <div class="timeline" id="timelineArea"></div>
+
+  <div class="minik-button" onclick="event.stopPropagation(); mewMsg()">🐾</div>
+  <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
+
+<script>
+  const API_URL = "https://script.google.com/macros/s/AKfycbybibVR75b918CBOMRlpEJu699hHSvOvCFXD6qRAL-JUxmK95HIUcF5onhEQjrIbF67Wg/exec";
+
+  const now = new Date();
+  document.getElementById('dateDisplay').innerText = now.toLocaleDateString('tr-TR', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+
+  const hour = now.getHours();
+  let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
+  document.getElementById('greetingText').innerText = `${gMsg} Nurten Sultan 🌼`;
+
+  async function fetchWeather() {
+    try {
+      const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.04&longitude=28.67&current=temperature_2m,relative_humidity_2m');
+      const data = await res.json();
+      const t = data.current.temperature_2m, h = data.current.relative_humidity_2m;
+      const wArea = document.getElementById('weatherArea'), wMsg = document.getElementById('wMsg'), wIcon = document.getElementById('wIcon'), wTemp = document.getElementById('wTemp');
+      wArea.style.display = 'flex';
+      wTemp.innerText = `${t}°C | Nem: %${h}`;
+      
+      let adv = "Hava bugün senin için gayet uygun görünüyor.";
+      if (h > 75) { wIcon.innerText = "🌫️"; adv = `Nem oranı yüksek (%${h}); Romatizma nedeniyle eklemlerini sıcak tutmalı, dizlerini korumaya özen göstermelisin.`; }
+      else if (t < 12) { wIcon.innerText = "🥶"; adv = `Hava soğuk; eklemlerini sıcak tutmalı, Sjögren nedeniyle gözlerini rüzgardan korumayı ihmal etmemelisin.`; }
+      else if (t > 30) { wIcon.innerText = "☀️"; adv = `Hava sıcak; Sjögren kuruluğu artabilir, bol su içip göz damlalarını her zamankinden daha sık kullanmalısın.`; }
+      wMsg.innerHTML = adv;
+    } catch(e) { }
+  }
+  fetchWeather();
+
+  function mewMsg() {
+    const intros = ["Nenesinin kuzusu,", "Neneciğim,", "Canım nenem,", "Biricik nenem,", "Güzel nenem,", "Melek nenem,", "Canımın içi nenem,", "Birtanecik nenem,"];
+    const bodies = [
+      "ilaçlarını içmen beni dünyanın en mutlu kuzusu yapıyor.", "Göker ve Alper abime benden pati dolusu selam söyle!",
+      "Göker'e söyledim, sana bugün her zamankinden daha iyi bakacak.", "bugün Alper abim de gelecek mi? Patilerim hazır onu bekliyorum.",
+      "sen gülünce benim bıyıklarım titriyor sevinçten, hep gül!", "Göker ve Alper seni ne kadar çok seviyor bir bilsen nene!",
+      "sana en yumuşak tüylerimle sarılıyorum, huzur dolsun için.", "eklemlerin ağrımasın diye yanına kıvrılıp orayı ısıtacağım.",
+      "sen benim en kıymetlimsin bu evde.", "ağrıların bugün kuş olup uçsun gitsin uzaklara.",
+      "Plaquenil vakti geldi mi? Ben buradayım, patiyle takipteyim.", "bugün kendine bir kahve yap, ben hemen yanına mır mır uzanırım.",
+      "Cimzia günü gelince sakın korkma, ben senin dizinin dibindeyim.", "senin ellerin pamuk gibi, en çok onları sevmeyi seviyorum.",
+      "Göker Bey bugün bana ödül maması sözü verdi, haberin olsun!", "senin kokun benim huzur adresim, hep seninleyim.",
+      "senin mırıldanma arkadaşın her zaman burada, seni bekliyor.", "bugün her zamankinden daha nurlu ve güzelsin neneciğim.",
+      "mamanı yedin mi? Suyun taze mi? Ben nenesinin kuzusu olarak takibindeyim!", "senin sesini duyunca kulaklarım sevinçten dikiliyor."
+    ];
+    const closings = ["Seni çok seviyorum! ❤️", "Pati veriyorum! 🐾", "Mır mır mır... ✨", "İyi ki varsın! 🌸", "Hep yanındayım. 🧿", "Kuyruğumla sana kalp yaptım! 🫶", "Burnundan öptüm miyav! 👃", "Sana şans getirsin. 🍀"];
+
+    const r = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    const t = document.getElementById('minikToast');
+    t.innerText = `${r(intros)} ${r(bodies)} ${r(closings)}`;
+    t.style.display = 'block';
+  }
+
+  const v = { "I": "İçildi", "Y": "Yapıldı", "U": "Uygulandı" };
+  function getDailyProgram(dateObj) {
+    let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    let p = [
+      { id: 'sabah-ac', title: 'Sabah (Aç)', time: '06:00 - 09:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', verb: v.I, purpose: 'Tüberküloz Koruması' }] },
+      { id: 'sabah-tok', title: 'Sabah (Tok)', time: '10:00 - 12:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', verb: v.I, purpose: 'Genel Destek' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası ve Jel', verb: v.U, purpose: 'Göz Sağlığı' }] },
+      { id: 'ogle', title: 'Öğle', time: '13:00 - 14:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', verb: v.I, purpose: 'B12 Vitamini' }] },
+      { id: 'aksam', title: 'Akşam', time: '18:00 - 20:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', verb: v.I, purpose: 'Eklemler İçin' }] },
+      { id: 'gece', title: 'Gece', time: '21:00 - 23:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', verb: v.I, purpose: 'Karaciğer Koruma' }, { key: 'GECE_GOZ', name: 'Göz Damlası ve Jel', verb: v.U, purpose: 'Göz Sağlığı' }] }
+    ];
+    
+    const dS = new Date(2026, 1, 16); 
+    if(Math.floor((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', verb: v.I, purpose: 'İltihap Baskılayıcı' });
+    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', verb: v.I, purpose: 'Vitamin D' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', verb: v.I, purpose: 'Folik Asit' }); }
+    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon İğnesi', verb: v.Y, purpose: 'Haftalık Tedavi' });
+    const cS = new Date(2026, 1, 12);
+    if(Math.floor((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', verb: v.Y, purpose: 'Biyolojik Tedavi' });
+    return p;
+  }
+
+  async function fetchApiDataAndRender() {
+    const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
+    let apiData = {};
+
+    try {
+      const res = await fetch(`${API_URL}?tarih=${todayStr}`);
+      apiData = await res.json();
+    } catch(e) {
+      console.error("Veri çekilemedi", e);
+      document.getElementById('remainingText').innerText = "Bağlantı sorunu, tekrar deneniyor...";
+      return; 
+    }
+
+    const todayProg = getDailyProgram(now);
+    const aCont = document.getElementById('alertContainer');
+    const tArea = document.getElementById('timelineArea');
+    
+    aCont.innerHTML = "";
+    tArea.innerHTML = "";
+    let hasAlert = false;
+    
+    todayProg.forEach(s => {
+      s.meds.forEach(m => {
+        if(m.key === 'SABAH_TOK_DELTA') {
+          hasAlert = true;
+          aCont.innerHTML += `
+            <div class="alert-box delta">
+              <div class="alert-header"><span class="alert-icon">💊</span><span>Bugün Deltacortril Günü</span></div>
+              <div class="alert-desc">Kortizon hapını (Sabah Tok) almayı unutma Sultan.</div>
+            </div>`;
+        }
+        if(m.key === 'SABAH_TOK_COLEDAN' || m.key === 'GECE_FOLBIOL') {
+          if (!aCont.innerHTML.includes('vitd')) {
+            hasAlert = true;
+            aCont.innerHTML += `
+              <div class="alert-box vitd">
+                <div class="alert-header"><span class="alert-icon">☀️</span><span>Vitamin ve Folbiol Günü</span></div>
+                <div class="alert-desc">Coledan-D3 ve gece Folbiol zamanı.</div>
+              </div>`;
+          }
+        }
+        if(m.key === 'GECE_METOARTCON') {
+          hasAlert = true;
+          aCont.innerHTML += `
+            <div class="alert-box submex">
+              <div class="alert-header"><span class="alert-icon">🧬</span><span>Metoartcon İğne Günü</span></div>
+              <div class="alert-desc">Haftalık iğne uygulamasını (Gece) ihmal etme.</div>
+            </div>`;
+        }
+        if(m.key === 'GECE_CIMZIA') {
+          hasAlert = true;
+          aCont.innerHTML += `
+            <div class="alert-box cimzia">
+              <div class="alert-header"><span class="alert-icon">💉</span><span>Cimzia İğne Günü!</span></div>
+              <div class="alert-desc">Biyolojik tedavi (Cimzia) iğne günün, şifa olsun.</div>
+            </div>`;
+        }
+      });
+    });
+    
+    if(hasAlert) aCont.style.display = 'flex'; else aCont.style.display = 'none';
+
+    let tMT = 0, tKT = 0;
+    todayProg.forEach(s => {
+      let sTC = 0, mH = "";
+      s.meds.forEach(m => { 
+        tMT++; 
+        const isCompleted = apiData[m.key] === "İçildi";
+        if(isCompleted) { tKT++; sTC++; }
+        mH += `<div class="med-item">${isCompleted ? '✅' : '⚪'} ${m.name} <span class="med-purpose">(${m.purpose})</span></div>`; 
+      });
+      const iSD = (sTC === s.meds.length);
+      tArea.innerHTML += `
+        <div class="med-card ${iSD ? 'is-done collapsed' : ''}" onclick="${iSD ? "this.classList.toggle('collapsed')" : ""}">
+          <div class="card-top">
+            <div class="card-left">
+              <div class="icon-box">${iSD ? '✓' : s.icon}</div>
+              <div class="title-group"><span class="card-title">${s.title}</span><span class="card-time">${s.time}</span></div>
+            </div>
+            <div class="card-right">
+              <div class="status-pill">${iSD ? 'TAMAMLANDI' : 'Bekliyor'}</div>
+              <div class="expand-icon">▼</div>
+            </div>
+          </div>
+          <div class="med-details">${mH}</div>
+        </div>`;
+    });
+
+    const dP = tMT > 0 ? Math.round((tKT/tMT)*100) : 0;
+    document.getElementById('progressText').innerText = `%${dP}`;
+    document.getElementById('remainingText').innerText = `${tMT} ilaçtan ${tKT} tanesi tamamlandı.`;
+    document.getElementById('progressBar').style.width = dP + '%';
+    
+    if (dP === 100) {
+      document.getElementById('greetingText').innerText = "Harikasın Nurten Sultan! 🎉";
+    } else {
+      document.getElementById('greetingText').innerText = `${gMsg} Nurten Sultan 🌼`;
+    }
+  }
+
+  // Sayfa açıldığında ilk veriyi çek, sonra her 1 dakikada bir güncelle.
+  fetchApiDataAndRender();
+  setInterval(fetchApiDataAndRender, 60000);
+
+</script>
+</body>
+</html>
