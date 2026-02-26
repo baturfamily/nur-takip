@@ -22,13 +22,13 @@
   --danger: #FF3B30; 
   --early: #007AFF; 
   --purple: #AF52DE; 
-  --shadow: 0 6px 16px rgba(0,0,0,0.05);
   
-  /* Üst 3 Kart İçin Premium Widget Renkleri */
-  --widget-bg: linear-gradient(145deg, #ffffff 0%, #f0f4f8 100%);
-  --widget-border: rgba(0, 122, 255, 0.08);
-  --widget-shadow: 0 8px 24px rgba(0, 122, 255, 0.06);
+  /* Üst 3 Kart İçin ÇOK DAHA BELİRGİN Premium Widget Renkleri */
+  --widget-bg: linear-gradient(135deg, #E6F0FA 0%, #F5F8FC 100%);
+  --widget-border: rgba(0, 122, 255, 0.15);
+  --widget-shadow: 0 8px 20px rgba(0, 122, 255, 0.08);
 
+  --shadow: 0 6px 16px rgba(0,0,0,0.05);
   --done-bg: rgba(52, 199, 89, 0.04);
   --done-border: rgba(52, 199, 89, 0.3);
   --prog-daily: linear-gradient(90deg, #32D74B, #28CD41);
@@ -53,13 +53,13 @@
     --danger: #FF453A; 
     --early: #0A84FF; 
     --purple: #BF5AF2;
-    --shadow: 0 8px 20px rgba(0,0,0,0.4);
     
-    /* Üst 3 Kart İçin Premium Widget Renkleri */
-    --widget-bg: linear-gradient(145deg, #182235 0%, #121a27 100%);
-    --widget-border: rgba(255, 255, 255, 0.05);
-    --widget-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    /* Üst 3 Kart İçin ÇOK DAHA BELİRGİN Premium Widget Renkleri */
+    --widget-bg: linear-gradient(135deg, #1A2639 0%, #111827 100%);
+    --widget-border: rgba(96, 165, 250, 0.15);
+    --widget-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
 
+    --shadow: 0 8px 20px rgba(0,0,0,0.4);
     --done-bg: rgba(50, 215, 75, 0.04);
     --done-border: rgba(50, 215, 75, 0.3);
     --prog-daily: linear-gradient(90deg, #30D158, #32D74B);
@@ -86,7 +86,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 @keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* PREMIUM WIDGET KARTLARI (BAŞLIK, HAVA, İLERLEME) */
+/* YENİ VE BELİRGİN WIDGET KARTLARI (BAŞLIK, HAVA, İLERLEME) */
 .premium-widget { background: var(--widget-bg); border-radius: 20px; padding: 16px; border: 1px solid var(--widget-border); margin-bottom: 12px; box-shadow: var(--widget-shadow); }
 .header-compact { text-align: center; padding: 12px; }
 
@@ -100,13 +100,13 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 
 /* --- PREMIUM HAVA DURUMU --- */
 .weather-details { margin: 0; padding: 0; }
-.weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+.weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 8px; }
 .weather-details summary::-webkit-details-marker { display: none; }
 
-/* 3'LÜ YENİ HİZALAMA */
-.w-left { flex: 1; display: flex; justify-content: flex-start; align-items: center; color: var(--muted); font-weight: 700; font-size: 11px; white-space: nowrap; gap: 4px; }
-.w-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 6px; color: var(--early); font-weight: 800; font-size: 15px; white-space: nowrap; }
-.w-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
+/* 3'LÜ YENİ HİZALAMA (Sıkışmayı Önler) */
+.w-left { flex: 0 1 auto; color: var(--muted); font-weight: 700; font-size: 11px; white-space: nowrap; display: flex; align-items: center; }
+.w-center { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; gap: 6px; color: var(--early); font-weight: 800; font-size: 15px; white-space: nowrap; }
+.w-right { flex: 0 1 auto; display: flex; justify-content: flex-end; align-items: center; }
 
 .w-icon-big { font-size: 20px; display: flex; align-items: center; }
 .w-toggle { background: var(--soft-btn-bg); color: var(--soft-btn-text); font-size: 12px; font-weight: 800; padding: 6px 12px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; white-space: nowrap; }
@@ -314,7 +314,7 @@ function mewMsg() {
     t.style.display = 'block';
 }
 
-// SAAT VE CANLI SENKRONİZASYON (Saniyeli ve Minik Tarzı Uyarı)
+// SAAT VE CANLI SENKRONİZASYON
 function saniyeTiktak() {
     const syncElement = document.getElementById('last-sync');
     const clockElement = document.getElementById('clock');
