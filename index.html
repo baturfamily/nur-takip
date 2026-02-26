@@ -22,14 +22,14 @@
   --early: #007AFF; 
   --purple: #AF52DE; 
   
-  /* VIP TİTANYUM BAŞLIK KARTI */
+  /* VIP TİTANYUM BAŞLIK KARTI (PREMIUM SİYAH) */
   --vip-bg: linear-gradient(135deg, #2C3E50 0%, #000000 100%);
   --vip-text: #FFFFFF;
   --vip-muted: #A0AAB5;
   --vip-gold: #F1C40F;
   --vip-shadow: 0 12px 24px rgba(0,0,0,0.25);
 
-  /* DERİN GÖLGELİ WIDGETLAR (Artık ilaç kartları da bunu kullanacak) */
+  /* DERİN GÖLGELİ PREMUM WIDGETLAR (Açık modda bembeyaz ve havada süzülen) */
   --widget-bg: #FFFFFF;
   --widget-border: rgba(0,0,0,0.04);
   --widget-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
@@ -64,6 +64,7 @@
     --vip-gold: #FBBF24;
     --vip-shadow: 0 12px 30px rgba(0,0,0,0.6);
 
+    /* Koyu modda Uzay Mavisi/Gri widgetlar */
     --widget-bg: #1A2235;
     --widget-border: rgba(255,255,255,0.05);
     --widget-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
@@ -118,7 +119,21 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .w-right { flex: 0 1 auto; display: flex; justify-content: flex-end; align-items: center; }
 
 .w-icon-big { font-size: 22px; display: flex; align-items: center; }
-.w-toggle { background: var(--soft-btn-bg); color: var(--soft-btn-text); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 14px; display: flex; align-items: center; gap: 4px; transition: 0.2s; white-space: nowrap; }
+
+/* Buton boyutu zarifleştirildi (küçültüldü) */
+.w-toggle { 
+    background: var(--soft-btn-bg); 
+    color: var(--soft-btn-text); 
+    font-size: 11px; /* 12px idi, şimdi daha küçük ve zarif */
+    font-weight: 800; 
+    padding: 4px 10px; /* Sıkışık olmaması için padding azaltıldı */
+    border-radius: 14px; 
+    display: flex; 
+    align-items: center; 
+    gap: 4px; 
+    transition: 0.2s; 
+    white-space: nowrap; 
+}
 
 /* Açılır Teşhis Kutusu */
 .w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 16px; padding: 16px; display: flex; gap: 12px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; }
@@ -141,18 +156,18 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .fill-month { background: var(--prog-month); box-shadow: 0 0 10px rgba(10, 132, 255, 0.4); }
 
 /* --- MASONRY (BAĞIMSIZ SÜTUN) DÜZENİ --- */
-.masonry-grid { display: flex; gap: 14px; margin-bottom: 14px; align-items: flex-start; }
-.masonry-col { display: flex; flex-direction: column; gap: 14px; flex: 1; min-width: 0; }
+.masonry-grid { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+.masonry-col { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; }
 
-/* KARTLAR WIDGET STİLİNE EŞİTLENDİ */
+/* KARTLAR WIDGET STİLİYLE BÜTÜNLEŞTİ */
 .card { 
     background: var(--card); 
-    border-radius: 24px; /* Önceden 20px idi, şimdi widgetlarla aynı */
-    padding: 16px; /* İç boşluk widget hissi için biraz artırıldı */
-    border: 1px solid var(--widget-border); /* Sert çizgi yerine zarif widget sınırı */
+    border-radius: 24px; /* Köşe yuvarlaklığı widgetlarla aynı */
+    padding: 16px; 
+    border: 1px solid var(--widget-border); /* Çerçeve yumuşatıldı */
     display: flex; 
     flex-direction: column; 
-    box-shadow: var(--widget-shadow); /* Eski zayıf gölge yerine Widgetların derin gölgesi */
+    box-shadow: var(--widget-shadow); /* Derin widget gölgesi eklendi */
     transition: all 0.3s ease; 
     overflow: hidden; 
 }
