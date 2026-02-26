@@ -9,11 +9,11 @@
 <meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
 <style>
-/* --- AÇIK (LIGHT) MOD RENKLERİ --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ - GÖZ YORMAYAN ANTRASİT METİNLER --- */
 :root {
   --bg: #F4F4F7; 
   --card: #FFFFFF; 
-  --text: #1C1C1E; 
+  --text: #2C2C2E; /* Keskin siyah yerine göz dinlendiren koyu antrasit */
   --muted: #8E8E93; 
   --line: rgba(0,0,0,0.06);
   --accent: #34C759; 
@@ -39,12 +39,12 @@
   --wait-badge-text: #636366; 
 }
 
-/* --- KARANLIK (DARK) MOD RENKLERİ --- */
+/* --- KARANLIK (DARK) MOD RENKLERİ - PARLAMA ÖNLEYİCİ KURŞUNİ ZEMİN --- */
 @media (prefers-color-scheme: dark) {
   :root { 
-    --bg: #000000; 
+    --bg: #0B0B0E; /* Zifiri siyah yerine göz dinlendiren derin kurşuni */
     --card: #1C1C1E; 
-    --text: #F2F2F7; 
+    --text: #EAEBEE; /* Işık patlamasını önleyen kırık beyaz */
     --muted: #98989D; 
     --line: rgba(255,255,255,0.08);
     --accent: #32D74B; 
@@ -113,7 +113,6 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 6px; }
 .weather-details summary::-webkit-details-marker { display: none; }
 
-/* Flex 1 ile sağ ve sol eşitlenip ortanın tam merkeze oturması sağlandı */
 .w-left { flex: 1; color: var(--muted); font-weight: 700; font-size: 11px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .w-center { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 900; font-size: 14px; white-space: nowrap; }
 .w-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
@@ -174,20 +173,21 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 10px; }
 .card.collapsed .exp-arrow { transform: rotate(180deg); } 
 
-/* Özel SVG İkonlar */
+/* Özel SVG İkonlar (Orijinal boyutunda zarif kaldı) */
 .check-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
 .check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
 .check-icon svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
-/* YENİ: İLAÇ LİSTESİ ÇARPIŞMA ÖNLEYİCİ (ALTLI ÜSTLÜ TASARIM) */
+/* İLAÇ LİSTESİ - BÜYÜTÜLMÜŞ TİPOGRAFİ */
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
 .history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
 .history-item:last-child { border-bottom: none; }
 
-/* İsim üstte, açıklama altta olacak şekilde dikey kutu */
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
-.drug-title { font-size: 13px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
-.drug-purpose { font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic; }
+/* İlaç adı büyütüldü (13px -> 15px) */
+.drug-title { font-size: 15px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
+/* Açıklama büyütüldü (11px -> 13px) */
+.drug-purpose { font-size: 13px; color: var(--muted); font-weight: 600; font-style: italic; }
 
 /* OTOMATİK DARALMA */
 .card.collapsed { cursor: pointer; }
@@ -455,7 +455,6 @@ function ekraniCiz() {
             
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
             
-            // YENİ TASARIM: İLAÇ İSMİ ÜSTTE, AÇIKLAMA ALTTA
             medsHTML += `
                 <div class="history-item">
                     ${iconHTML}
