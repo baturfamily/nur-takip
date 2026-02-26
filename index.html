@@ -5,65 +5,111 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
 <title>Nurten İlaç Paneli</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
 <style>
+/* --- AÇIK (LIGHT) MOD RENKLERİ (VARSAYILAN) --- */
 :root {
-  --bg: #0b0f17; --card: #121a27; --text: #eaf0ff; --muted: #a9b4cc; --line: rgba(255,255,255,.08);
-  --accent: #4ade80; --warning: #fbbf24; --danger: #ff6b6b; --early: #60a5fa; --purple: #c084fc;
+  --bg: #F2F2F7; 
+  --card: #FFFFFF; 
+  --text: #1C1C1E; 
+  --text-inverse: #FFFFFF;
+  --muted: #8E8E93; 
+  --line: rgba(0,0,0,0.06);
+  --accent: #34C759; /* Yeşil */
+  --warning: #FF9500; /* Turuncu */
+  --danger: #FF3B30; /* Kırmızı */
+  --early: #007AFF; /* Mavi */
+  --purple: #AF52DE; /* Mor */
+  --shadow: 0 4px 12px rgba(0,0,0,0.06);
+  --done-bg: rgba(52, 199, 89, 0.05);
+  --done-border: rgba(52, 199, 89, 0.4);
 }
+
+/* --- KARANLIK (DARK) MOD RENKLERİ --- */
+@media (prefers-color-scheme: dark) {
+  :root { 
+    --bg: #0b0f17; 
+    --card: #121a27; 
+    --text: #eaf0ff; 
+    --text-inverse: #000000;
+    --muted: #a9b4cc; 
+    --line: rgba(255,255,255,.08);
+    --accent: #4ade80; 
+    --warning: #fbbf24; 
+    --danger: #ef4444; 
+    --early: #60a5fa; 
+    --purple: #c084fc;
+    --shadow: 0 4px 15px rgba(0,0,0,0.4);
+    --done-bg: rgba(74, 222, 128, 0.03);
+    --done-border: rgba(74, 222, 128, 0.3);
+  }
+}
+
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 10px 10px 85px 10px; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 10px 10px 85px 10px; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
 
-/* GÜVENLİK KALKANI (ÖZEL GÜN UYARILARI İÇİN) */
+/* GÜVENLİK KALKANI (ÖZEL GÜN UYARILARI) */
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-.safety-shield { display: none; padding: 10px; text-align: center; font-weight: 900; font-size: 13px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); letter-spacing: 0.5px; }
-.shield-red { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: white; animation: pulse-red 2s infinite; }
-.shield-yellow { background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%); color: white; animation: pulse-yellow 2.5s infinite; }
-.shield-purple { background: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%); color: white; animation: pulse-purple 2s infinite; }
-.shield-blue { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+.safety-shield { display: none; padding: 10px; text-align: center; font-weight: 800; font-size: 13px; border-radius: 12px; box-shadow: var(--shadow); letter-spacing: 0.3px; color: white; }
+.shield-red { background: linear-gradient(135deg, #ff3b30 0%, #c9342b 100%); animation: pulse-red 2s infinite; }
+.shield-yellow { background: linear-gradient(135deg, #ff9500 0%, #d97706 100%); animation: pulse-yellow 2.5s infinite; }
+.shield-purple { background: linear-gradient(135deg, #af52de 0%, #7e22ce 100%); animation: pulse-purple 2s infinite; }
+.shield-blue { background: linear-gradient(135deg, #007aff 0%, #1d4ed8 100%); }
 
-/* ORTALANMIŞ KOMPAKT BAŞLIK */
-.header-compact { text-align: center; margin-bottom: 10px; background: var(--card); padding: 10px; border-radius: 16px; border: 1px solid var(--line); }
-.app-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 4px; display: flex; justify-content: center; align-items: center; gap: 8px; }
+/* BAŞLIK */
+.header-compact { text-align: center; margin-bottom: 10px; background: var(--card); padding: 10px; border-radius: 16px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+.app-title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; display: flex; justify-content: center; align-items: center; gap: 8px; }
 .app-title span { font-size: 14px; font-weight: 700; color: var(--muted); }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 8px; }
 .clock-text { font-size: 12px; font-weight: 700; color: var(--muted); }
-.sync-badge { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 8px; background: rgba(0,0,0,0.3); }
+.sync-badge { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 8px; background: var(--line); color: var(--text); }
 
-/* PERFORMANS VE BİLGİ BARLARI */
-.perf-compact { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 14px; padding: 12px; margin-bottom: 10px; border: 1px solid var(--line); }
-.perf-label { font-size: 12px; font-weight: 800; white-space: nowrap; }
-.bar-bg { flex: 1; background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; transition: width 1s ease-in-out, background-color 0.5s; }
-.perf-val { font-size: 13px; font-weight: 800; font-family: ui-monospace, monospace; }
-
-/* HAVA DURUMU KARTI (AÇILIR KAPANIR) */
-.extra-card { background: var(--card); border-radius: 14px; padding: 12px; border: 1px solid var(--line); margin-bottom: 10px; }
+/* BİLEŞİK BİLGİ KARTLARI (HAVA & İLERLEME) */
+.extra-card { background: var(--card); border-radius: 14px; padding: 12px; border: 1px solid var(--line); margin-bottom: 10px; box-shadow: var(--shadow); }
 .extra-card details { margin-top: 0; border-top: none; padding-top: 0; }
-.extra-card summary { font-size: 13px; font-weight: 800; color: #fff; margin: 0; padding: 0; border: none; cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; }
-.extra-card summary .weather-brief { display: flex; align-items: center; gap: 8px; color: var(--early); }
-.extra-card summary .show-text { font-size: 10px; color: var(--muted); font-weight: 700; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; }
+.extra-card summary { font-size: 13px; font-weight: 800; margin: 0; padding: 0; border: none; cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; }
+.weather-brief { display: flex; align-items: center; gap: 6px; color: var(--early); }
+.loc-badge { font-size: 10px; background: var(--line); padding: 3px 6px; border-radius: 6px; color: var(--muted); font-weight: 700; }
+.show-text { font-size: 10px; color: var(--muted); font-weight: 700; background: var(--line); padding: 4px 8px; border-radius: 6px; }
 .weather-advice { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--muted); line-height: 1.5; font-weight: 600; }
 
-/* İLAÇ KARTLARI IZGARASI */
-.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.card { background: var(--card); border-radius: 16px; padding: 12px; border: 1px solid var(--line); display: flex; flex-direction: column; }
-.card.done-card { border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.03); }
-.drug-name { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: #fff; text-transform: uppercase; }
-.badge { align-self: flex-start; padding: 4px 6px; border-radius: 6px; font-weight: 800; font-size: 9px; text-transform: uppercase; margin-bottom: 8px; }
-.badge-safe { background: rgba(74,222,128,0.15); color: var(--accent); }
-.badge-due { background: rgba(251,191,36,0.15); color: var(--warning); }
-.badge-wait { background: rgba(255,255,255,0.05); color: var(--muted); }
+/* İLERLEME BARLARI */
+.perf-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.perf-row:last-child { margin-bottom: 0; }
+.perf-label { font-size: 12px; font-weight: 800; width: 95px; }
+.bar-bg { flex: 1; background: var(--line); height: 8px; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; transition: width 1s ease-in-out; }
+.perf-val { font-size: 12px; font-weight: 800; font-family: ui-monospace, monospace; width: 35px; text-align: right; }
 
-.history-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 11px; color: #ccc; border-bottom: 1px dashed rgba(255,255,255,0.03); }
+/* EŞİT BOYUTLU İLAÇ KARTLARI IZGARASI */
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; align-items: start; }
+.card { 
+  background: var(--card); border-radius: 16px; padding: 12px; border: 1px solid var(--line); 
+  display: flex; flex-direction: column; box-shadow: var(--shadow);
+  min-height: 135px; /* Kartların eşit boyutta durmasını sağlar */
+  transition: all 0.3s ease; overflow: hidden;
+}
+.card.done-card { border-color: var(--done-border); background: var(--done-bg); }
+
+/* OTOMATİK DARALMA MANTIĞI */
+.card.collapsed { min-height: 65px !important; max-height: 65px !important; cursor: pointer; }
+.card.collapsed .meds-container { opacity: 0; pointer-events: none; }
+
+.drug-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; text-transform: uppercase; }
+.badge { align-self: flex-start; padding: 4px 6px; border-radius: 6px; font-weight: 800; font-size: 9px; text-transform: uppercase; margin-bottom: 4px; }
+.badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
+.badge-wait { background: var(--line); color: var(--muted); }
+
+.meds-container { margin-top: 4px; flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 4px; transition: opacity 0.3s; }
+.history-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 11px; border-bottom: 1px dashed var(--line); }
 .history-item:last-child { border-bottom: none; }
-.mono { font-family: ui-monospace, monospace; font-size: 10px; color: var(--muted); }
+.mono { font-size: 10px; color: var(--muted); font-weight: 600; font-style: italic;}
 
 /* MİNİK BUTONU */
-.minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid var(--line); z-index: 1000; cursor: pointer; }
-.minik-toast { position: fixed; bottom: 90px; right: 20px; background: var(--early); color: #000; padding: 16px; border-radius: 16px; font-size: 13px; font-weight: 800; display: none; z-index: 1001; width: 220px; box-shadow: 0 8px 20px rgba(0,0,0,0.4); line-height: 1.4; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+.minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border: 1px solid var(--line); z-index: 1000; cursor: pointer; }
+.minik-toast { position: fixed; bottom: 90px; right: 20px; background: var(--early); color: #fff; padding: 16px; border-radius: 16px; font-size: 13px; font-weight: 800; display: none; z-index: 1001; width: 220px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); line-height: 1.4; text-align: center; }
 
 @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
 @keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
@@ -85,17 +131,26 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div class="extra-card">
     <details>
         <summary>
-            <div class="weather-brief" id="wBrief">🌥️ --°C | Nem: %--</div>
-            <span class="show-text">Öneriler ▼</span>
+            <div class="weather-brief" id="wBrief">
+                <span>🌥️ --°C | Nem: %--</span>
+            </div>
+            <span class="loc-badge">📍 Avrupark Hayat Sitesi</span>
         </summary>
         <div class="weather-advice" id="wAdvice">Hava durumu verisi yükleniyor...</div>
     </details>
 </div>
 
-<div class="perf-compact">
-    <div class="perf-label">📈 İlerleme</div>
-    <div class="bar-bg"><div id="perf-bar" class="bar-fill" style="width: 0%; background-color: var(--accent);"></div></div>
-    <div id="perf-pct" class="perf-val" style="color: var(--accent);">%0</div>
+<div class="extra-card">
+    <div class="perf-row">
+        <div class="perf-label">Günlük İlerleme</div>
+        <div class="bar-bg"><div id="perf-bar" class="bar-fill" style="width: 0%; background-color: var(--accent);"></div></div>
+        <div id="perf-pct" class="perf-val" style="color: var(--accent);">%0</div>
+    </div>
+    <div class="perf-row">
+        <div class="perf-label">Aylık İlerleme</div>
+        <div class="bar-bg"><div id="month-bar" class="bar-fill" style="width: 45%; background-color: var(--early);"></div></div>
+        <div id="month-pct" class="perf-val" style="color: var(--early);">%45</div>
+    </div>
 </div>
 
 <div id="timelineArea" class="cards-grid">
@@ -105,6 +160,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
 
 <script>
+// KENDİ LİNKİNİ BURAYA YAPIŞTIRMAYI UNUTMA
 const API_URL = "https://script.google.com/macros/s/AKfycbybibVR75b918CBOMRlpEJu699hHSvOvCFXD6qRAL-JUxmK95HIUcF5onhEQjrIbF67Wg/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
@@ -129,7 +185,7 @@ async function fetchWeather() {
         else if (t < 12) { icon = "🥶"; adv = `Hava soğuk; eklemlerini sıcak tutmalı, Sjögren nedeniyle gözlerini rüzgardan korumayı ihmal etmemelisin.`; }
         else if (t > 30) { icon = "☀️"; adv = `Hava sıcak; Sjögren kuruluğu artabilir, bol su içip göz damlalarını her zamankinden daha sık kullanmalısın.`; }
         
-        document.getElementById('wBrief').innerHTML = `${icon} ${t}°C | Nem: %${h}`;
+        document.getElementById('wBrief').innerHTML = `<span>${icon} ${t}°C | Nem: %${h}</span>`;
         document.getElementById('wAdvice').innerHTML = adv;
     } catch(e) { }
 }
@@ -224,13 +280,12 @@ function ekraniCiz() {
     });
     document.getElementById('alertsArea').innerHTML = alertsHTML;
 
-    // 2. İLAÇ KARTLARI VE İLERLEME
+    // 2. İLAÇ KARTLARI (EŞİT BOYUTLU VE DARALAN)
     let tArea = "";
     let tMT = 0, tKT = 0;
 
-    // Kartı iki sütunlu ızgaraya yerleştireceğimiz için HTML yapısı
     todayProg.forEach(s => {
-        let sTC = 0; // Bu karttaki tamamlananlar
+        let sTC = 0; 
         let medsHTML = "";
         
         s.meds.forEach(m => { 
@@ -238,24 +293,27 @@ function ekraniCiz() {
             const isDone = apiData[m.key] === "İçildi";
             if(isDone) { tKT++; sTC++; }
             
-            const icon = isDone ? `<span style="color:var(--accent); font-size:14px;">✅</span>` : `<span>⚪</span>`;
+            const icon = isDone ? `<span style="color:var(--accent); font-size:15px;">✅</span>` : `<span style="font-size:15px;">⚪</span>`;
             medsHTML += `
                 <div class="history-item">
-                    <span style="display:flex; align-items:center; gap:6px; font-weight:700; color:#fff;">${icon} ${m.name}</span>
+                    <span style="display:flex; align-items:center; gap:6px; font-weight:700;">${icon} ${m.name}</span>
                     <span class="mono">${m.purpose}</span>
                 </div>`; 
         });
         
         const isAllDone = (sTC === s.meds.length);
         const badgeClass = isAllDone ? "badge-safe" : "badge-wait";
-        const badgeText = isAllDone ? "TAMAMLANDI" : "BEKLİYOR";
-        const cardClass = isAllDone ? "done-card" : "";
+        const badgeText = isAllDone ? "TAMAMLANDI ▼" : "BEKLİYOR";
+        
+        // EĞER TAMAMLANDIYSA KARTI DARALT (collapsed) VE TIKLANABİLİR YAP
+        const cardClass = isAllDone ? "done-card collapsed" : "";
+        const onClick = isAllDone ? `onclick="this.classList.toggle('collapsed')"` : "";
 
         tArea += `
-            <div class="card ${cardClass}">
+            <div class="card ${cardClass}" ${onClick}>
                 <div class="drug-name">${s.icon} ${s.title}</div>
                 <div class="badge ${badgeClass}">${badgeText}</div>
-                <div style="margin-top:2px;">
+                <div class="meds-container">
                     ${medsHTML}
                 </div>
             </div>`;
@@ -263,24 +321,24 @@ function ekraniCiz() {
     
     document.getElementById('timelineArea').innerHTML = tArea;
 
-    // 3. İLERLEME BARI GÜNCELLEMESİ
+    // 3. GÜNLÜK İLERLEME BARI
     const dP = tMT > 0 ? Math.round((tKT/tMT)*100) : 0;
-    document.getElementById('perf-pct').innerText = `%${dP} (${tKT}/${tMT})`;
+    document.getElementById('perf-pct').innerText = `%${dP}`;
     document.getElementById('perf-bar').style.width = dP + '%';
     
     if (dP === 100) {
         document.getElementById('perf-bar').style.backgroundColor = "var(--accent)";
         document.getElementById('perf-pct').style.color = "var(--accent)";
     } else {
-        document.getElementById('perf-bar').style.backgroundColor = "var(--early)";
-        document.getElementById('perf-pct').style.color = "var(--early)";
+        document.getElementById('perf-bar').style.backgroundColor = "var(--accent)";
+        document.getElementById('perf-pct').style.color = "var(--accent)";
     }
 }
 
 // İLK ÇALIŞTIRMA VE DÖNGÜLER
 veriCek();
-setInterval(veriCek, 30000); // 30 saniyede bir Sheets kontrolü
-setInterval(saniyeTiktak, 1000); // Saniyede bir sağ üst saat/ping güncellemesi
+setInterval(veriCek, 30000); 
+setInterval(saniyeTiktak, 1000); 
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === 'visible') veriCek(); });
 </script>
 </body>
