@@ -9,12 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
 <style>
-/* --- AÇIK (LIGHT) MOD RENKLERİ - TAMAMEN SADELEŞTİRİLDİ --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ - SADE VE TEMİZ --- */
 :root {
-  /* Gözü dinlendiren, iOS standardı yumuşak arka plan */
   --bg: #F4F4F7; 
-  
-  /* Tüm kartlar için ortak, tertemiz porselen beyazı */
   --card: #FFFFFF; 
   --text: #1C1C1E; 
   --muted: #8E8E93; 
@@ -25,14 +22,14 @@
   --early: #007AFF; 
   --purple: #AF52DE; 
   
-  /* VIP BAŞLIK (Çok sert siyah yerine yumuşak Koyu Grafit) */
+  /* VIP BAŞLIK (Koyu Grafit) */
   --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
   --vip-text: #FFFFFF;
   --vip-muted: #A0AAB5;
   --vip-gold: #F1C40F;
   --vip-shadow: 0 12px 24px rgba(0,0,0,0.15);
 
-  /* TÜM KARTLARIN ORTAK GÖLGESİ (Havada süzülme efekti, çok yumuşak) */
+  /* KART GÖLGELERİ (Porselen beyazı ve yumuşak süzülme) */
   --card-border: rgba(0,0,0,0.03);
   --card-shadow: 0 10px 30px rgba(0,0,0,0.06);
 
@@ -101,7 +98,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .clock-text { font-size: 13px; font-weight: 700; color: var(--vip-muted); }
 .sync-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); }
 
-/* TÜM KARTLARIN ORTAK SINIFI (Hava, İlerleme ve İlaç Kartları) */
+/* TÜM KARTLARIN ORTAK SINIFI */
 .premium-card { 
     background: var(--card); 
     border-radius: 24px; 
@@ -119,10 +116,11 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .weather-details summary::-webkit-details-marker { display: none; }
 
 .w-left { flex: 0 1 auto; color: var(--muted); font-weight: 700; font-size: 12px; white-space: nowrap; display: flex; align-items: center; }
-.w-center { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; gap: 6px; color: var(--text); font-weight: 900; font-size: 16px; white-space: nowrap; }
+.w-center { flex: 1 1 auto; display: flex; justify-content: center; align-items: center; gap: 6px; font-weight: 900; font-size: 16px; white-space: nowrap; }
 .w-right { flex: 0 1 auto; display: flex; justify-content: flex-end; align-items: center; }
 
 .w-icon-big { font-size: 22px; display: flex; align-items: center; }
+.w-divider { color: var(--line); margin: 0 4px; font-weight: 400;}
 
 .w-toggle { 
     background: var(--bg); 
@@ -162,7 +160,6 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .masonry-grid { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
 .masonry-col { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; }
 
-/* İLAÇ KARTLARI (premium-card özelliklerini alır, ek olarak collapse işlemleri) */
 .card { display: flex; flex-direction: column; padding: 16px; margin-bottom: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
@@ -183,12 +180,13 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
 .check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
+/* İLAÇ LİSTESİ SIKIŞMA ÇÖZÜMÜ */
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; transition: opacity 0.3s; }
-.history-item { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 13px; font-weight: 700; border-bottom: 1px dashed var(--line); color: var(--text); }
+.history-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; font-weight: 700; border-bottom: 1px dashed var(--line); color: var(--text); gap: 8px; }
 .history-item:last-child { border-bottom: none; }
-.med-left-group { display: flex; align-items: center; gap: 8px; }
-
-.mono { font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic;}
+.med-left-group { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.med-left-group span { white-space: normal; line-height: 1.2; word-break: break-word; } /* Sıkışmak yerine alt satıra iner */
+.mono { font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic; white-space: nowrap; flex-shrink: 0; text-align: right; }
 
 /* OTOMATİK DARALMA */
 .card.collapsed { cursor: pointer; }
@@ -224,7 +222,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
             </div>
             <div class="w-center">
                 <span class="w-icon-big" id="wMainIcon">🌥️</span> 
-                <span id="wTempText">--°C | %--</span>
+                <span id="wTempText">--°C</span>
+                <span class="w-divider">|</span>
+                <span id="wHumText">%-- Nem</span>
             </div>
             <div class="w-right">
                 <div class="w-toggle">Öneriler <span style="font-size: 9px; margin-left: 2px;">▼</span></div>
@@ -289,7 +289,7 @@ const hour = now.getHours();
 let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
 document.getElementById('greetingText').innerText = `${gMsg},`;
 
-// GELİŞMİŞ HAVA DURUMU & TEŞHİS
+// GELİŞMİŞ HAVA DURUMU & TEŞHİS (DİNAMİK RENKLER EKLENDİ)
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
@@ -300,6 +300,20 @@ async function fetchWeather() {
         let advIcon = "🩺";
         let advColor = "var(--accent)";
         let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından rahat bir gün.`;
+        
+        // Akıllı Sıcaklık Rengi
+        let tempColor = "var(--text)";
+        if (t < 10) tempColor = "#0A84FF"; // Soğuk: Mavi
+        else if (t < 20) tempColor = "#32D74B"; // Ilık: Yeşil
+        else if (t < 28) tempColor = "#FF9D0A"; // Sıcak: Turuncu
+        else tempColor = "#FF453A"; // Çok Sıcak: Kırmızı
+
+        // Akıllı Nem Rengi
+        let humColor = "var(--text)";
+        if (h < 40) humColor = "#FF9D0A"; // Kuru: Turuncu
+        else if (h <= 60) humColor = "#32D74B"; // Normal: Yeşil
+        else if (h <= 75) humColor = "#0A84FF"; // Nemli: Mavi
+        else humColor = "#BF5AF2"; // Çok Nemli: Mor (Romatizma tetikleyici)
         
         if (h > 70 && t < 15) { 
             icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
@@ -319,7 +333,16 @@ async function fetchWeather() {
         }
         
         document.getElementById('wMainIcon').innerText = icon;
-        document.getElementById('wTempText').innerText = `${t}°C | %${h}`;
+        
+        // Sıcaklık ve Nem ayrı ayrı yazdırılıp renkleri atanıyor
+        const tEl = document.getElementById('wTempText');
+        tEl.innerText = `${t}°C`;
+        tEl.style.color = tempColor;
+
+        const hEl = document.getElementById('wHumText');
+        hEl.innerText = `%${h} Nem`;
+        hEl.style.color = humColor;
+
         document.getElementById('wAdvIcon').innerText = advIcon;
         document.getElementById('wAdvice').innerText = adv;
         document.getElementById('wAdviceBox').style.borderLeftColor = advColor;
