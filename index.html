@@ -33,8 +33,6 @@
 
   --done-bg: rgba(52, 199, 89, 0.04);
   --done-border: rgba(52, 199, 89, 0.3);
-  --prog-daily: linear-gradient(90deg, #32D74B, #28CD41);
-  --prog-month: linear-gradient(90deg, #0A84FF, #007AFF);
   --wait-badge-bg: rgba(0,0,0,0.05);
   --wait-badge-text: #636366; 
 }
@@ -64,8 +62,6 @@
 
     --done-bg: rgba(50, 215, 75, 0.05);
     --done-border: rgba(50, 215, 75, 0.3);
-    --prog-daily: linear-gradient(90deg, #30D158, #32D74B);
-    --prog-month: linear-gradient(90deg, #0A84FF, #64D2FF);
     --wait-badge-bg: rgba(255,255,255,0.1);
     --wait-badge-text: #D1D1D6; 
   }
@@ -108,55 +104,26 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
     overflow: hidden;
 }
 
-/* --- PREMIUM HAVA DURUMU DÜZENİ --- */
-.weather-details { margin: 0; padding: 0; }
-.weather-details summary { cursor: pointer; list-style: none; outline: none; display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 6px; }
-.weather-details summary::-webkit-details-marker { display: none; }
+/* YENİ: AYLIK İLAÇ TAMAMLAMA KARTI (Kompakt) */
+.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; }
+.stat-left { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--muted); }
+.stat-right { font-size: 22px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
 
-.w-left { flex: 1; color: var(--muted); font-weight: 700; font-size: 11px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.w-center { flex: 0 0 auto; display: flex; justify-content: center; align-items: center; gap: 5px; font-weight: 900; font-size: 14px; white-space: nowrap; }
-.w-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; }
+/* YENİ: iOS STİLİ HAVA DURUMU KARTI */
+.ios-weather-card { padding: 20px; }
+.ios-w-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.ios-w-city { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+.ios-w-temp { font-size: 46px; font-weight: 200; letter-spacing: -2px; color: var(--text); line-height: 1; margin-bottom: 2px;}
+.ios-w-right { display: flex; flex-direction: column; align-items: flex-end; }
+.ios-w-icon { font-size: 32px; line-height: 1; margin-bottom: 6px; }
+.ios-w-hum { font-size: 13px; font-weight: 700; color: var(--early); }
+.ios-w-divider { height: 1px; background: var(--line); margin: 16px 0; }
+.ios-w-advice { display: flex; gap: 12px; align-items: flex-start; }
+.ios-w-adv-icon { font-size: 24px; }
+.ios-w-adv-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.5; }
 
-.w-icon-big { font-size: 20px; display: flex; align-items: center; margin-right: 2px; }
-.w-divider { color: var(--line); margin: 0 2px; font-weight: 400;}
-
-.w-toggle { 
-    background: var(--bg); 
-    color: var(--text); 
-    font-size: 12px; 
-    font-weight: 800; 
-    padding: 6px 12px; 
-    border-radius: 14px; 
-    display: flex; 
-    align-items: center; 
-    gap: 4px; 
-    transition: 0.2s; 
-    white-space: nowrap; 
-}
-
-/* AÇILIR TEŞHİS KUTUSU (Okunabilirlik İçin Büyütüldü) */
-.w-advice-box { margin-top: 16px; background: var(--bg); border-radius: 16px; padding: 18px; display: flex; gap: 14px; align-items: flex-start; border: 1px solid var(--line); border-left: 5px solid var(--accent); position: relative; overflow: hidden; animation: slideDown 0.3s ease-out; }
-.w-adv-icon { font-size: 28px; } /* İkon büyütüldü */
-.w-adv-text { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.5; } /* Yazı daha büyük ve belirgin */
-@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-/* --- PREMIUM İLERLEME BARLARI --- */
-.prog-wrapper { display: flex; flex-direction: column; gap: 18px; }
-.prog-item { display: flex; flex-direction: column; gap: 8px; }
-.prog-header { display: flex; justify-content: space-between; align-items: flex-end; }
-.prog-title { font-size: 14px; font-weight: 800; color: var(--text); letter-spacing: -0.2px; }
-.prog-stats { display: flex; align-items: baseline; gap: 6px; }
-.prog-pct { font-size: 18px; font-weight: 900; letter-spacing: -0.5px; }
-.prog-frac { font-size: 12px; font-weight: 700; color: var(--muted); }
-
-.prog-track { background: var(--bg); height: 10px; border-radius: 5px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); }
-.prog-fill { height: 100%; border-radius: 5px; transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
-.fill-daily { background: var(--prog-daily); box-shadow: 0 0 10px rgba(50, 215, 75, 0.4); }
-.fill-month { background: var(--prog-month); box-shadow: 0 0 10px rgba(10, 132, 255, 0.4); }
-
-/* --- MASONRY (BAĞIMSIZ SÜTUN) DÜZENİ İLAÇ KARTLARI --- */
-.masonry-grid { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
-.masonry-col { display: flex; flex-direction: column; gap: 12px; flex: 1; min-width: 0; }
+/* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
+.vertical-list { display: flex; flex-direction: column; gap: 14px; }
 
 .card { display: flex; flex-direction: column; padding: 16px; margin-bottom: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
@@ -192,7 +159,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .card.collapsed .meds-container { display: none; }
 .card.collapsed .card-header { margin-bottom: 0; }
 
-/* MİNİK BUTONU VE BÜYÜTÜLMÜŞ TOAST */
+/* MİNİK BUTONU VE TOAST */
 .minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 64px; height: 64px; border-radius: 32px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
 .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: 95px; right: 20px; background: var(--early); color: #fff; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 800; display: none; z-index: 1001; width: 280px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); line-height: 1.5; text-align: left; }
@@ -213,61 +180,31 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
     </div>
 </div>
 
-<div class="premium-card">
-    <details class="weather-details">
-        <summary>
-            <div class="w-left">
-                📍 Avrupark Hayat
-            </div>
-            <div class="w-center">
-                <span class="w-icon-big" id="wMainIcon">🌥️</span> 
-                <span id="wTempText">--°C</span>
-                <span class="w-divider">•</span>
-                <span id="wHumText">%-- Nem</span>
-            </div>
-            <div class="w-right">
-                <div class="w-toggle">Öneriler <span style="font-size: 9px; margin-left: 2px;">▼</span></div>
-            </div>
-        </summary>
-        <div class="w-advice-box" id="wAdviceBox">
-            <div class="w-adv-icon" id="wAdvIcon">🩺</div>
-            <div class="w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
-        </div>
-    </details>
+<div class="premium-card compact-stat">
+    <div class="stat-left">🗓️ Aylık İlaç Tamamlama</div>
+    <div class="stat-right" id="monthly-success-rate">%100</div>
 </div>
 
-<div class="premium-card prog-wrapper">
-    <div class="prog-item">
-        <div class="prog-header">
-            <div class="prog-title">Günlük İlerleme</div>
-            <div class="prog-stats">
-                <span class="prog-pct" id="perf-pct" style="color: var(--accent);">%0</span>
-                <span class="prog-frac" id="perf-frac">(0/0)</span>
-            </div>
+<div class="premium-card ios-weather-card">
+    <div class="ios-w-top">
+        <div class="ios-w-left">
+            <div class="ios-w-city">📍 Avrupark Hayat</div>
+            <div class="ios-w-temp" id="wTempText">--°</div>
         </div>
-        <div class="prog-track">
-            <div id="perf-bar" class="prog-fill fill-daily" style="width: 0%;"></div>
+        <div class="ios-w-right">
+            <div class="ios-w-icon" id="wMainIcon">🌥️</div>
+            <div class="ios-w-hum" id="wHumText">%-- Nem</div>
         </div>
     </div>
-    
-    <div class="prog-item">
-        <div class="prog-header">
-            <div class="prog-title">Aylık İlerleme</div>
-            <div class="prog-stats">
-                <span class="prog-pct" id="month-pct" style="color: var(--early);">%45</span>
-                <span class="prog-frac" id="month-frac">(68/150)</span>
-            </div>
-        </div>
-        <div class="prog-track">
-            <div id="month-bar" class="prog-fill fill-month" style="width: 45%;"></div>
-        </div>
+    <div class="ios-w-divider"></div>
+    <div class="ios-w-advice">
+        <div class="ios-w-adv-icon" id="wAdvIcon">🩺</div>
+        <div class="ios-w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
     </div>
 </div>
 
-<div class="masonry-grid">
-    <div class="masonry-col" id="col-left"></div>
-    <div class="masonry-col" id="col-right"></div>
-</div>
+<div class="vertical-list" id="timelineArea">
+    </div>
 
 <div class="minik-button" onclick="event.stopPropagation(); mewMsg()">🐾</div>
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
@@ -293,7 +230,8 @@ async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
         const data = await res.json();
-        const t = data.current.temperature_2m, h = data.current.relative_humidity_2m;
+        const t = Math.round(data.current.temperature_2m); 
+        const h = data.current.relative_humidity_2m;
         
         let icon = "🌥️";
         let advIcon = "🩺";
@@ -334,7 +272,7 @@ async function fetchWeather() {
         document.getElementById('wMainIcon').innerText = icon;
         
         const tEl = document.getElementById('wTempText');
-        tEl.innerText = `${t}°C`;
+        tEl.innerText = `${t}°`; // iOS stilinde sadece C olmadan yuvarlak derece daha şık durur
         tEl.style.color = tempColor;
 
         const hEl = document.getElementById('wHumText');
@@ -342,21 +280,19 @@ async function fetchWeather() {
         hEl.style.color = humColor;
 
         document.getElementById('wAdvIcon').innerText = advIcon;
+        document.getElementById('wAdvIcon').style.color = advColor; // İkon rengini de duruma göre boyayalım
         document.getElementById('wAdvice').innerText = adv;
-        document.getElementById('wAdviceBox').style.borderLeftColor = advColor;
     } catch(e) { }
 }
 fetchWeather();
 
-// YENİ: MİNİK İÇİN DİNAMİK "TEK CÜMLE" KOMBİNASYON MOTORU
+// MİNİK İÇİN DİNAMİK "TEK CÜMLE" KOMBİNASYON MOTORU
 function mewMsg() {
-    // Havuz 1: Hitaplar (10)
     const arrA = [
         "Nenesinin kuzusu,", "Güzeller güzeli annem,", "Benim canım nenem,", 
         "Nurten Sultanım,", "Pamuk nenem,", "Canımın içi,", 
         "En sevdiğim insan,", "Tatlı annem,", "Kraliçem,", "Sarı papatyam,"
     ];
-    // Havuz 2: Minik'in Kendi Durumu (10)
     const arrB = [
         "ben Virbac mamamı lıkır lıkır yedim", "az önce Göker'le güzelce oyun oynadık", 
         "Alper abim başımı şefkatle okşadı", "Keppra'mı hiç itiraz etmeden uslu uslu içtim", 
@@ -364,7 +300,6 @@ function mewMsg() {
         "patilerimi temizleyip yanına gelmeye hazırlanıyorum", "astımım bugün çok iyi, nefesim pırıl pırıl", 
         "yumuşacık yatağımda gerinirken aklıma sen geldin", "burnumu nemlendirip bıyıklarımı düzelttim"
     ];
-    // Havuz 3: Anneye Özel Tavsiye/Bağlantı (10)
     const arrC = [
         "ve şimdi gözüm senin panonun üstünde", "ve sıra senin kendi şifanı almanda", 
         "ve sen de sularını lıkır lıkır içmelisin", "ve ilaçlarını eksiksiz içtiğini biliyorum", 
@@ -372,7 +307,6 @@ function mewMsg() {
         "ve eklemlerin ağrımasın diye o sıcak dizlerine kıvrılacağım", "ve romatizman yormasın diye bugün kendini hiç yormamanı istiyorum", 
         "ve Sjögren kurutmasın diye bol su içmeni bekliyorum", "ve birlikte her gün daha da iyi oluyoruz"
     ];
-    // Havuz 4: Sevgi / Kapanış (10)
     const arrD = [
         "seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", 
         "bıyıklarım senin için neşeyle titriyor! 😻", "ben hep senin gölgendeyim! ✨", 
@@ -382,8 +316,6 @@ function mewMsg() {
     ];
 
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-    
-    // Tüm havuzlardan çekip tek, akıcı ve uzun bir cümle oluşturuyoruz (Araya <br> koymuyoruz)
     const finalMessage = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)}, ${pick(arrD)}`;
 
     const t = document.getElementById('minikToast');
@@ -465,19 +397,32 @@ function ekraniCiz() {
     });
     document.getElementById('alertsArea').innerHTML = alertsHTML;
 
-    // SÜTUN BAZLI (MASONRY) HTML DAĞILIMI
-    let leftColHTML = "";
-    let rightColHTML = "";
-    let tMT = 0, tKT = 0;
+    // YENİ: AYLIK İLAÇ ORANI HESAPLAMA (Senin belirlediğin mantık)
+    const AYLIK_TOPLAM_ILAC = 150; 
+    // Not: apiData içinde 'aylikKacirilan' diye bir veri yolluyorsan onu alır, şimdilik test için 0.
+    const kacirilanIlacSayisi = apiData.aylikKacirilan || 0; 
+    let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilanIlacSayisi) / AYLIK_TOPLAM_ILAC) * 100);
+    if (basariOrani < 0) basariOrani = 0;
+    
+    const rateEl = document.getElementById('monthly-success-rate');
+    rateEl.innerText = `%${basariOrani}`;
+    
+    // Yüzdeye göre renk değiştirme (İsteğe bağlı şıklık)
+    if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
+    else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
+    else rateEl.style.color = "var(--danger)";
 
-    todayProg.forEach((s, index) => {
+
+    // TEK SÜTUN DÜZENİ HTML DAĞILIMI
+    let timelineHTML = "";
+
+    todayProg.forEach((s) => {
         let sTC = 0; 
         let medsHTML = "";
         
         s.meds.forEach(m => { 
-            tMT++; 
             const isDone = apiData[m.key] === "İçildi";
-            if(isDone) { tKT++; sTC++; }
+            if(isDone) { sTC++; }
             
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
             
@@ -493,13 +438,12 @@ function ekraniCiz() {
         
         const isAllDone = (sTC === s.meds.length);
         const badgeClass = isAllDone ? "badge-safe" : "badge-wait";
-        
         const badgeText = isAllDone ? `TAMAMLANDI <span class="exp-arrow">▲</span>` : "BEKLİYOR";
         
         const cardClass = isAllDone ? "done-card collapsed" : "";
         const onClick = isAllDone ? `onclick="this.classList.toggle('collapsed')"` : "";
 
-        const cardElement = `
+        timelineHTML += `
             <div class="premium-card card ${cardClass}" ${onClick}>
                 <div class="card-header">
                     <div class="drug-name">${s.icon} ${s.title}</div>
@@ -509,18 +453,9 @@ function ekraniCiz() {
                     ${medsHTML}
                 </div>
             </div>`;
-            
-        if (index % 2 === 0) leftColHTML += cardElement;
-        else rightColHTML += cardElement;
     });
     
-    document.getElementById('col-left').innerHTML = leftColHTML;
-    document.getElementById('col-right').innerHTML = rightColHTML;
-
-    const dP = tMT > 0 ? Math.round((tKT/tMT)*100) : 0;
-    document.getElementById('perf-pct').innerText = `%${dP}`;
-    document.getElementById('perf-frac').innerText = `(${tKT}/${tMT})`;
-    document.getElementById('perf-bar').style.width = dP + '%';
+    document.getElementById('timelineArea').innerHTML = timelineHTML;
 }
 
 // 10 Saniyede bir güncelle (aktifken)
