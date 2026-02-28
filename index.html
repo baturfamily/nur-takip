@@ -83,7 +83,7 @@ body {
 }
 
 /* GÜVENLİK KALKANI */
-#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
+#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; flex-shrink: 0; }
 .safety-shield { display: none; padding: 12px; text-align: center; font-weight: 800; font-size: 13px; border-radius: 16px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; }
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
 .shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
@@ -95,22 +95,22 @@ body {
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 /* VIP BAŞLIK KARTI */
-.vip-header { background: var(--vip-bg); border-radius: 20px; padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
+.vip-header { background: var(--vip-bg); border-radius: 20px; padding: 12px 16px; margin-bottom: 8px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
 
-.app-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 6px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1;}
+.app-title { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 4px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1;}
 .app-title .greeting { font-size: 13px; font-weight: 700; color: var(--vip-muted); }
 .app-title .name-tag { white-space: nowrap; color: var(--vip-text); }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 8px; position: relative; z-index: 1;}
 .clock-text { font-size: 12px; font-weight: 700; color: var(--vip-muted); }
 .sync-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 10px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); }
 
-/* TÜM KARTLARIN ORTAK SINIFI */
+/* TÜM KARTLARIN ORTAK SINIFI - Boşluklar hafif daraltıldı */
 .premium-card { 
     background: var(--card); 
     border-radius: 20px; 
-    padding: 14px; 
+    padding: 12px 14px; 
     border: 1px solid var(--card-border); 
-    margin-bottom: 10px; 
+    margin-bottom: 8px; 
     box-shadow: var(--card-shadow); 
     transition: all 0.3s ease;
     overflow: hidden;
@@ -118,19 +118,19 @@ body {
 }
 
 /* YENİ: AYLIK İLAÇ TAMAMLAMA KARTI (Kompakt) */
-.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; }
+.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
 .stat-left { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase;}
 .stat-right { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
 
 /* YENİ: iOS STİLİ HAVA DURUMU KARTI */
-.ios-weather-card { padding: 14px 16px; }
+.ios-weather-card { padding: 12px 16px; }
 .ios-w-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .ios-w-city { font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
 .ios-w-temp { font-size: 32px; font-weight: 200; letter-spacing: -2px; color: var(--text); line-height: 1; margin-bottom: 2px;}
 .ios-w-right { display: flex; flex-direction: column; align-items: flex-end; }
 .ios-w-icon { font-size: 28px; line-height: 1; margin-bottom: 6px; }
 .ios-w-hum { font-size: 12px; font-weight: 700; color: var(--early); }
-.ios-w-divider { height: 1px; background: var(--line); margin: 10px 0; }
+.ios-w-divider { height: 1px; background: var(--line); margin: 8px 0; }
 .ios-w-advice { display: flex; gap: 12px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 22px; }
 .ios-w-adv-text { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; }
@@ -139,7 +139,7 @@ body {
 .vertical-list { 
   display: flex; 
   flex-direction: column; 
-  gap: 10px; 
+  gap: 8px; 
   flex: 1; 
   overflow-y: auto; 
   padding-bottom: max(90px, env(safe-area-inset-bottom)); 
@@ -150,11 +150,19 @@ body {
   display: none;
 }
 
-.card { display: flex; flex-direction: column; padding: 14px; margin-bottom: 0; flex-shrink: 0;}
+.card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 0; flex-shrink: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
-/* KART BAŞLIĞI */
-.card-header { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; margin-bottom: 12px; width: 100%; }
+/* KART BAŞLIĞI - YAN YANA (YATAY) DÜZEN */
+.card-header { 
+  display: flex; 
+  flex-direction: row; 
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 6px; 
+  margin-bottom: 12px; 
+  width: 100%; 
+}
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
 
 .badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
