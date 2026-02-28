@@ -73,7 +73,6 @@ body {
   background: var(--bg); 
   color: var(--text); 
   font-family: -apple-system, system-ui, sans-serif; 
-  /* Tüm kenar boşluklarını daralttık */
   padding: max(8px, env(safe-area-inset-top)) 10px 0 10px; 
   height: 100vh; 
   display: flex; 
@@ -118,23 +117,18 @@ body {
     flex-shrink: 0;
 }
 
-/* AYLIK İLAÇ TAMAMLAMA KARTI (Aşırı Kompakt) */
-.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; }
-.stat-left { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
-.stat-right { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
-
-/* iOS STİLİ HAVA DURUMU KARTI */
+/* YENİ: KOMPAKT HAVA DURUMU KARTI */
 .ios-weather-card { padding: 12px 14px; }
-.ios-w-top { display: flex; justify-content: space-between; align-items: flex-start; }
-.ios-w-city { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
-.ios-w-temp { font-size: 32px; font-weight: 200; letter-spacing: -1px; color: var(--text); line-height: 1; margin-bottom: 2px;}
-.ios-w-right { display: flex; flex-direction: column; align-items: flex-end; }
-.ios-w-icon { font-size: 26px; line-height: 1; margin-bottom: 4px; }
-.ios-w-hum { font-size: 11px; font-weight: 700; color: var(--early); }
-.ios-w-divider { height: 1px; background: var(--line); margin: 8px 0; }
+.ios-w-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.ios-w-city { font-size: 13px; font-weight: 700; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+.ios-w-temp { font-size: 24px; font-weight: 400; letter-spacing: -1px; color: var(--text); line-height: 1; margin: 0 10px; }
+.ios-w-right { display: flex; align-items: center; gap: 6px; }
+.ios-w-icon { font-size: 20px; line-height: 1; }
+.ios-w-hum { font-size: 12px; font-weight: 700; color: var(--early); }
+.ios-w-divider { height: 1px; background: var(--line); margin: 6px 0 8px 0; }
 .ios-w-advice { display: flex; gap: 10px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 18px; }
-.ios-w-adv-text { font-size: 11.5px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.ios-w-adv-text { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.4; } /* TAVSİYE YAZISI BÜYÜTÜLDÜ */
 
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
 .vertical-list { 
@@ -154,16 +148,15 @@ body {
 .card { display: flex; flex-direction: column; padding: 10px 14px; margin-bottom: 0; flex-shrink: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
-/* KART BAŞLIĞI - BURASI YAN YANA ALINDI (FLEX-ROW) EKRANI KURTARAN KISIM */
+/* KART BAŞLIĞI */
 .card-header { display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 0; }
-.card:not(.collapsed) .card-header { margin-bottom: 10px; } /* Sadece açıkken alt boşluk ver */
+.card:not(.collapsed) .card-header { margin-bottom: 10px; } 
 .drug-name { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; text-transform: uppercase; margin: 0; white-space: nowrap; color: var(--text); }
 
 .badge { padding: 3px 6px; border-radius: 6px; font-weight: 800; font-size: 10px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.2px;}
 .badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
 .badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); }
 
-/* OK ANİMASYONU İÇİN CLASS */
 .exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 9px; }
 .card.collapsed .exp-arrow { transform: rotate(180deg); } 
 
@@ -181,11 +174,16 @@ body {
 .drug-title { font-size: 13px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
 .drug-purpose { font-size: 11px; color: var(--muted); font-weight: 600; font-style: italic; }
 
+/* AYLIK İLAÇ KARTI (İLAÇ LİSTESİNİN EN ALTINA EKLENECEK) */
+.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; margin-top: 4px; }
+.stat-left { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.stat-right { font-size: 18px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+
 /* OTOMATİK DARALMA */
 .card.collapsed { cursor: pointer; }
 .card.collapsed .meds-container { display: none; }
 
-/* MİNİK BUTONU VE TOAST (Küçültüldü ve hizalandı) */
+/* MİNİK BUTONU VE TOAST */
 .minik-button { position: fixed; bottom: calc(10px + env(safe-area-inset-bottom)); right: 15px; background: var(--card); width: 48px; height: 48px; border-radius: 24px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
 .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: calc(70px + env(safe-area-inset-bottom)); right: 15px; background: var(--early); color: #fff; padding: 12px 14px; border-radius: 16px; font-size: 13px; font-weight: 800; display: none; z-index: 1001; width: 240px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); line-height: 1.3; text-align: left; }
@@ -206,17 +204,10 @@ body {
     </div>
 </div>
 
-<div class="premium-card compact-stat">
-    <div class="stat-left">🗓️ Aylık İlaç Tamamlama</div>
-    <div class="stat-right" id="monthly-success-rate">%100</div>
-</div>
-
 <div class="premium-card ios-weather-card">
     <div class="ios-w-top">
-        <div class="ios-w-left">
-            <div class="ios-w-city">📍 Avrupark Hayat</div>
-            <div class="ios-w-temp" id="wTempText">--°</div>
-        </div>
+        <div class="ios-w-city">📍 Avrupark Hayat</div>
+        <div class="ios-w-temp" id="wTempText">--°</div>
         <div class="ios-w-right">
             <div class="ios-w-icon" id="wMainIcon">🌥️</div>
             <div class="ios-w-hum" id="wHumText">%-- Nem</div>
@@ -367,6 +358,39 @@ function saniyeTiktak() {
     }
 }
 
+// O AYIN TOPLAM İLAÇ SAYISINI HESAPLAYAN AKILLI MOTOR
+function calculateMonthlyTotalMeds() {
+    const dNow = new Date();
+    const year = dNow.getFullYear();
+    const month = dNow.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let total = 0;
+    const dS = new Date(2026, 1, 16); // Deltacortril referansı
+    const cS = new Date(2026, 1, 12); // Cimzia referansı
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const currentDate = new Date(year, month, day);
+        // Her gün garanti alınan 7 ilaç: INH(1) + Balık Yağı(1) + Göz(Sabah 1) + Benexol(1) + Plaquenil(1) + Quantavir(1) + Göz(Gece 1)
+        let dailyCount = 7; 
+
+        // Deltacortril (Gün Aşırı)
+        if (Math.round((currentDate - dS) / (1000 * 60 * 60 * 24)) % 2 === 0) dailyCount++;
+        
+        // Coledan-D3 & Folbiol (Salı günleri toplam 2 ilaç eklenir)
+        if (currentDate.getDay() === 2) dailyCount += 2;
+        
+        // Metoartcon (Pazartesi günleri)
+        if (currentDate.getDay() === 1) dailyCount++;
+        
+        // Cimzia (14 günde bir)
+        if (Math.round((currentDate - cS) / (1000 * 60 * 60 * 24)) % 14 === 0) dailyCount++;
+
+        total += dailyCount;
+    }
+    return total;
+}
+
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
@@ -414,18 +438,7 @@ function ekraniCiz() {
     });
     document.getElementById('alertsArea').innerHTML = alertsHTML;
 
-    const AYLIK_TOPLAM_ILAC = 150; 
-    const kacirilanIlacSayisi = apiData.aylikKacirilan || 0; 
-    let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilanIlacSayisi) / AYLIK_TOPLAM_ILAC) * 100);
-    if (basariOrani < 0) basariOrani = 0;
-    
-    const rateEl = document.getElementById('monthly-success-rate');
-    rateEl.innerText = `%${basariOrani}`;
-    
-    if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
-    else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
-    else rateEl.style.color = "var(--danger)";
-
+    // LİSTE HTML OLUŞTURMA
     let timelineHTML = "";
 
     todayProg.forEach((s) => {
@@ -467,6 +480,25 @@ function ekraniCiz() {
             </div>`;
     });
     
+    // AYLIK TAMAMLAMA HESAPLAMASI VE KARTIN LİSTE ALTINA EKLENMESİ
+    const totalPills = calculateMonthlyTotalMeds();
+    const kacirilanIlacSayisi = apiData.aylikKacirilan || 0; 
+    let basariOrani = Math.round(((totalPills - kacirilanIlacSayisi) / totalPills) * 100);
+    if (basariOrani < 0) basariOrani = 0;
+    
+    let rateColor = "var(--danger)";
+    if(basariOrani >= 90) rateColor = "var(--accent)";
+    else if(basariOrani >= 70) rateColor = "var(--warning)";
+
+    const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+    const ayAdi = aylar[now.getMonth()];
+
+    timelineHTML += `
+        <div class="premium-card compact-stat">
+            <div class="stat-left">🗓️ ${ayAdi} Ayı İlaç Tamamlama Oranı</div>
+            <div class="stat-right" style="color: ${rateColor}">%${basariOrani}</div>
+        </div>`;
+
     document.getElementById('timelineArea').innerHTML = timelineHTML;
 }
 
