@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>Nurten İlaç Paneli</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -68,11 +68,23 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: 12px 12px 85px 12px; -webkit-font-smoothing: antialiased; overflow-x: hidden; transition: background 0.3s, color 0.3s; }
+body { 
+  margin: 0; 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: -apple-system, system-ui, sans-serif; 
+  padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; 
+  height: 100vh; 
+  display: flex; 
+  flex-direction: column; 
+  overflow: hidden; 
+  -webkit-font-smoothing: antialiased; 
+  transition: background 0.3s, color 0.3s; 
+}
 
 /* GÜVENLİK KALKANI */
-#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-.safety-shield { display: none; padding: 14px; text-align: center; font-weight: 800; font-size: 14px; border-radius: 16px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; }
+#alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; flex-shrink: 0; }
+.safety-shield { display: none; padding: 12px; text-align: center; font-weight: 800; font-size: 14px; border-radius: 16px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; }
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
 .shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
 .shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
@@ -83,9 +95,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 /* VIP BAŞLIK KARTI */
-.vip-header { background: var(--vip-bg); border-radius: 24px; padding: 20px 16px; margin-bottom: 14px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+.vip-header { background: var(--vip-bg); border-radius: 20px; padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
 
-.app-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1;}
+.app-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; z-index: 1;}
 .app-title .greeting { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
 .app-title .name-tag { white-space: nowrap; color: var(--vip-text); }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 8px; position: relative; z-index: 1;}
@@ -95,37 +107,50 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 /* TÜM KARTLARIN ORTAK SINIFI */
 .premium-card { 
     background: var(--card); 
-    border-radius: 24px; 
-    padding: 18px; 
+    border-radius: 20px; 
+    padding: 14px; 
     border: 1px solid var(--card-border); 
-    margin-bottom: 14px; 
+    margin-bottom: 10px; 
     box-shadow: var(--card-shadow); 
     transition: all 0.3s ease;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 /* YENİ: AYLIK İLAÇ TAMAMLAMA KARTI (Kompakt) */
-.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; }
+.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; }
 .stat-left { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: var(--muted); }
 .stat-right { font-size: 22px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
 
 /* YENİ: iOS STİLİ HAVA DURUMU KARTI */
-.ios-weather-card { padding: 20px; }
+.ios-weather-card { padding: 14px 16px; }
 .ios-w-top { display: flex; justify-content: space-between; align-items: flex-start; }
 .ios-w-city { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
-.ios-w-temp { font-size: 46px; font-weight: 200; letter-spacing: -2px; color: var(--text); line-height: 1; margin-bottom: 2px;}
+.ios-w-temp { font-size: 38px; font-weight: 200; letter-spacing: -2px; color: var(--text); line-height: 1; margin-bottom: 2px;}
 .ios-w-right { display: flex; flex-direction: column; align-items: flex-end; }
 .ios-w-icon { font-size: 32px; line-height: 1; margin-bottom: 6px; }
 .ios-w-hum { font-size: 13px; font-weight: 700; color: var(--early); }
-.ios-w-divider { height: 1px; background: var(--line); margin: 16px 0; }
+.ios-w-divider { height: 1px; background: var(--line); margin: 10px 0; }
 .ios-w-advice { display: flex; gap: 12px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 24px; }
-.ios-w-adv-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.5; }
+.ios-w-adv-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
 
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
-.vertical-list { display: flex; flex-direction: column; gap: 14px; }
+.vertical-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 10px; 
+  flex: 1; 
+  overflow-y: auto; 
+  padding-bottom: max(90px, env(safe-area-inset-bottom)); 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.vertical-list::-webkit-scrollbar {
+  display: none;
+}
 
-.card { display: flex; flex-direction: column; padding: 16px; margin-bottom: 0;}
+.card { display: flex; flex-direction: column; padding: 14px; margin-bottom: 0; flex-shrink: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
 /* KART BAŞLIĞI */
@@ -147,12 +172,12 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 
 /* İLAÇ LİSTESİ */
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
-.history-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
+.history-item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
 .history-item:last-child { border-bottom: none; }
 
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
-.drug-title { font-size: 15px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
-.drug-purpose { font-size: 13px; color: var(--muted); font-weight: 600; font-style: italic; }
+.drug-title { font-size: 14px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
+.drug-purpose { font-size: 12px; color: var(--muted); font-weight: 600; font-style: italic; }
 
 /* OTOMATİK DARALMA */
 .card.collapsed { cursor: pointer; }
@@ -160,9 +185,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .card.collapsed .card-header { margin-bottom: 0; }
 
 /* MİNİK BUTONU VE TOAST */
-.minik-button { position: fixed; bottom: 20px; right: 20px; background: var(--card); width: 64px; height: 64px; border-radius: 32px; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
+.minik-button { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
 .minik-button:active { transform: scale(0.9); }
-.minik-toast { position: fixed; bottom: 95px; right: 20px; background: var(--early); color: #fff; padding: 18px; border-radius: 20px; font-size: 15px; font-weight: 800; display: none; z-index: 1001; width: 280px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); line-height: 1.5; text-align: left; }
+.minik-toast { position: fixed; bottom: calc(90px + env(safe-area-inset-bottom)); right: 20px; background: var(--early); color: #fff; padding: 16px; border-radius: 20px; font-size: 14px; font-weight: 800; display: none; z-index: 1001; width: 260px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); line-height: 1.4; text-align: left; }
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
@@ -272,7 +297,7 @@ async function fetchWeather() {
         document.getElementById('wMainIcon').innerText = icon;
         
         const tEl = document.getElementById('wTempText');
-        tEl.innerText = `${t}°`; // iOS stilinde sadece C olmadan yuvarlak derece daha şık durur
+        tEl.innerText = `${t}°`; 
         tEl.style.color = tempColor;
 
         const hEl = document.getElementById('wHumText');
@@ -280,7 +305,7 @@ async function fetchWeather() {
         hEl.style.color = humColor;
 
         document.getElementById('wAdvIcon').innerText = advIcon;
-        document.getElementById('wAdvIcon').style.color = advColor; // İkon rengini de duruma göre boyayalım
+        document.getElementById('wAdvIcon').style.color = advColor; 
         document.getElementById('wAdvice').innerText = adv;
     } catch(e) { }
 }
