@@ -117,7 +117,7 @@ body {
     flex-shrink: 0;
 }
 
-/* YENİ: AYLIK İLAÇ TAMAMLAMA KARTI (Kompakt) */
+/* AYLIK İLAÇ TAMAMLAMA KARTI (Kompakt) */
 .compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
 .stat-left { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase;}
 .stat-right { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
@@ -134,7 +134,6 @@ body {
 .ios-w-divider { height: 1px; background: var(--line); margin: 10px 0; }
 .ios-w-advice { display: flex; gap: 10px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 22px; margin-top: 2px; }
-/* Öneri metni büyütüldü ve kalınlaştırıldı */
 .ios-w-adv-text { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.4; letter-spacing: -0.3px; }
 
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
@@ -216,7 +215,7 @@ body {
 </div>
 
 <div class="premium-card compact-stat">
-    <div class="stat-left">🗓️ Aylık İlaç Tamamlama</div>
+    <div class="stat-left" id="monthTitleText">🗓️ AYLIK İLAÇ TAMAMLAMA ORANI</div>
     <div class="stat-right" id="monthly-success-rate">%100</div>
 </div>
 
@@ -243,8 +242,8 @@ body {
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
 
 <script>
-// KENDİ LİNKİNİ BURAYA YAPIŞTIRMAYI UNUTMA
-const API_URL = "https://script.google.com/macros/s/AKfycbybibVR75b918CBOMRlpEJu699hHSvOvCFXD6qRAL-JUxmK95HIUcF5onhEQjrIbF67Wg/exec"; 
+// GÜNCEL API URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxRiBjuMTcinzd4n8FV7NncHEWLGvQbpE86gL65ZsC87wH71H1L7Cl4YwcU4ip831o5Jw/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
@@ -252,11 +251,14 @@ let apiData = {};
 // SVG İkon Tanımları
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
 
-// GREETING
+// GREETING VE DİNAMİK AY BAŞLIĞI
 const now = new Date();
 const hour = now.getHours();
 let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ? "Tünaydın" : (hour >= 17 && hour < 22) ? "İyi Akşamlar" : "İyi Geceler";
 document.getElementById('greetingText').innerText = `${gMsg},`;
+
+const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+document.getElementById('monthTitleText').innerText = `🗓️ ${aylar[now.getMonth()].toUpperCase()} AYI İLAÇ TAMAMLAMA ORANI`;
 
 // GELİŞMİŞ HAVA DURUMU & TEŞHİS 
 async function fetchWeather() {
@@ -381,7 +383,7 @@ function saniyeTiktak() {
     }
 }
 
-// PROGRAM HESAPLAYICI
+// PROGRAM HESAPLAYICI (Günlük veya Aylık Sorgular İçin Temel Motor)
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
@@ -399,6 +401,22 @@ function getDailyProgram(dateObj) {
     const cS = new Date(2026, 1, 12);
     if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Biyolojik' });
     return p;
+}
+
+// O AYKİ TOPLAM İLAÇ SAYISINI MATEMATİKSEL OLARAK HESAPLAMA MOTORU
+function getMonthlyTotalMedications(year, month) {
+    let total = 0;
+    let daysInMonth = new Date(year, month + 1, 0).getDate();
+    // Ayın 1'inden son gününe kadar her günü tara
+    for (let d = 1; d <= daysInMonth; d++) {
+        let currentDay = new Date(year, month, d);
+        let prog = getDailyProgram(currentDay);
+        // O güne denk gelen tüm ilaç sayısını toplama ekle
+        prog.forEach(s => {
+            total += s.meds.length;
+        });
+    }
+    return total;
 }
 
 // VERİ ÇEKME VE EKRAN ÇİZİMİ
@@ -430,17 +448,23 @@ function ekraniCiz() {
     });
     document.getElementById('alertsArea').innerHTML = alertsHTML;
 
-    // YENİ: AYLIK İLAÇ ORANI HESAPLAMA (Senin belirlediğin mantık)
-    const AYLIK_TOPLAM_ILAC = 150; 
-    // Not: apiData içinde 'aylikKacirilan' diye bir veri yolluyorsan onu alır, şimdilik test için 0.
+    // --- YENİ DİNAMİK AYLIK İLAÇ ORANI HESAPLAMA ---
+    // 1. Bulunduğumuz ayın toplam kutucuk hedefini (Cimzia, Delta vb. hepsi dahil) dinamik hesapla
+    const AYLIK_TOPLAM_ILAC = getMonthlyTotalMedications(now.getFullYear(), now.getMonth()); 
+    // 2. Google Sheets'ten dönen "İçilmedi" olarak işaretlenen sayıyı al (Eğer hiç yoksa 0'dır, yani %100'den başlar)
     const kacirilanIlacSayisi = apiData.aylikKacirilan || 0; 
+    
+    // 3. Yüzdeyi hesapla
     let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilanIlacSayisi) / AYLIK_TOPLAM_ILAC) * 100);
+    
+    // Yüzde sınırları (Negatif olmasını veya 100'ü geçmesini önlem)
     if (basariOrani < 0) basariOrani = 0;
+    if (basariOrani > 100) basariOrani = 100;
     
     const rateEl = document.getElementById('monthly-success-rate');
     rateEl.innerText = `%${basariOrani}`;
     
-    // Yüzdeye göre renk değiştirme (İsteğe bağlı şıklık)
+    // Yüzdeye göre renk değiştirme
     if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
     else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
     else rateEl.style.color = "var(--danger)";
