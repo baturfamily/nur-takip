@@ -387,7 +387,7 @@ function saniyeTiktak() {
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
-      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Tbc' }] },
+      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Bağışıklık baskılandığı için uykuda bekleyen mikropların uyanmasını engeller.' }] },
       { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Destek' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren' }] },
       { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'B12' }] },
       { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizma' }] },
