@@ -388,18 +388,18 @@ function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
       { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Bağışıklık baskılandığı için uykuda bekleyen mikropların uyanmasını engeller.' }] },
-      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Destek' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren' }] },
-      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'B12' }] },
-      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizma' }] },
-      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: 'Hepatit' }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: 'Sjögren' }] }
+      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Kalp ve damar sağlığını korur, eklemlere yapısal destek verir.' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren nedeniyle üretilemeyen gözyaşının yerini tutar, korneayı korur.' }] },
+      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'B12 Vitamini, Sinir kılıflarını besleyerek uyuşma ve karıncalanmaları önler.' }] },
+      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizmanın bağışıklık sistemine verdiği zararı kökten dengeler.' }] },
+      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: 'Kullanılan diğer ağır ilaçların karaciğeri yormasını engeller.' }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: 'Sjögren nedeniyle üretilemeyen gözyaşının yerini tutar, korneayı korur.' }] }
     ];
     
     const dS = new Date(2026, 1, 16); 
-    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: 'Kortizon' });
-    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: 'Vit D' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: 'Folik' }); }
-    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: 'İğne' });
+    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: 'Vücuttaki akut iltihabı ve şişliği en hızlı baskılayan kortizondur.' });
+    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: 'Kalsiyumun emilmesini sağlar, kemik erimesine karşı kaledir.' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: 'Romatizma ilaçlarının kan değerlerini düşürmesini engeller, vitamin dengeler.' }); }
+    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: 'Eklemlerdeki hasarı durduran haftalık temel tedavi ilacıdır.' });
     const cS = new Date(2026, 1, 12);
-    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Biyolojik' });
+    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Doğrudan iltihaba sebep olan proteinleri bulan en gelişmiş biyolojik silahtır.' });
     return p;
 }
 
