@@ -264,22 +264,121 @@ document.getElementById('monthTitleText').innerText = `🗓️ ${aylar[now.getMo
 // GELİŞMİŞ HAVA DURUMU & TEŞHİS 
 async function fetchWeather() {
     try {
-        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m');
+        // Rüzgar ve UV İndeksi verilerini de çeken güncel API adresi
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=uv_index_max&timezone=auto');
         const data = await res.json();
+        
         const t = Math.round(data.current.temperature_2m); 
         const h = data.current.relative_humidity_2m;
+        const w = data.current.wind_speed_10m; // Rüzgar
+        const uv = data.daily.uv_index_max[0]; // UV İndeksi
         
-        let icon = "🌥️";
-        let advIcon = "🩺";
-        let advColor = "var(--accent)";
-        let adv = `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu ve rahat hissedeceğin denge durumundasın. Keyfini çıkar!`;
-        
-        // Akıllı Sıcaklık Rengi
-        let tempColor = "var(--text)";
-        if (t < 10) tempColor = "#007AFF"; 
-        else if (t < 20) tempColor = "#34C759"; 
-        else if (t < 28) tempColor = "#FF9500"; 
-        else tempColor = "#FF3B30"; 
+        let icon = "🌥️", advIcon = "🩺", advColor = "var(--accent)", adviceList = [];
+
+        // Rastgele mesaj seçici motor
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        // 1. YÜKSEK UV (Güneş/İlaç Hassasiyeti)
+        if (uv > 5) {
+            advIcon = "🕶️"; advColor = "var(--warning)";
+            adviceList = [
+                "Güneş (UV) bugün çok dik geliyor. İlaçların cildini hassas yapabilir, lütfen koruyucu sür ve gölgede kal.",
+                "Yüksek UV uyarısı! Bugün cildini ve gözlerini güneşten korumalısın. En dik saatlerde çıkmamaya çalış.",
+                "Güneş bugün ekstra etkili. Şapkanı ve gözlüğünü takmadan balkona bile çıkma Sultanım.",
+                "Güneş ışınları ilaçlarınla etkileşime girip ciltte kızarıklık yapabilir. Güneşten kaçmak şifadır.",
+                "UV indeksi riskli seviyede. Cildin bugün çok hassas; lütfen gölgenin konforunda kal Nurten Sultan.",
+                "Güneşin yakıcı etkisi yüksek. Plaquenil cildini savunmasız bırakabilir; güneş kremini tazele.",
+                "Güneş bugün cildini yorabilir. UV ışınlarından kaçınarak olası lekelenmelerin önüne geçmelisin.",
+                "Hava çok güneşli; Sjögren kuruluğunu da artırabilir. Cildini ve gözlerini korumak için gölgede kal.",
+                "UV ışınları bugün en yüksek seviyede. Güneşle arana mesafe koyman gereken bir gündesin Sultanım.",
+                "Açık hava aldatmasın; UV indeksi çok yüksek. Bugün dışarıda en güvenli yer gölgelerdir."
+            ];
+        } 
+        // 2. SERT RÜZGAR (Sjögren/Göz Alarmı)
+        else if (w > 20) {
+            icon = "🌬️"; advIcon = "💧"; advColor = "var(--early)";
+            adviceList = [
+                "Dışarıda sert bir rüzgar var. Rüzgar Sjögren'in düşmanıdır ve gözlerini anında kurutur. Mutlaka damlanı damlat ve gözlerini koru.",
+                "Rüzgar kuvvetli esiyor. Gözlerin tahriş olmasın diye bugün pencereleri kapalı tutmak ve dışarı çıkacaksan gözlerini korumak çok önemli.",
+                "Esinti bugün fazla. Gözlerinin nem dengesini korumak için bugün her zamankinden daha dikkatli olmalısın Nurten Sultan.",
+                "Esinti bugün gözyaşını çabuk kurutabilir. Dışarı çıkman gerekirse koruyucu gözlüğünü takmayı ve damlanı tazelemeyi unutma.",
+                "Sert rüzgar Sjögren'i tetikler. Gözlerinde batma hissetmeden önce önlemini almalı ve rüzgardan uzak durmalısın Sultanım.",
+                "Hava bugün gözlerini yoracak kadar esintili. Damlalarını yanından ayırma ve rüzgara karşı yürümemeye dikkat et.",
+                "Rüzgarın kurutucu etkisi bugün yüksek. Ağız ve göz kuruluğu hissetmemek için su tüketimini de artırman iyi olur.",
+                "Bugün hava rüzgarla birlikte gözlerini kurutabilir. Suni gözyaşını her zamankinden biraz daha sık kullanabilirsin Nurten Sultan.",
+                "Dışarıdaki hava akımı göz nemini çalabilir. Bugün mümkünse rüzgarlı alanlarda uzun süre kalmamaya çalış Sultanım.",
+                "Kuvvetli rüzgar uyarısı! Sjögren hassasiyetin için bugün korunaklı yerlerde kalmak göz konforun için en doğrusu olacaktır."
+            ];
+        } 
+        // 3. SOĞUK VE NEMLİ (Romatizma Alarmı)
+        else if (h > 70 && t < 15) {
+            icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
+            adviceList = [
+                `Hava soğuk ve nemli (%${h}). Nem eklem sıvılarının basıncını değiştirip ağrı yapabilir. Lütfen dizlerini sıcak tutmaya özen göster.`,
+                `Dışarıdaki yüksek nem (%${h}) eklemlerinde baskı hissi yaratabilir. Bugün evde kalıp dizlerini battaniye ile sıcak tutmak iyi gelecektir.`,
+                "Nem ve soğuk birleşince romatizman kendini hatırlatabilir. Ağrıların artmadan eklemlerini korumaya almalı ve bol su içmelisin.",
+                "Rutubetli ve serin bir gün. Eklemlerindeki sıvı basıncı değişebilir, bu yüzden bugün kendini fazla yormadan dinlenmeye odaklan.",
+                "Nem oranı eklemlerini sızlatabilir. Bugün biraz daha yavaş hareket etmeli ve ağrı tetiklenmeden sıcak bitki çayını yudumlamalısın.",
+                "Dışarıdaki nem bulutu eklemlerin için biraz yorucu olabilir. Isı dengeni korumak için evde kalman en iyisi Nurten Sultan.",
+                "Havadaki su buharı eklemlerinde sabah tutukluğunu uzatabilir. Bugün eklemlerini hafifçe hareket ettirerek esnek kalmaya çalış.",
+                "Bugün hava biraz 'ağır'. Nem ve serinlik birleşince eklemler sızlayabilir; lütfen yün dizliklerini veya sıcak çoraplarını ihmal etme.",
+                "Rutubet bugün sınırda. Nemli hava romatizmal hassasiyeti artırır; bugünü evinin sıcak ve kuru atmosferinde geçirmelisin.",
+                "Serin ve nemli hava romatizmanın en sevmediği ikilidir. Kendini korumaya alıp vücut ısını sabit tutman çok önemli Sultanım."
+            ];
+        } 
+        // 4. AŞIRI SOĞUK (Sertleşme/Tutukluk)
+        else if (t < 12) {
+            icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)";
+            adviceList = [
+                "Dışarısı oldukça soğuk. Soğuk hava eklemleri sertleştirir, lütfen kat kat giyinmeyi ve eklemlerini sıcak tutmayı ihmal etme.",
+                "Dondurucu bir hava var. Bu soğuk sabah tutukluğunu artırabilir. Evin sıcaklığında kalman ve dinlenmen en güvenlisi.",
+                "Sıcaklık çok düşük. Eklemlerin taş kesilmesin diye dizlerini ve ayaklarını her zamankinden daha sıcak tutmalısın Sultanım.",
+                "Dondurucu soğuklar eklem hareketlerini kısıtlayabilir. Hareket kabiliyetini korumak için evin içinde hafif esneme hareketleri yapabilirsin.",
+                "Hava buz kesmiş durumda. Soğuk hava romatizmal tutukluğu artırır; kalın çoraplarını giyip vücut ısısını korumayı ihmal etme.",
+                "Dışarıdaki dondurucu hava eklemlerin için bir sınav olabilir. Vücudunu sıcak tutarak bu süreci ağrısız atlatabilirsin.",
+                "Hava sıcaklığı çok düştü. Soğuk, Sjögren kuruluğunu da hissedilir kılar; hem sıcak kalmalı hem de damlanı ihmal etmemelisin.",
+                "Bugün hava tam bir 'kış' günü. Eklemlerinin sertleşmemesi için sıcak içecekler tüketmek ve sıcak ortamda kalmak sana iyi gelir.",
+                "Sıcaklık sıfıra yakın. Bu havalarda romatizma ağrıları tetiklenebilir; lütfen kendini rüzgardan ve soğuktan tamamen izole et.",
+                "Buz gibi bir hava seni bekliyor. Eklemlerini korumak için bugün kat kat giyinmenin gücünden yararlanmalısın Nurten Sultan."
+            ];
+        } 
+        // 5. AŞIRI SICAK (Dehidrasyon/Kuruluk)
+        else if (t > 28) {
+            icon = "☀️"; advIcon = "🥤"; advColor = "var(--warning)";
+            adviceList = [
+                "Hava oldukça sıcak. Sıvı kaybı ağız ve göz kuruluğunu artırır. Bol bol su içmeyi ve damlalarını kullanmayı unutma.",
+                "Güneş yakıyor! Sıcaklık artışı Sjögren kuruluğunu tetikler. Lütfen susamayı beklemeden su içmeyi alışkanlık edin.",
+                "Dışarıda bunaltıcı bir sıcak var. Vücudun su kaybetmesin diye bugün serin yerlerde kalmalı ve damlalarını tazelemelisin.",
+                "Sıcaklar ağız ve göz kuruluğunu zirveye taşıyabilir. Damlaların ve su bardağın her zaman elinin altında olsun Sultanım.",
+                "Bugün termometreler Sjögren için riskli bir noktada. Vücudunu serin tutmalı ve su tüketimini artırmalısın Nurten Sultan.",
+                "Aşırı sıcaklar eklemlerde ödem yapabilir. Serin kalarak ve bol su tüketerek vücut dengeni koruman gereken bir gündesin.",
+                "Hava çok bunaltıcı. Sıcaklık artışıyla birlikte Sjögren belirtileri belirginleşebilir; damlanı yanından hiç ayırma.",
+                "Bugün hararetin yükselebilir. Su içmek sadece susuzluğunu gidermez, Sjögren kuruluğuna da en büyük ilaçtır Nurten Sultan.",
+                "Sıcaklık bugün sınırları zorluyor. Vücudundaki nemi korumak için serin ortamlarda dinlenmeli ve sıvı desteğini artırmalısın.",
+                "Termometreler yükseliyor! Bu sıcakta en büyük şifan su ve serinliktir. Kendini güneşin etkisinden uzak tut Sultanım."
+            ];
+        } 
+        // 6. İDEAL HAVA (Konfor Modu)
+        else {
+            adviceList = [
+                `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu hissedeceğin gündesin. Keyfini çıkar!`,
+                "Bugün tam senin havan Nurten Sultan! Sıcaklık ve nem tam istediğimiz seviyelerde. Eklemlerini yormadan hafif bir yürüyüş yapabilirsin.",
+                "Dışarıda bahar tadında bir hava var. Ne eklemlerini ne de gözlerini yoracak bir durum yok. Günün tadını çıkar Sultanım.",
+                "Bugün hava tam bir şifa kaynağı. Derin bir nefes alıp bu dengeli havanın tadını çıkar; her şey yolunda görünüyor.",
+                "Dışarıdaki denge harika. Romatizman ve Sjögren bugün seni hiç üzmeyecek gibi görünüyor, bu güzel enerjiyi değerlendirmelisin.",
+                "Gökyüzü bugün senin sağlığın için gülümsüyor. Hava sıcaklığı eklemlerin için çok ideal, güzel bir gün dilerim.",
+                "Huzurlu ve dengeli bir gün. Ne rüzgar ne de aşırı sıcak var. Bugün fiziksel olarak kendini çok iyi hissetmen için her şey hazır.",
+                "Bugün havadaki nem ve sıcaklık tam kararında. Eklemlerin için en az riskli, en konforlu zaman dilimindesin Sultanım.",
+                "Dışarıda yumuşacık bir hava var. Sjögren kuruluğunu tetikleyecek hiçbir olumsuzluk yok, bol bol oksijen alabilirsin.",
+                "Harika bir gün seni bekliyor! Eklemlerin bugün esnek, gözlerin nemli kalacak. Bu güzel havanın tadını sonuna kadar çıkar."
+            ];
+            
+            // Sıcaklık 15-28 arası için akıllı renk ayarlaması
+            let tempColor = "var(--text)";
+            if (t < 20) tempColor = "#34C759"; 
+            else if (t < 28) tempColor = "#FF9500"; 
+            document.getElementById('wTempText').style.color = tempColor;
+        }
 
         // Akıllı Nem Rengi
         let humColor = "var(--text)";
@@ -287,38 +386,17 @@ async function fetchWeather() {
         else if (h <= 60) humColor = "#34C759"; 
         else if (h <= 75) humColor = "#32ADE6"; 
         else humColor = "#AF52DE"; 
-        
-        if (h > 70 && t < 15) { 
-            icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
-            adv = `Hava soğuk ve nemli (%${h}). Nem ve soğuk birleştiğinde eklem sıvılarının basıncı değişir; bu durum romatizmal ağrıları tetikleyebilir. Lütfen dizlerini sıcak tutmaya ve kendini yormamaya özen göster.`; 
-        }
-        else if (t < 12) { 
-            icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)";
-            adv = `Dışarısı oldukça soğuk (${t}°C). Soğuk hava eklemleri sertleştirdiği ve Sjögren kaynaklı göz kuruluğunu artırdığı için eklemlerini mutlaka sıcak tutmalı, rüzgar varsa damlalarını kullanmalısın.`; 
-        }
-        else if (h > 75) { 
-            icon = "🌫️"; advIcon = "💧"; advColor = "var(--purple)";
-            adv = `Nem oranı çok yüksek (%${h}). Yüksek nem eklemlerde ağırlık hissi ve sabah tutukluğunu artırabileceği için bugün fiziksel olarak kendini fazla zorlamamaya dikkat etmelisin.`; 
-        }
-        else if (t > 28) { 
-            icon = "☀️"; advIcon = "🕶️"; advColor = "var(--warning)";
-            adv = `Hava oldukça sıcak (${t}°C). Yüksek ısı vücuttaki sıvı kaybını hızlandırıp ağız ve göz kuruluğunu artırır. Bu yüzden bol bol su içmeyi ve göz damlalarını her zamankinden sık kullanmayı unutma.`; 
-        }
-        
+
+        // Ekranı Güncelle
         document.getElementById('wMainIcon').innerText = icon;
-        
-        const tEl = document.getElementById('wTempText');
-        tEl.innerText = `${t}°`; 
-        tEl.style.color = tempColor;
-
-        const hEl = document.getElementById('wHumText');
-        hEl.innerText = `%${h} Nem`;
-        hEl.style.color = humColor;
-
+        document.getElementById('wTempText').innerText = t + "°";
+        document.getElementById('wHumText').innerText = "%" + h + " Nem";
+        document.getElementById('wHumText').style.color = humColor;
         document.getElementById('wAdvIcon').innerText = advIcon;
         document.getElementById('wAdvIcon').style.color = advColor; 
-        document.getElementById('wAdvice').innerText = adv;
-    } catch(e) { }
+        document.getElementById('wAdvice').innerText = pick(adviceList);
+
+    } catch(e) { console.error("Hava durumu çekilemedi:", e); }
 }
 fetchWeather();
 
