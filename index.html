@@ -612,6 +612,7 @@ async function veriCek() {
 function ekraniCiz() {
     const todayProg = getDailyProgram(now);
     
+    // 1. ÜST KISIMDAKİ UYARI KALKANLARI
     let alertsHTML = "";
     todayProg.forEach(s => {
         s.meds.forEach(m => {
@@ -622,6 +623,84 @@ function ekraniCiz() {
         });
     });
     document.getElementById('alertsArea').innerHTML = alertsHTML;
+
+    // 2. AYLIK İLAÇ ORANI HESAPLAMA
+    const AYLIK_TOPLAM_ILAC = getMonthlyTotalMedications(now.getFullYear(), now.getMonth()); 
+    const kacirilanIlacSayisi = apiData.aylikKacirilan || 0; 
+    let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilanIlacSayisi) / AYLIK_TOPLAM_ILAC) * 100);
+    
+    if (basariOrani < 0) basariOrani = 0;
+    if (basariOrani > 100) basariOrani = 100;
+    
+    const rateEl = document.getElementById('monthly-success-rate');
+    rateEl.innerText = `%${basariOrani}`;
+    
+    if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
+    else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
+    else rateEl.style.color = "var(--danger)";
+
+    // --- YENİ EKLENEN HAFIZA BÖLÜMÜ ---
+    // Ekranı silmeden önce hangi kartların açık olduğunu aklımızda tutuyoruz
+    const stateMap = {};
+    document.querySelectorAll('.card').forEach(c => {
+        const id = c.getAttribute('data-id');
+        if (id) {
+            stateMap[id] = c.classList.contains('collapsed');
+        }
+    });
+
+    // 3. KARTLARI ÇİZME
+    let timelineHTML = "";
+
+    todayProg.forEach((s) => {
+        let sTC = 0; 
+        let medsHTML = "";
+        
+        s.meds.forEach(m => { 
+            const isDone = apiData[m.key] === "İçildi";
+            if(isDone) { sTC++; }
+            
+            const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
+            
+            medsHTML += `
+                <div class="history-item">
+                    ${iconHTML}
+                    <div class="med-info">
+                        <span class="drug-title">${m.name}</span>
+                        <span class="drug-purpose">${m.purpose}</span>
+                    </div>
+                </div>`; 
+        });
+        
+        const isAllDone = (sTC === s.meds.length);
+        const badgeClass = isAllDone ? "badge-safe" : "badge-wait";
+        const badgeText = isAllDone ? `TAMAMLANDI <span class="exp-arrow">▲</span>` : "BEKLİYOR";
+        
+        // HAFIZAYI UYGULAMA
+        let isCollapsed = isAllDone; // Varsayılan durum
+        if (stateMap[s.id] !== undefined) {
+            isCollapsed = stateMap[s.id]; // Annem manuel müdahale ettiyse onun kararını ezme
+        }
+
+        const cardClass = isAllDone ? "done-card" : "";
+        const collapseClass = isCollapsed ? "collapsed" : "";
+        const onClick = `onclick="this.classList.toggle('collapsed')"` ;
+
+        // data-id="${s.id}" ekleyerek kartlara kimlik verdik
+        timelineHTML += `
+            <div class="premium-card card ${cardClass} ${collapseClass}" data-id="${s.id}" ${onClick}>
+                <div class="card-header">
+                    <div class="drug-name">${s.icon} ${s.title}</div>
+                    <div class="badge ${badgeClass}">${badgeText}</div>
+                </div>
+                <div class="meds-container">
+                    ${medsHTML}
+                </div>
+            </div>`;
+    });
+    
+    document.getElementById('timelineArea').innerHTML = timelineHTML;
+}
 
     // --- YENİ DİNAMİK AYLIK İLAÇ ORANI HESAPLAMA ---
     // 1. Bulunduğumuz ayın toplam kutucuk hedefini (Cimzia, Delta vb. hepsi dahil) dinamik hesapla
