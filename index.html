@@ -130,18 +130,16 @@ body {
 /* --- HAVA DURUMU KARTI (ÖZEL MAVİMSİ TASARIM) --- */
 .ios-weather-card { 
     padding: 16px; 
-    background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%); /* Ferah mavimsi degrade */
-    border: 1px solid #BADCFF; /* Çerçeveyi de maviyle uyumlu hale getirdik */
+    background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%);
+    border: 1px solid #BADCFF;
 }
 .ios-w-top { display: flex; justify-content: space-between; align-items: center; }
 .ios-w-city { font-size: 13px; font-weight: 800; color: #5B7BA6; margin: 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
 .ios-w-right-group { display: flex; align-items: center; gap: 8px; }
 
-/* Derece ve İkona derinlik (gölge) eklendi */
 .ios-w-temp { font-size: 28px; font-weight: 600; letter-spacing: -1px; line-height: 1; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.05); color: var(--text); }
 .ios-w-icon { font-size: 26px; line-height: 1; margin: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));}
 
-/* Nem kısmı için şık kapsül (pill) tasarımı */
 .ios-w-hum { font-size: 13px; font-weight: 800; background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 12px; margin: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.03);}
 
 .ios-w-divider { height: 1px; background: rgba(91, 123, 166, 0.2); margin: 12px 0; }
@@ -149,7 +147,6 @@ body {
 .ios-w-adv-icon { font-size: 24px; margin-top: 2px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
 .ios-w-adv-text { font-size: 17px; font-weight: 700; color: #1E293B; line-height: 1.5; letter-spacing: -0.3px; display: block; }
 
-/* KARANLIK MOD (DARK MODE) İÇİN GECE MAVİSİ UYARLAMASI */
 @media (prefers-color-scheme: dark) {
     .ios-weather-card { background: linear-gradient(135deg, #1A2639 0%, #111827 100%); border-color: #2D3E5B; }
     .ios-w-city { color: #8BA6C9; }
@@ -159,10 +156,10 @@ body {
 }
 
 /* AYLIK İLAÇ TAMAMLAMA KARTI */
-.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; }
+.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 16px;}
 .stat-left { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase;}
 .stat-right { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
-}
+
 
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
 .vertical-list { 
@@ -264,7 +261,7 @@ body {
     </div>
 </div>
 
-  <div class="premium-card compact-stat">
+<div class="premium-card compact-stat">
     <div class="stat-left" id="monthTitleText">🗓️ AYLIK İLAÇ TAMAMLAMA ORANI</div>
     <div class="stat-right" id="monthly-success-rate">%100</div>
 </div>
