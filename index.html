@@ -74,7 +74,16 @@ body {
   color: var(--text); 
   font-family: -apple-system, system-ui, sans-serif; 
   padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; 
-  height: 100vh; 
+  
+  /* --- EKRANI KİLİTLEYEN KISIM --- */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100dvh; /* iPhone'lar için hatasız dinamik yükseklik */
+  width: 100vw;
+  
   display: flex; 
   flex-direction: column; 
   overflow: hidden; 
