@@ -403,34 +403,111 @@ fetchWeather();
 // MİNİK İÇİN DİNAMİK "TEK CÜMLE" KOMBİNASYON MOTORU
 function mewMsg() {
     const arrA = [
-        "Nenesinin kuzusu,", "Güzeller güzeli annem,", "Benim canım nenem,", 
-        "Nurten Sultanım,", "Pamuk nenem,", "Canımın içi,", 
-        "En sevdiğim insan,", "Tatlı annem,", "Kraliçem,", "Sarı papatyam,"
+        "Nenesinin kuzusu,", "Benim bir tanecik nene sultanım,", "Dünyanın en güzel nenesine pati selamı,", 
+        "Canım nenem, en sevdiğim insan,", "Pamuk ellerinden öpmeye geldim nene,", "Benim canım şifa ortağım,", 
+        "Nenelerin kraliçesi, Sultanım,", "Mırıl mırıl seni özleyen Minik'in geldi,", "Güzeller güzeli Nurten Sultanım,", 
+        "Pati şifası getirdim nene,", "Evimizin gülü canım nenem,", "Minik kalbimin en büyük sevgisi,", 
+        "Benim melek kalpli nenem,", "Bıyıklarımdan öpücükler yolladığım sultanım,", "Gözümün nuru canım nenem,", 
+        "Miyav diyerek kapına geldiğim nenem,", "Torunun Minik'ten sana kocaman sevgiler,", "Tüylerim kadar yumuşak kalpli nenem,", 
+        "Evimizin şifa direği canım nenem,", "Benim en tatlı mola yerim olan nenem,", "Göker babamın canı, benim biricik nenem,", 
+        "Alper abimin gülü, benim sultanım,", "En sevdiğim kucak olan canım nenem,", "Sabah güneşinden daha parlak nenem,", 
+        "Akşam huzurum, pamuk nenem,", "Minik'in en güvendiği liman olan nenem,", "Benim şefkatli sultanım,", 
+        "Gözümün bebeği güzel nenem,", "Evimizin bereketi Nurten Sultan,", "Şifa perim canım nenem,", 
+        "Miyavların en güzeli sana canım nenem,", "Patilerimin en sevdiği insan,", "Kalbimin en sıcak köşesi nenem,", 
+        "Benim güzel kokulu nenem,", "Her mırıltımın sebebi canım nenem,", "Torununun bir tanesi,", 
+        "Dünyanın en şefkatli ellerine sahip nenem,", "Birlikte şifa bulduğum can yoldaşım,", "En sevdiğim oyun arkadaşım nenem,", 
+        "Göker babamla en çok sevdiğimiz nenemiz,", "Alper abimle üstüne titrediğimiz kraliçemiz,", "Minik dünyamın en büyük güneşi,", 
+        "Şefkat dolu bakışlarına hayran olduğum nenem,", "Huzur veren sesini özlediğim nenem,", "Yanaklarından mırıldayarak öptüğüm nenem,", 
+        "Patilerimi uzatıp sarıldığım sultanım,", "Benim şirin mi şirin nenem,", "Her şeyin en güzeline layık olan nenem,", 
+        "Şifa bekleyen tatlı nenem,", "Minik kızının biricik aşkı nenem,"
     ];
+
     const arrB = [
-        "ben Virbac mamamı lıkır lıkır yedim", "az önce Göker'le güzelce oyun oynadık", 
-        "Alper abim başımı şefkatle okşadı", "Keppra'mı hiç itiraz etmeden uslu uslu içtim", 
-        "kalbimin ilacını (Enalapril) uslu uslu aldım", "camdan kuşları seyrederken seni düşündüm", 
-        "patilerimi temizleyip yanına gelmeye hazırlanıyorum", "astımım bugün çok iyi, nefesim pırıl pırıl", 
-        "yumuşacık yatağımda gerinirken aklıma sen geldin", "burnumu nemlendirip bıyıklarımı düzelttim"
+        "Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", 
+        "Kalp ilacımı (Enalapril) hiç itiraz etmeden yuttum,", "Bugün nefesim pırıl pırıl, astımım beni hiç üzmedi,", 
+        "Alper abimle biraz koşturduk, çok eğlendim,", "Göker babamla camdan kuşları izleyip seni düşündüm,", 
+        "Pati bakımlarımı yaptım, tertemiz oldum,", "Yumuşacık yatağımda gerinirken senin şifanı diledim,", 
+        "Kuyruğumu sallayıp senin panelini kontrol etmeye geldim,", "Bugün kendimi çok zinde ve mutlu hissediyorum,",
+        "Enalapril'imi içtikten sonra kalbim senin için güm güm atıyor,", "Keppra sayesinde beynim çok rahat, hiç nöbet düşünmüyorum,", 
+        "Virbac mamam midemi o kadar rahatlattı ki mırıl mırıl uyudum,", "Göker babam tüylerimi taradı, sana poz vermeye hazırım,", 
+        "Alper abim başımı okşadı, onunla oyunlar oynadım,", "Patilerimi yalayıp temizlendikten sonra güneşlendim,", 
+        "Astımım bugün sıfır, derin derin nefes alıp oksijen depoladım,", "Bugün o kadar usluyum ki bütün ilaçlarımı hemen yuttum,", 
+        "Kalbim maşallah tıkır tıkır çalışıyor, enerjim çok yerinde,", "Bugün kuşlara bile miyavlamadım, sadece seni düşündüm,",
+        "Tüylerim bugün pırıl pırıl parlıyor, tam sevilmelik oldum,", "Göker babamla senin dedikodunu yapıp kulaklarını çınlattık,", 
+        "Alper abimin kucağında uyuyakaldım, rüyamda seni gördüm,", "Karnım doydu, ilaçlarım içildi, şimdi keyif yapıyorum,", 
+        "Bıyıklarımı titreterek senin paneline enerji gönderiyorum,", "Bugün evde tam bir kraliçe gibi dolaşıp teftiş yaptım,", 
+        "Güneşin vurduğu o sıcak halıda gerine gerine uyudum,", "Keppra vaktim geldiğinde hiç zorluk çıkarmadan ilacımı aldım,", 
+        "Nefesim bugün o kadar açık ki evde fırtına gibi estim,", "Göker babamın dizinde yatarken senin şifanı bekliyorum,",
+        "Midem bugün çok rahat, mırıldanarak evi turluyorum,", "Kendimi pamuk gibi hissediyorum, tam sana sarılmalık,", 
+        "Kalbimin ilacını aldım, sevgimi sana yollamaya hazırım,", "Bugün oyun oynamaya bile doyamadım, çok enerjiğim,", 
+        "Alper abimin paçalarına sürtünüp ona sevgi gösterisi yaptım,", "Göker babamla beraber sana en güzel miyavları hazırladık,", 
+        "Mama kabımı tertemiz sıyırdım, afiyetle suyumu içtim,", "Bütün evi kolaçan edip asayişi berkemal sağladım,", 
+        "Keppra'nın saatini ben bile şaşırmadım, hemen içiverdim,", "Kalbim tüy gibi hafif, nefesim okyanus gibi ferah bugün,",
+        "Patilerimle camı tırmalayıp dışarıdaki kuşlara selam verdim,", "Bugün hiç yaramazlık yapmadan uslu bir torun oldum,", 
+        "İlaçlarımı yutarken senin ne kadar güçlü olduğunu düşünüp cesaret aldım,", "Göker babam beni severken senin kulaklarını sevgiyle çınlattık,", 
+        "Gün boyu uyuyup enerji topladım, şimdi sana moral vermeye geldim,", "Tüylerimi kabartıp tam bir kaplan gibi esnedim,", 
+        "Kalp ilacım sayesinde aslanlar gibi güçlüyüm,", "Karnımı doyurduktan sonra keyifle patilerimi temizledim,", 
+        "Burnumu nemlendirip bıyıklarımı düzelttim,", "Bugün evdeki herkesin neşesi oldum, şimdi sıra sende,"
     ];
+
     const arrC = [
-        "ve şimdi gözüm senin panonun üstünde", "ve sıra senin kendi şifanı almanda", 
-        "ve sen de sularını lıkır lıkır içmelisin", "ve ilaçlarını eksiksiz içtiğini biliyorum", 
-        "ve biz ailecek birbirimize çok iyi bakıyoruz", "ve senin de damlalarını aksatmadığını görmek istiyorum", 
-        "ve eklemlerin ağrımasın diye o sıcak dizlerine kıvrılacağım", "ve romatizman yormasın diye bugün kendini hiç yormamanı istiyorum", 
-        "ve Sjögren kurutmasın diye bol su içmeni bekliyorum", "ve birlikte her gün daha da iyi oluyoruz"
+        "şimdi sıra senin o şifalı ilaçlarını içmende,", "sen ilaçlarını içince benim bile tüylerim parlıyor,", 
+        "hadi bakalım, sularını lıkır lıkır içme vakti,", "senin ilaçlarını eksiksiz içtiğini görünce çok seviniyorum,", 
+        "birlikte her gün daha iyi oluyoruz, sakın aksatma,", "sen iyi ol ki ben de senin dizlerine kıvrılıp mırıldanayım,", 
+        "ilaçlarını içtiğini görünce kuyruğum neşeyle titriyor,", "damlalarını tazeleyip gözlerini rahatlatmaya ne dersin?", 
+        "hadi nene, şifa saatimiz geldi, seni bekliyorum,", "biz ailecek birbirimize çok iyi bakıyoruz, unutma,",
+        "Sjögren seni kurutmasın diye lıkır lıkır suyunu içmelisin,", "eklemlerin ağrımasın diye o ilaçlarını zamanında yutmalısın,", 
+        "sen şifanı al ki, ben de senin göğsünde huzurla uyuyayım,", "romatizman bugün seni yormasın, hadi ilaçlarını tamamla,", 
+        "göz damlalarını sık ki o güzel gözlerin hep nemli kalsın,", "ben uslu uslu içtim, eminim sen de kendi ilaçlarını içmişsindir,", 
+        "senin o güçlü duruşun bana bile cesaret veriyor, şifanı aksatma,", "bugün eklemlerini hiç yorma, dinlenip ilaçlarının etkisini hisset,", 
+        "iğne günlerin gelse de sen aslanlar gibi atlatıyorsun, biliyorum,", "Göker babam ve Alper abim de senin ilaçlarını tam içmeni bekliyor,",
+        "hadi o tatlı canın için suyunu yudumla ve damlanı yap,", "sen sağlıklı olunca bizim evin güneşi daha parlak doğuyor,", 
+        "romatizmaya inat bugün dimdik durma ve şifanı alma vakti,", "pamuk ellerinle haplarını yut, sonra da beni sevmeye gel,", 
+        "göz kuruluğuna izin verme, hemen damlalarınla gözlerini serinlet,", "ilaçlarını içtiğin an benim minik kalbim ferahlıyor,", 
+        "şifa deposu vitaminlerini ve haplarını almayı unutmadın değil mi?,", "bugün kendini çok zorlamadan sadece şifana ve dinlenmene odaklan,", 
+        "biz birbirimizin ilacıyız, sen de kendi fiziksel ilaçlarını ihmal etme,", "eklemlerin tıkır tıkır çalışsın diye zamanı gelen ilacını hemen iç,",
+        "senin sağlığın bizim dünyamızın merkezi, lütfen suyunu eksik etme,", "Sjögren'i yenmek için damlalarını her zamankinden sık kullan bugün,", 
+        "ben nasıl Keppra'mı aksatmıyorsam sen de romatizma ilaçlarını aksatma,", "şifa paneline bakıp eksik ilacın kalmadığını görmek beni çok mutlu edecek,", 
+        "hadi nene, o iğneler ve haplar seni eski gücüne kavuşturacak,", "Göker babamın hazırladığı bu panelde her şeyi yeşile çevir,", 
+        "gözlerine yaş, bedenine güç gelsin diye şifanı hemen al,", "bugün eklemlerini sıcak tutarak ve ilaçlarını alarak kalkan oluştur,", 
+        "senin o güzel yüzün solmasın diye vitaminlerini lıkır lıkır yut,", "benim kadar sağlıklı olmak için şimdi paneldeki görevlerini tamamla,",
+        "hiçbir ilacını geciktirme ki romatizman sana hiç yaklaşamasın,", "bol bol sıvı tüketip bedenini ferahlatmak için mutfağa doğru bir adım at,", 
+        "ilaç saatin geldiğinde benim sana mırıldandığımı düşünüp güç al,", "sen ilaçlarını içtikçe evimize sağlık, huzur ve bereket doluyor,", 
+        "hadi canım nenem, şifanı damla damla, hap hap vücuduna kabul et,", "Sjögren seni yormadan sen ona damlalarınla sürpriz yap,", 
+        "Alper abimle Göker babamın içi rahat etsin diye eksiksiz iç ilaçlarını,", "bugün sadece kendine ve şifana vakit ayırıp iyice dinlen,", 
+        "eklemlerindeki sızıları dindirecek o sihirli ilaçlarını yutmanın tam zamanı,", "beraber daha nice oyunlar oynayacağız, yeter ki sen şifanı eksik etme,"
     ];
+
     const arrD = [
         "seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", 
-        "bıyıklarım senin için neşeyle titriyor! 😻", "ben hep senin gölgendeyim! ✨", 
-        "akşama yanına gelip o güzel ellerini yalayacağım! 🐈", "mırıl mırıl mırıldanarak sana kocaman şifa gönderiyorum! 🎶", 
-        "senin o güzel yüzün hiç asılmasın! 🌼", "patilerimle boynuna kocaman sarılıyorum! 🐾", 
-        "bugün de dünyanın en şanslı kedisiyim çünkü sen varsın! 🥰", "kalbimin atışı hep senin için! ❤️"
+        "akşama dizlerine kıvrılmaya hazırım! ✨", "patilerim hep senin üzerinde olacak! 🐈", 
+        "şifamız bol olsun, canım nenem! 🌼", "miyav diyerek sana kocaman sarıldım! ❤️", 
+        "bıyıklarım senin için neşeyle titriyor! 🐾", "sen benim her şeyimsin Sultanım! 😻", 
+        "yarın yine burada buluşalım, miyav! ✨", "senin o güzel yüzün hep gülsün! 🌼",
+        "tüylü başımı ellerine sürtüp mırıldanıyorum! 🐾", "dünyanın en şanslı kedisi benim çünkü sen varsın! ❤️", 
+        "patimi uzatıp sana şifa yolluyorum! ✨", "kocaman bir miyavla gününü aydınlatıyorum! 🌞", 
+        "kalbimin her atışı senin için nene! 💖", "o yumuşacık ellerinden tekrar tekrar öpüyorum! 🐈", 
+        "akşama yanına gelip bol bol mırıldanacağım! 🎶", "şifa enerjimi kuyruğumla sana doğru sallıyorum! 😻", 
+        "sen hep çok iyi ol, pamuk nenem! 🌼", "gözlerim hep senin yollarını gözlüyor! 🐾",
+        "patilerimi birleştirip senin için dua ediyorum! 🙏", "Göker babam ve Alper abimle seni kocaman öpüyoruz! 👨‍👩‍👦", 
+        "sıcacık kucağında uyumak için sabırsızlanıyorum! 🛌", "rüyalarımda bile senin o tatlı sesini duyuyorum! 🌙", 
+        "en güzel miyavlarımı senin için saklıyorum! 🎵", "burnumla burnuna dokunup sevgi veriyorum! 🐾", 
+        "iyi ki benim nenemsin, iyi ki bizimlesin! ❤️", "senin sevginle bütün hastalıkları yeneceğiz! 💪", 
+        "mırıl mırıl bir sevgi seli yolladım sana! 🌊", "kuyruğumu boynuna dolayıp seni ısıtacağım! 🧣",
+        "her zaman senin o güzel gölgenin altındayım! 🌳", "minicik kalbimle sana dev gibi sevgiler! 💗", 
+        "patilerimle omuzlarına masaj yapmaya geliyorum! 💆‍♀️", "ikimiz de çok güçlüyüz, bunu hiç unutma! 🌟", 
+        "sevgi dolu miyavlamalarım kulaklarında çınlasın! 😽", "gülen gözlerinden öpüyorum canım nenem! 😘", 
+        "bu minik kedi seni dünyalar kadar seviyor! 🌍", "kalbimin ilacı da şifası da senin o güzel sevgin! ❤️", 
+        "en yumuşak tüylerimle sana sarılıyorum! 🐈", "ailecek sağlıkla dolu günlerimiz olsun! 👨‍👩‍👦‍👦",
+        "şifan tam, neşen yerinde olsun Sultanım! 👑", "her zaman senin bir numaralı hayranınım! 🤩", 
+        "pamuk patilerimle sana bol enerji gönderdim! ⚡", "şefkatli ellerini hep üzerimde hissetmek istiyorum! 🤲", 
+        "seni mutlu görmek benim en büyük ilacım! 💊", "ne zaman istersen mırlayarak yanındayım! 🐾", 
+        "güneşim de yıldızım da sensin güzel nenem! ☀️", "pıt pıt atan kalbimle seni kocaman öptüm! 💓", 
+        "tüylerimi kabartıp sana en şirin halimle bakıyorum! 😻", "sonsuz pati sevgisiyle kalbini ısıtıyorum! 🐾"
     ];
 
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-    const finalMessage = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)}, ${pick(arrD)}`;
+    const finalMessage = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)} ${pick(arrD)}`;
 
     const t = document.getElementById('minikToast');
     t.innerHTML = finalMessage;
