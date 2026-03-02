@@ -168,12 +168,13 @@ body {
 .vertical-list { 
   display: flex; 
   flex-direction: column; 
-  gap: 15px;
+  gap: 12px; /* Kartlar arası ferah boşluk */
   flex: 1; 
-  overflow-y: auto; 
-  padding-bottom: max(90px, env(safe-area-inset-bottom)); 
+  overflow-y: auto; /* Sadece bu alan kaydırılabilir */
+  padding-bottom: max(120px, env(safe-area-inset-bottom)); 
   -ms-overflow-style: none;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; /* iPhone akıcı (kaygan) kaydırma */
 }
   
 .vertical-list::-webkit-scrollbar { display: none; }
