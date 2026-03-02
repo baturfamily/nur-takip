@@ -610,37 +610,44 @@ async function veriCek() {
 }
 
 function ekraniCiz() {
-    const todayProg = getDailyProgram(now);
+    // 1. Dışarıdaki değişken hatalarından etkilenmemek için tarihi lokal alıyoruz
+    const dNow = new Date(); 
+    const todayProg = typeof getDailyProgram === 'function' ? getDailyProgram(dNow) : [];
     
-    // 1. ÜST KISIMDAKİ UYARI KALKANLARI
+    // 2. ÜST KISIMDAKİ UYARI KALKANLARI
     let alertsHTML = "";
     todayProg.forEach(s => {
+        if(!s.meds) return;
         s.meds.forEach(m => {
             if(m.key === 'SABAH_TOK_DELTA') alertsHTML += `<div class="safety-shield shield-red" style="display:block;">🚨 Bugün Deltacortril Günü</div>`;
-            if(m.key === 'SABAH_TOK_COLEDAN') if(!alertsHTML.includes('Vitamin')) alertsHTML += `<div class="safety-shield shield-yellow" style="display:block;">☀️ Bugün Vitamin ve Folbiol Günü</div>`;
+            if(m.key === 'SABAH_TOK_COLEDAN' && !alertsHTML.includes('Vitamin')) alertsHTML += `<div class="safety-shield shield-yellow" style="display:block;">☀️ Bugün Vitamin ve Folbiol Günü</div>`;
             if(m.key === 'GECE_METOARTCON') alertsHTML += `<div class="safety-shield shield-blue" style="display:block;">🧬 Bugün Metoartcon İğne Günü</div>`;
             if(m.key === 'GECE_CIMZIA') alertsHTML += `<div class="safety-shield shield-purple" style="display:block;">💉 Bugün Cimzia İğne Günü! Şifa olsun.</div>`;
         });
     });
-    document.getElementById('alertsArea').innerHTML = alertsHTML;
+    const alertsEl = document.getElementById('alertsArea');
+    if(alertsEl) alertsEl.innerHTML = alertsHTML;
 
-    // 2. AYLIK İLAÇ ORANI HESAPLAMA
-    const AYLIK_TOPLAM_ILAC = getMonthlyTotalMedications(now.getFullYear(), now.getMonth()); 
-    const kacirilanIlacSayisi = apiData.aylikKacirilan || 0; 
-    let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilanIlacSayisi) / AYLIK_TOPLAM_ILAC) * 100);
-    
+    // 3. AYLIK İLAÇ ORANI HESAPLAMA (Tüm versiyonlara uyumlu)
+    let AYLIK_TOPLAM_ILAC = 150;
+    if (typeof getMonthlyTotalMedications === 'function') AYLIK_TOPLAM_ILAC = getMonthlyTotalMedications(dNow.getFullYear(), dNow.getMonth());
+    else if (typeof getMonthlyTotal === 'function') AYLIK_TOPLAM_ILAC = getMonthlyTotal(dNow.getFullYear(), dNow.getMonth());
+
+    const kacirilan = (apiData && apiData.aylikKacirilan) ? apiData.aylikKacirilan : 0; 
+    let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilan) / AYLIK_TOPLAM_ILAC) * 100);
     if (basariOrani < 0) basariOrani = 0;
     if (basariOrani > 100) basariOrani = 100;
     
     const rateEl = document.getElementById('monthly-success-rate');
-    rateEl.innerText = `%${basariOrani}`;
-    
-    if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
-    else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
-    else rateEl.style.color = "var(--danger)";
+    if(rateEl) {
+        rateEl.innerText = `%${basariOrani}`;
+        if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
+        else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
+        else rateEl.style.color = "var(--danger)";
+    }
 
-    // --- YENİ EKLENEN HAFIZA BÖLÜMÜ ---
-    // Ekranı silmeden önce hangi kartların açık olduğunu aklımızda tutuyoruz
+    // --- 4. YENİ EKLENEN HAFIZA BÖLÜMÜ ---
+    // Ekranı silmeden önce annenin hangi kartı açık bıraktığını aklımızda tutuyoruz
     const stateMap = {};
     document.querySelectorAll('.card').forEach(c => {
         const id = c.getAttribute('data-id');
@@ -649,15 +656,14 @@ function ekraniCiz() {
         }
     });
 
-    // 3. KARTLARI ÇİZME
+    // 5. KARTLARI ÇİZME
     let timelineHTML = "";
-
     todayProg.forEach((s) => {
         let sTC = 0; 
         let medsHTML = "";
         
         s.meds.forEach(m => { 
-            const isDone = apiData[m.key] === "İçildi";
+            const isDone = (apiData && apiData[m.key] === "İçildi");
             if(isDone) { sTC++; }
             
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
@@ -677,20 +683,20 @@ function ekraniCiz() {
         const badgeText = isAllDone ? `TAMAMLANDI <span class="exp-arrow">▲</span>` : "BEKLİYOR";
         
         // HAFIZAYI UYGULAMA
-        let isCollapsed = isAllDone; // Varsayılan durum
+        let isCollapsed = isAllDone; // Her şey tamamsa kapat
         if (stateMap[s.id] !== undefined) {
-            isCollapsed = stateMap[s.id]; // Annem manuel müdahale ettiyse onun kararını ezme
+            isCollapsed = stateMap[s.id]; // Anne manuel açtıysa/kapattıysa onun kararına saygı duy
         }
 
         const cardClass = isAllDone ? "done-card" : "";
         const collapseClass = isCollapsed ? "collapsed" : "";
-        const onClick = `onclick="this.classList.toggle('collapsed')"` ;
+        const iconStr = s.icon ? s.icon + " " : ""; // İkon varsa ekle
 
-        // data-id="${s.id}" ekleyerek kartlara kimlik verdik
+        // Kartlara data-id verdik ki hafıza sistemi onları tanıyabilsin
         timelineHTML += `
-            <div class="premium-card card ${cardClass} ${collapseClass}" data-id="${s.id}" ${onClick}>
+            <div class="premium-card card ${cardClass} ${collapseClass}" data-id="${s.id}" onclick="this.classList.toggle('collapsed')">
                 <div class="card-header">
-                    <div class="drug-name">${s.icon} ${s.title}</div>
+                    <div class="drug-name">${iconStr}${s.title}</div>
                     <div class="badge ${badgeClass}">${badgeText}</div>
                 </div>
                 <div class="meds-container">
@@ -699,7 +705,8 @@ function ekraniCiz() {
             </div>`;
     });
     
-    document.getElementById('timelineArea').innerHTML = timelineHTML;
+    const timelineEl = document.getElementById('timelineArea');
+    if(timelineEl) timelineEl.innerHTML = timelineHTML;
 }
 
     // --- YENİ DİNAMİK AYLIK İLAÇ ORANI HESAPLAMA ---
