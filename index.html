@@ -229,6 +229,23 @@ body {
   text-align: left; 
   border: 2px solid rgba(255,255,255,0.2);
 }
+
+/* --- GECİKEN İLAÇ KARTI ANİMASYONU --- */
+.badge-danger { 
+    background: rgba(255, 59, 48, 0.15); 
+    color: var(--danger); 
+    font-weight: 900; 
+}
+.late-card { 
+    border-color: var(--danger) !important; 
+    animation: latePulse 2s infinite; 
+}
+
+@keyframes latePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+}
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
@@ -610,6 +627,7 @@ function ekraniCiz() {
     const dNow = new Date(); 
     const todayProg = typeof getDailyProgram === 'function' ? getDailyProgram(dNow) : [];
     
+    // GÜVENLİK KALKANLARI
     let alertsHTML = "";
     todayProg.forEach(s => {
         if(!s.meds) return;
@@ -623,6 +641,7 @@ function ekraniCiz() {
     const alertsEl = document.getElementById('alertsArea');
     if(alertsEl) alertsEl.innerHTML = alertsHTML;
 
+    // AYLIK YÜZDE
     let AYLIK_TOPLAM_ILAC = 150;
     if (typeof getMonthlyTotalMedications === 'function') AYLIK_TOPLAM_ILAC = getMonthlyTotalMedications(dNow.getFullYear(), dNow.getMonth());
 
@@ -639,13 +658,10 @@ function ekraniCiz() {
         else rateEl.style.color = "var(--danger)";
     }
 
-    // Ekranı silmeden önce annenin hangi kartı açık bıraktığını aklımızda tutuyoruz
     const stateMap = {};
     document.querySelectorAll('.card').forEach(c => {
         const id = c.getAttribute('data-id');
-        if (id) {
-            stateMap[id] = c.classList.contains('collapsed');
-        }
+        if (id) { stateMap[id] = c.classList.contains('collapsed'); }
     });
 
     let timelineHTML = "";
@@ -670,8 +686,33 @@ function ekraniCiz() {
         });
         
         const isAllDone = (sTC === s.meds.length);
-        const badgeClass = isAllDone ? "badge-safe" : "badge-wait";
-        const badgeText = isAllDone ? `TAMAMLANDI <span class="exp-arrow">▲</span>` : "BEKLİYOR";
+        
+        // --- YENİ EKLENEN GECİKME ZEKASI ---
+        let isLate = false;
+        if (!isAllDone && s.time) {
+            const timeParts = s.time.split(':');
+            const cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
+            const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
+            
+            // 60 dakika (1 saat) opsiyon tanıdık. Yani 10:00 ilacı 11:00'de kızarmaya başlar.
+            if (nowMins > cardMins + 60) {
+                isLate = true;
+            }
+        }
+
+        let badgeClass = "badge-wait";
+        let badgeText = "BEKLİYOR";
+        let cardClass = "";
+
+        if (isAllDone) {
+            badgeClass = "badge-safe";
+            badgeText = `TAMAMLANDI <span class="exp-arrow">▲</span>`;
+            cardClass = "done-card";
+        } else if (isLate) {
+            badgeClass = "badge-danger";
+            badgeText = "🚨 İÇİLMEYEN İLAÇ VAR";
+            cardClass = "late-card";
+        }
         
         // HAFIZAYI UYGULAMA
         let isCollapsed = isAllDone; 
@@ -679,7 +720,6 @@ function ekraniCiz() {
             isCollapsed = stateMap[s.id]; 
         }
 
-        const cardClass = isAllDone ? "done-card" : "";
         const collapseClass = isCollapsed ? "collapsed" : "";
         const iconStr = s.icon ? s.icon + " " : ""; 
 
