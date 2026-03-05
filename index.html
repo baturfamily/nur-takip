@@ -694,8 +694,8 @@ function ekraniCiz() {
             const cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
             const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
             
-            // 60 dakika (1 saat) opsiyon tanıdık. Yani 10:00 ilacı 11:00'de kızarmaya başlar.
-            if (nowMins > cardMins + 60) {
+            // 90 dakika (1,5 saat) opsiyon tanıdık. Yani 10:00 ilacı 11:30'da kızarmaya başlar.
+            if (nowMins > cardMins + 90) {
                 isLate = true;
             }
         }
