@@ -161,13 +161,12 @@ body {
 .stat-card .card-header { margin-bottom: 0; cursor: pointer; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
 .stat-card { padding: 12px 16px; margin-bottom: 12px; }
-.stat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 13px; gap: 10px; }
+.stat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px dashed var(--line); gap: 12px; }
 .stat-row:last-child { border-bottom: none; }
-.stat-date { font-weight: 900; color: var(--text); min-width: 65px; font-size: 14px;}
-.stat-info { flex: 1; display: flex; flex-direction: column; gap: 4px;}
-.stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 4px; font-size: 13px;}
-.stat-missed-list { font-size: 12px; color: var(--danger); font-style: italic; font-weight: 600;}
-
+.stat-date { font-weight: 900; color: var(--text); min-width: 80px; font-size: 17px;}
+.stat-info { flex: 1; display: flex; flex-direction: column; gap: 6px;}
+.stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
+.stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
 .vertical-list { 
@@ -204,12 +203,12 @@ body {
 .check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
-.history-item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); gap: 10px; font-size: 13px;}
+.history-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); gap: 12px;}
 .history-item:last-child { border-bottom: none; }
 
-.med-info { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: 1; min-width: 0; }
-.drug-title { font-size: 15px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
-.drug-purpose { font-size: 14px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
+.med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
+.drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
+.drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
 
 .card.collapsed { cursor: pointer; }
 .card.collapsed .meds-container { display: none; }
