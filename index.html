@@ -344,32 +344,35 @@ let vipBg = "";
 
 if (hour >= 5 && hour < 12) {
     gMsg = "Günaydın";
-    // Sabah: Enerjik Şeftali / Gün Doğumu
     vipBg = "linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%)"; 
 } else if (hour >= 12 && hour < 17) {
     gMsg = "Tünaydın";
-    // Öğle: Ferah Gökyüzü Mavisi
     vipBg = "linear-gradient(135deg, #32ADE6 0%, #007AFF 100%)"; 
 } else if (hour >= 17 && hour < 22) {
     gMsg = "İyi Akşamlar";
-    // Akşam: Şık İndigo / Mor
     vipBg = "linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%)"; 
 } else {
     gMsg = "İyi Geceler";
-    // Gece: Dinlendirici Antrasit (Mevcut renk)
     vipBg = "linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%)"; 
 }
 
 document.getElementById('greetingText').innerText = `${gMsg},`;
 
+// --- YANLIŞLIKLA SİLİNEN VE GERİ EKLENEN KRİTİK SATIRLAR ---
+const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+if(document.getElementById('currentYearText')) {
+    document.getElementById('currentYearText').innerText = now.getFullYear();
+}
+// -----------------------------------------------------------
+
 // Kartın arka planını değiştirme ve yazıları renklere uygun hale getirme
 const vipHeader = document.querySelector('.vip-header');
 if (vipHeader) {
     vipHeader.style.background = vipBg;
-    vipHeader.style.border = "none"; // Renkli modda sınıra gerek yok
+    vipHeader.style.border = "none"; 
 }
 
-// Alt yazılar (Günaydın ve Saat) yeni renklerin üzerinde net okunsun diye şeffaf beyaz yapıldı
+// Alt yazılar yeni renklerin üzerinde net okunsun diye şeffaf beyaz yapıldı
 document.querySelectorAll('.app-title .greeting, .clock-text').forEach(el => {
     el.style.color = "rgba(255, 255, 255, 0.85)";
 });
