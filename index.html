@@ -575,13 +575,12 @@ function renderMonthStat(prefix, data) {
     let html = "";
     data.breakdown.forEach(day => {
         if (day.isAllDone) {
-            // ŞIK SVG TİK İKONU BURAYA EKLENDİ
             html += `
             <div class="stat-row">
                 <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
                 <div class="stat-info" style="flex-direction: row; align-items: center; gap: 6px;">
                     <div class="check-icon done">${svgCheck}</div>
-                    <span class="stat-status" style="color: var(--accent); margin:0;">Tüm ilaçlar alındı</span>
+                    <span class="stat-status" style="color: var(--text); margin:0;">Tüm ilaçlar alındı</span>
                 </div>
             </div>`;
         } else {
@@ -589,8 +588,8 @@ function renderMonthStat(prefix, data) {
             <div class="stat-row">
                 <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
                 <div class="stat-info">
-                    <span class="stat-status" style="color: var(--warning);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span>
-                    <span class="stat-missed-list">Eksik: ${day.missedNames.join(', ')}</span>
+                    <span class="stat-status" style="color: var(--text);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span>
+                    <span class="stat-missed-list" style="color: var(--muted);">Eksik: ${day.missedNames.join(', ')}</span>
                 </div>
             </div>`;
         }
