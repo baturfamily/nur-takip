@@ -477,9 +477,18 @@ function analyzeMonth(year, month) {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
 
+    // SİSTEMİN BAŞLANGIÇ TARİHİ (28 Şubat 2026 - Aylar 0'dan başlar: 1 = Şubat)
+    const START_DATE = new Date(2026, 1, 28);
+
     // Sondan başa doğru (En yeni gün en üstte görünsün diye geriye sayıyoruz)
     for (let d = maxDay; d >= 1; d--) { 
         let currentDay = new Date(year, month, d);
+
+        // Eğer incelenen gün, başlama tarihinden (28 Şub) önceyse, döngüyü atla ve o günleri hesaba katma!
+        if (currentDay < START_DATE) {
+            continue; 
+        }
+
         let dateStr = String(d).padStart(2, '0') + '.' + String(month + 1).padStart(2, '0') + '.' + year;
         let prog = getDailyProgram(currentDay);
 
@@ -566,11 +575,13 @@ function renderMonthStat(prefix, data) {
     let html = "";
     data.breakdown.forEach(day => {
         if (day.isAllDone) {
+            // ŞIK SVG TİK İKONU BURAYA EKLENDİ
             html += `
             <div class="stat-row">
                 <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
-                <div class="stat-info">
-                    <span class="stat-status" style="color: var(--accent);">✅ Tüm ilaçlar alındı</span>
+                <div class="stat-info" style="flex-direction: row; align-items: center; gap: 6px;">
+                    <div class="check-icon done">${svgCheck}</div>
+                    <span class="stat-status" style="color: var(--accent); margin:0;">Tüm ilaçlar alındı</span>
                 </div>
             </div>`;
         } else {
