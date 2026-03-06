@@ -252,7 +252,20 @@ body {
     0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
     70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
     100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+
+/* --- İSTATİSTİK KARTLARINA ÖZEL SICAK / ANTRASİT ARKA PLAN --- */
+.stat-card {
+    background: linear-gradient(135deg, #FFF7F0 0%, #FFEDE0 100%) !important;
+    border: 1px solid #F5E0CD !important;
 }
+
+@media (prefers-color-scheme: dark) {
+    .stat-card {
+        background: linear-gradient(135deg, #2E2825 0%, #221D1A 100%) !important;
+        border: 1px solid #3D322C !important;
+    }
+}
+  
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
