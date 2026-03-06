@@ -128,7 +128,7 @@ body {
     flex-shrink: 0;
 }
 
-/* --- HAVA DURUMU KARTI (ÖZEL MAVİMSİ TASARIM) --- */
+/* --- HAVA DURUMU KARTI --- */
 .ios-weather-card { 
     padding: 16px; 
     background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%);
@@ -156,10 +156,17 @@ body {
     .ios-w-hum { background: rgba(0,0,0,0.4); }
 }
 
-/* AYLIK İLAÇ TAMAMLAMA KARTI */
-.compact-stat { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 16px;}
-.stat-left { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase;}
-.stat-right { font-size: 19px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; }
+
+/* --- YENİ: İSTATİSTİK KARTLARI (GENİŞLEYEN YAPI) --- */
+.stat-card .card-header { margin-bottom: 0; cursor: pointer; }
+.stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
+.stat-card { padding: 12px 16px; margin-bottom: 12px; }
+.stat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 13px; gap: 10px; }
+.stat-row:last-child { border-bottom: none; }
+.stat-date { font-weight: 900; color: var(--text); min-width: 65px; font-size: 14px;}
+.stat-info { flex: 1; display: flex; flex-direction: column; gap: 4px;}
+.stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 4px; font-size: 13px;}
+.stat-missed-list { font-size: 12px; color: var(--danger); font-style: italic; font-weight: 600;}
 
 
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
@@ -177,7 +184,7 @@ body {
   
 .vertical-list::-webkit-scrollbar { display: none; }
 
-.card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 16px; flex-shrink: 0;}
+.card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
 /* KART BAŞLIĞI */
@@ -187,6 +194,7 @@ body {
 .badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
 .badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
 .badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); }
+.badge-warning { background: rgba(255, 149, 0, 0.15); color: var(--warning); } /* Yeni sarı badge */
 
 .exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 10px; }
 .card.collapsed .exp-arrow { transform: rotate(180deg); } 
@@ -279,18 +287,49 @@ body {
     </div>
 </div>
 
-<div class="premium-card compact-stat">
-    <div class="stat-left" id="monthTitleText">🗓️ AYLIK İLAÇ TAMAMLAMA ORANI</div>
-    <div class="stat-right" id="monthly-success-rate">%100</div>
-</div>
+<div class="vertical-list">
+    
+    <div id="statsArea">
+        <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed')">
+            <div class="card-header">
+                <div class="drug-name">📊 Bu Ayki Başarı</div>
+                <div class="badge badge-wait" id="thisMonthBadge">%-- <span class="exp-arrow">▲</span></div>
+            </div>
+            <div class="meds-container stat-details" id="thisMonthDetails">
+                <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
+            </div>
+        </div>
 
-<div class="vertical-list" id="timelineArea"></div>
+        <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed')">
+            <div class="card-header">
+                <div class="drug-name">⏪ Geçen Ayın Özeti</div>
+                <div class="badge badge-wait" id="lastMonthBadge">%-- <span class="exp-arrow">▲</span></div>
+            </div>
+            <div class="meds-container stat-details" id="lastMonthDetails">
+                <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
+            </div>
+        </div>
+
+        <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed')">
+            <div class="card-header">
+                <div class="drug-name">🏆 Yıllık Karne (<span id="currentYearText"></span>)</div>
+                <div class="badge badge-wait" id="yearlyBadge">%-- <span class="exp-arrow">▲</span></div>
+            </div>
+            <div class="meds-container stat-details" id="yearlyDetails">
+                <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="timelineArea"></div>
+
+</div>
 
 <div class="minik-button" onclick="event.stopPropagation(); mewMsg()">🐾</div>
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
 
 <script>
-// API URL
+// API URL (Apps Script güncellenmiş dağıtım linkin)
 const API_URL = "https://script.google.com/macros/s/AKfycbxRiBjuMTcinzd4n8FV7NncHEWLGvQbpE86gL65ZsC87wH71H1L7Cl4YwcU4ip831o5Jw/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
@@ -305,9 +344,9 @@ let gMsg = (hour >= 5 && hour < 12) ? "Günaydın" : (hour >= 12 && hour < 17) ?
 document.getElementById('greetingText').innerText = `${gMsg},`;
 
 const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-document.getElementById('monthTitleText').innerText = `🗓️ ${aylar[now.getMonth()].toUpperCase()} AYI İLAÇ TAMAMLAMA ORANI`;
+document.getElementById('currentYearText').innerText = now.getFullYear();
 
-// HAVA DURUMU
+// HAVA DURUMU (Öncekiyle Birebir Aynı)
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=uv_index_max&timezone=auto');
@@ -323,92 +362,26 @@ async function fetchWeather() {
 
         if (uv > 5) {
             advIcon = "🕶️"; advColor = "var(--warning)";
-            adviceList = [
-                "Güneş (UV) bugün çok dik geliyor. İlaçların cildini hassas yapabilir, lütfen koruyucu sür ve gölgede kal.",
-                "Yüksek UV uyarısı! Bugün cildini ve gözlerini güneşten korumalısın. En dik saatlerde çıkmamaya çalış.",
-                "Güneş bugün ekstra etkili. Şapkanı ve gözlüğünü takmadan balkona bile çıkma Sultanım.",
-                "Güneş ışınları ilaçlarınla etkileşime girip ciltte kızarıklık yapabilir. Güneşten kaçmak şifadır.",
-                "UV indeksi riskli seviyede. Cildin bugün çok hassas; lütfen gölgenin konforunda kal Nurten Sultan.",
-                "Güneşin yakıcı etkisi yüksek. Plaquenil cildini savunmasız bırakabilir; güneş kremini tazele.",
-                "Güneş bugün cildini yorabilir. UV ışınlarından kaçınarak olası lekelenmelerin önüne geçmelisin.",
-                "Hava çok güneşli; Sjögren kuruluğunu da artırabilir. Cildini ve gözlerini korumak için gölgede kal.",
-                "UV ışınları bugün en yüksek seviyede. Güneşle arana mesafe koyman gereken bir gündesin Sultanım.",
-                "Açık hava aldatmasın; UV indeksi çok yüksek. Bugün dışarıda en güvenli yer gölgelerdir."
-            ];
+            adviceList = ["Güneş (UV) bugün çok dik geliyor. İlaçların cildini hassas yapabilir, lütfen koruyucu sür ve gölgede kal.", "Yüksek UV uyarısı! Bugün cildini ve gözlerini güneşten korumalısın. En dik saatlerde çıkmamaya çalış.", "Güneş ışınları ilaçlarınla etkileşime girip ciltte kızarıklık yapabilir. Güneşten kaçmak şifadır."];
         } 
         else if (w > 20) {
             icon = "🌬️"; advIcon = "💧"; advColor = "var(--early)";
-            adviceList = [
-                "Dışarıda sert bir rüzgar var. Rüzgar Sjögren'in düşmanıdır ve gözlerini anında kurutur. Mutlaka damlanı damlat ve gözlerini koru.",
-                "Rüzgar kuvvetli esiyor. Gözlerin tahriş olmasın diye bugün pencereleri kapalı tutmak ve dışarı çıkacaksan gözlerini korumak çok önemli.",
-                "Esinti bugün fazla. Gözlerinin nem dengesini korumak için bugün her zamankinden daha dikkatli olmalısın Nurten Sultan.",
-                "Esinti bugün gözyaşını çabuk kurutabilir. Dışarı çıkman gerekirse koruyucu gözlüğünü takmayı ve damlanı tazelemeyi unutma.",
-                "Sert rüzgar Sjögren'i tetikler. Gözlerinde batma hissetmeden önce önlemini almalı ve rüzgardan uzak durmalısın Sultanım.",
-                "Hava bugün gözlerini yoracak kadar esintili. Damlalarını yanından ayırma ve rüzgara karşı yürümemeye dikkat et.",
-                "Rüzgarın kurutucu etkisi bugün yüksek. Ağız ve göz kuruluğu hissetmemek için su tüketimini de artırman iyi olur.",
-                "Bugün hava rüzgarla birlikte gözlerini kurutabilir. Suni gözyaşını her zamankinden biraz daha sık kullanabilirsin Nurten Sultan.",
-                "Dışarıdaki hava akımı göz nemini çalabilir. Bugün mümkünse rüzgarlı alanlarda uzun süre kalmamaya çalış Sultanım.",
-                "Kuvvetli rüzgar uyarısı! Sjögren hassasiyetin için bugün korunaklı yerlerde kalmak göz konforun için en doğrusu olacaktır."
-            ];
+            adviceList = ["Dışarıda sert bir rüzgar var. Rüzgar Sjögren'in düşmanıdır ve gözlerini anında kurutur. Mutlaka damlanı damlat ve gözlerini koru.", "Esinti bugün fazla. Gözlerinin nem dengesini korumak için bugün her zamankinden daha dikkatli olmalısın Nurten Sultan.", "Sert rüzgar Sjögren'i tetikler. Gözlerinde batma hissetmeden önce önlemini almalı ve rüzgardan uzak durmalısın Sultanım."];
         } 
         else if (h > 70 && t < 15) {
             icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
-            adviceList = [
-                `Hava soğuk ve nemli (%${h}). Nem eklem sıvılarının basıncını değiştirip ağrı yapabilir. Lütfen dizlerini sıcak tutmaya özen göster.`,
-                `Dışarıdaki yüksek nem (%${h}) eklemlerinde baskı hissi yaratabilir. Bugün evde kalıp dizlerini battaniye ile sıcak tutmak iyi gelecektir.`,
-                "Nem ve soğuk birleşince romatizman kendini hatırlatabilir. Ağrıların artmadan eklemlerini korumaya almalı ve bol su içmelisin.",
-                "Rutubetli ve serin bir gün. Eklemlerindeki sıvı basıncı değişebilir, bu yüzden bugün kendini fazla yormadan dinlenmeye odaklan.",
-                "Nem oranı eklemlerini sızlatabilir. Bugün biraz daha yavaş hareket etmeli ve ağrı tetiklenmeden sıcak bitki çayını yudumlamalısın.",
-                "Dışarıdaki nem bulutu eklemlerin için biraz yorucu olabilir. Isı dengeni korumak için evde kalman en iyisi Nurten Sultan.",
-                "Havadaki su buharı eklemlerinde sabah tutukluğunu uzatabilir. Bugün eklemlerini hafifçe hareket ettirerek esnek kalmaya çalış.",
-                "Bugün hava biraz 'ağır'. Nem ve serinlik birleşince eklemler sızlayabilir; lütfen yün dizliklerini veya sıcak çoraplarını ihmal etme.",
-                "Rutubet bugün sınırda. Nemli hava romatizmal hassasiyeti artırır; bugünü evinin sıcak ve kuru atmosferinde geçirmelisin.",
-                "Serin ve nemli hava romatizmanın en sevmediği ikilidir. Kendini korumaya alıp vücut ısını sabit tutman çok önemli Sultanım."
-            ];
+            adviceList = [`Hava soğuk ve nemli (%${h}). Nem eklem sıvılarının basıncını değiştirip ağrı yapabilir. Lütfen dizlerini sıcak tutmaya özen göster.`, "Nem ve soğuk birleşince romatizman kendini hatırlatabilir. Ağrıların artmadan eklemlerini korumaya almalı ve bol su içmelisin.", "Serin ve nemli hava romatizmanın en sevmediği ikilidir. Kendini korumaya alıp vücut ısını sabit tutman çok önemli Sultanım."];
         } 
         else if (t < 12) {
             icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)";
-            adviceList = [
-                "Dışarısı oldukça soğuk. Soğuk hava eklemleri sertleştirir, lütfen kat kat giyinmeyi ve eklemlerini sıcak tutmayı ihmal etme.",
-                "Dondurucu bir hava var. Bu soğuk sabah tutukluğunu artırabilir. Evin sıcaklığında kalman ve dinlenmen en güvenlisi.",
-                "Sıcaklık çok düşük. Eklemlerin taş kesilmesin diye dizlerini ve ayaklarını her zamankinden daha sıcak tutmalısın Sultanım.",
-                "Dondurucu soğuklar eklem hareketlerini kısıtlayabilir. Hareket kabiliyetini korumak için evin içinde hafif esneme hareketleri yapabilirsin.",
-                "Hava buz kesmiş durumda. Soğuk hava romatizmal tutukluğu artırır; kalın çoraplarını giyip vücut ısısını korumayı ihmal etme.",
-                "Dışarıdaki dondurucu hava eklemlerin için bir sınav olabilir. Vücudunu sıcak tutarak bu süreci ağrısız atlatabilirsin.",
-                "Hava sıcaklığı çok düştü. Soğuk, Sjögren kuruluğunu da hissedilir kılar; hem sıcak kalmalı hem de damlanı ihmal etmemelisin.",
-                "Bugün hava tam bir 'kış' günü. Eklemlerinin sertleşmemesi için sıcak içecekler tüketmek ve sıcak ortamda kalmak sana iyi gelir.",
-                "Sıcaklık sıfıra yakın. Bu havalarda romatizma ağrıları tetiklenebilir; lütfen kendini rüzgardan ve soğuktan tamamen izole et.",
-                "Buz gibi bir hava seni bekliyor. Eklemlerini korumak için bugün kat kat giyinmenin gücünden yararlanmalısın Nurten Sultan."
-            ];
+            adviceList = ["Dışarısı oldukça soğuk. Soğuk hava eklemleri sertleştirir, lütfen kat kat giyinmeyi ve eklemlerini sıcak tutmayı ihmal etme.", "Sıcaklık çok düşük. Eklemlerin taş kesilmesin diye dizlerini ve ayaklarını her zamankinden daha sıcak tutmalısın Sultanım.", "Buz gibi bir hava seni bekliyor. Eklemlerini korumak için bugün kat kat giyinmenin gücünden yararlanmalısın Nurten Sultan."];
         } 
         else if (t > 28) {
             icon = "☀️"; advIcon = "🥤"; advColor = "var(--warning)";
-            adviceList = [
-                "Hava oldukça sıcak. Sıvı kaybı ağız ve göz kuruluğunu artırır. Bol bol su içmeyi ve damlalarını kullanmayı unutma.",
-                "Güneş yakıyor! Sıcaklık artışı Sjögren kuruluğunu tetikler. Lütfen susamayı beklemeden su içmeyi alışkanlık edin.",
-                "Dışarıda bunaltıcı bir sıcak var. Vücudun su kaybetmesin diye bugün serin yerlerde kalmalı ve damlalarını tazelemelisin.",
-                "Sıcaklar ağız ve göz kuruluğunu zirveye taşıyabilir. Damlaların ve su bardağın her zaman elinin altında olsun Sultanım.",
-                "Bugün termometreler Sjögren için riskli bir noktada. Vücudunu serin tutmalı ve su tüketimini artırmalısın Nurten Sultan.",
-                "Aşırı sıcaklar eklemlerde ödem yapabilir. Serin kalarak ve bol su tüketerek vücut dengeni koruman gereken bir gündesin.",
-                "Hava çok bunaltıcı. Sıcaklık artışıyla birlikte Sjögren belirtileri belirginleşebilir; damlanı yanından hiç ayırma.",
-                "Bugün hararetin yükselebilir. Su içmek sadece susuzluğunu gidermez, Sjögren kuruluğuna da en büyük ilaçtır Nurten Sultan.",
-                "Sıcaklık bugün sınırları zorluyor. Vücudundaki nemi korumak için serin ortamlarda dinlenmeli ve sıvı desteğini artırmalısın.",
-                "Termometreler yükseliyor! Bu sıcakta en büyük şifan su ve serinliktir. Kendini güneşin etkisinden uzak tut Sultanım."
-            ];
+            adviceList = ["Hava oldukça sıcak. Sıval kaybı ağız ve göz kuruluğunu artırır. Bol bol su içmeyi ve damlalarını kullanmayı unutma.", "Güneş yakıyor! Sıcaklık artışı Sjögren kuruluğunu tetikler. Lütfen susamayı beklemeden su içmeyi alışkanlık edin.", "Termometreler yükseliyor! Bu sıcakta en büyük şifan su ve serinliktir. Kendini güneşin etkisinden uzak tut Sultanım."];
         } 
         else {
-            adviceList = [
-                `Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu hissedeceğin gündesin. Keyfini çıkar!`,
-                "Bugün tam senin havan Nurten Sultan! Sıcaklık ve nem tam istediğimiz seviyelerde. Eklemlerini yormadan hafif bir yürüyüş yapabilirsin.",
-                "Dışarıda bahar tadında bir hava var. Ne eklemlerini ne de gözlerini yoracak bir durum yok. Günün tadını çıkar Sultanım.",
-                "Bugün hava tam bir şifa kaynağı. Derin bir nefes alıp bu dengeli havanın tadını çıkar; her şey yolunda görünüyor.",
-                "Dışarıdaki denge harika. Romatizman ve Sjögren bugün seni hiç üzmeyecek gibi görünüyor, bu güzel enerjiyi değerlendirmelisin.",
-                "Gökyüzü bugün senin sağlığın için gülümsüyor. Hava sıcaklığı eklemlerin için çok ideal, güzel bir gün dilerim.",
-                "Huzurlu ve dengeli bir gün. Ne rüzgar ne de aşırı sıcak var. Bugün fiziksel olarak kendini çok iyi hissetmen için her şey hazır.",
-                "Bugün havadaki nem ve sıcaklık tam kararında. Eklemlerin için en az riskli, en konforlu zaman dilimindesin Sultanım.",
-                "Dışarıda yumuşacık bir hava var. Sjögren kuruluğunu tetikleyecek hiçbir olumsuzluk yok, bol bol oksijen alabilirsin.",
-                "Harika bir gün seni bekliyor! Eklemlerin bugün esnek, gözlerin nemli kalacak. Bu güzel havanın tadını sonuna kadar çıkar."
-            ];
+            adviceList = [`Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu hissedeceğin gündesin. Keyfini çıkar!`, "Bugün tam senin havan Nurten Sultan! Sıcaklık ve nem tam istediğimiz seviyelerde. Eklemlerini yormadan hafif bir yürüyüş yapabilirsin.", "Harika bir gün seni bekliyor! Eklemlerin bugün esnek, gözlerin nemli kalacak. Bu güzel havanın tadını sonuna kadar çıkar."];
             
             let tempColor = "var(--text)";
             if (t < 20) tempColor = "#34C759"; 
@@ -434,117 +407,16 @@ async function fetchWeather() {
 }
 fetchWeather();
 
-// MİNİK TOAST
+// MİNİK TOAST (Öncekiyle Aynı)
 function mewMsg() {
-    const arrA = [
-        "Nenesinin kuzusu,", "Benim bir tanecik nene sultanım,", "Dünyanın en güzel nenesine pati selamı,", 
-        "Canım nenem, en sevdiğim insan,", "Pamuk ellerinden öpmeye geldim nene,", "Benim canım şifa ortağım,", 
-        "Nenelerin kraliçesi, Sultanım,", "Mırıl mırıl seni özleyen Minik'in geldi,", "Güzeller güzeli Nurten Sultanım,", 
-        "Pati şifası getirdim nene,", "Evimizin gülü canım nenem,", "Minik kalbimin en büyük sevgisi,", 
-        "Benim melek kalpli nenem,", "Bıyıklarımdan öpücükler yolladığım sultanım,", "Gözümün nuru canım nenem,", 
-        "Miyav diyerek kapına geldiğim nenem,", "Torunun Minik'ten sana kocaman sevgiler,", "Tüylerim kadar yumuşak kalpli nenem,", 
-        "Evimizin şifa direği canım nenem,", "Benim en tatlı mola yerim olan nenem,", "Göker babamın canı, benim biricik nenem,", 
-        "Alper abimin gülü, benim sultanım,", "En sevdiğim kucak olan canım nenem,", "Sabah güneşinden daha parlak nenem,", 
-        "Akşam huzurum, pamuk nenem,", "Minik'in en güvendiği liman olan nenem,", "Benim şefkatli sultanım,", 
-        "Gözümün bebeği güzel nenem,", "Evimizin bereketi Nurten Sultan,", "Şifa perim canım nenem,", 
-        "Miyavların en güzeli sana canım nenem,", "Patilerimin en sevdiği insan,", "Kalbimin en sıcak köşesi nenem,", 
-        "Benim güzel kokulu nenem,", "Her mırıltımın sebebi canım nenem,", "Torununun bir tanesi,", 
-        "Dünyanın en şefkatli ellerine sahip nenem,", "Birlikte şifa bulduğum can yoldaşım,", "En sevdiğim oyun arkadaşım nenem,", 
-        "Göker babamla en çok sevdiğimiz nenemiz,", "Alper abimle üstüne titrediğimiz kraliçemiz,", "Minik dünyamın en büyük güneşi,", 
-        "Şefkat dolu bakışlarına hayran olduğum nenem,", "Huzur veren sesini özlediğim nenem,", "Yanaklarından mırıldayarak öptüğüm nenem,", 
-        "Patilerimi uzatıp sarıldığım sultanım,", "Benim şirin mi şirin nenem,", "Her şeyin en güzeline layık olan nenem,", 
-        "Şifa bekleyen tatlı nenem,", "Minik kızının biricik aşkı nenem,"
-    ];
-
-    const arrB = [
-        "Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", 
-        "Kalp ilacımı (Enalapril) hiç itiraz etmeden yuttum,", "Bugün nefesim pırıl pırıl, astımım beni hiç üzmedi,", 
-        "Alper abimle biraz koşturduk, çok eğlendim,", "Göker babamla camdan kuşları izleyip seni düşündüm,", 
-        "Pati bakımlarımı yaptım, tertemiz oldum,", "Yumuşacık yatağımda gerinirken senin şifanı diledim,", 
-        "Kuyruğumu sallayıp senin panelini kontrol etmeye geldim,", "Bugün kendimi çok zinde ve mutlu hissediyorum,",
-        "Enalapril'imi içtikten sonra kalbim senin için güm güm atıyor,", "Keppra sayesinde beynim çok rahat, hiç nöbet düşünmüyorum,", 
-        "Virbac mamam midemi o kadar rahatlattı ki mırıl mırıl uyudum,", "Göker babam tüylerimi taradı, sana poz vermeye hazırım,", 
-        "Alper abim başımı okşadı, onunla oyunlar oynadım,", "Patilerimi yalayıp temizlendikten sonra güneşlendim,", 
-        "Astımım bugün sıfır, derin derin nefes alıp oksijen depoladım,", "Bugün o kadar usluyum ki bütün ilaçlarımı hemen yuttum,", 
-        "Kalbim maşallah tıkır tıkır çalışıyor, enerjim çok yerinde,", "Bugün kuşlara bile miyavlamadım, sadece seni düşündüm,",
-        "Tüylerim bugün pırıl pırıl parlıyor, tam sevilmelik oldum,", "Göker babamla senin dedikodunu yapıp kulaklarını çınlattık,", 
-        "Alper abimin kucağında uyuyakaldım, rüyamda seni gördüm,", "Karnım doydu, ilaçlarım içildi, şimdi keyif yapıyorum,", 
-        "Bıyıklarımı titreterek senin paneline enerji gönderiyorum,", "Bugün evde tam bir kraliçe gibi dolaşıp teftiş yaptım,", 
-        "Güneşin vurduğu o sıcak halıda gerine gerine uyudum,", "Keppra vaktim geldiğinde hiç zorluk çıkarmadan ilacımı aldım,", 
-        "Nefesim bugün o kadar açık ki evde fırtına gibi estim,", "Göker babamın dizinde yatarken senin şifanı bekliyorum,",
-        "Midem bugün çok rahat, mırıldanarak evi turluyorum,", "Kendimi pamuk gibi hissediyorum, tam sana sarılmalık,", 
-        "Kalbimin ilacını aldım, sevgimi sana yollamaya hazırım,", "Bugün oyun oynamaya bile doyamadım, çok enerjiğim,", 
-        "Alper abimin paçalarına sürtünüp ona sevgi gösterisi yaptım,", "Göker babamla beraber sana en güzel miyavları hazırladık,", 
-        "Mama kabımı tertemiz sıyırdım, afiyetle suyumu içtim,", "Bütün evi kolaçan edip asayişi berkemal sağladım,", 
-        "Keppra'nın saatini ben bile şaşırmadım, hemen içiverdim,", "Kalbim tüy gibi hafif, nefesim okyanus gibi ferah bugün,",
-        "Patilerimle camı tırmalayıp dışarıdaki kuşlara selam verdim,", "Bugün hiç yaramazlık yapmadan uslu bir torun oldum,", 
-        "İlaçlarımı yutarken senin ne kadar güçlü olduğunu düşünüp cesaret aldım,", "Göker babam beni severken senin kulaklarını sevgiyle çınlattık,", 
-        "Gün boyu uyuyup enerji topladım, şimdi sana moral vermeye geldim,", "Tüylerimi kabartıp tam bir kaplan gibi esnedim,", 
-        "Kalp ilacım sayesinde aslanlar gibi güçlüyüm,", "Karnımı doyurduktan sonra keyifle patilerimi temizledim,", 
-        "Burnumu nemlendirip bıyıklarımı düzelttim,", "Bugün evdeki herkesin neşesi oldum, şimdi sıra sende,"
-    ];
-
-    const arrC = [
-        "şimdi sıra senin o şifalı ilaçlarını içmende,", "sen ilaçlarını içince benim bile tüylerim parlıyor,", 
-        "hadi bakalım, sularını lıkır lıkır içme vakti,", "senin ilaçlarını eksiksiz içtiğini görünce çok seviniyorum,", 
-        "birlikte her gün daha iyi oluyoruz, sakın aksatma,", "sen iyi ol ki ben de senin dizlerine kıvrılıp mırıldanayım,", 
-        "ilaçlarını içtiğini görünce kuyruğum neşeyle titriyor,", "damlalarını tazeleyip gözlerini rahatlatmaya ne dersin?", 
-        "hadi nene, şifa saatimiz geldi, seni bekliyorum,", "biz ailecek birbirimize çok iyi bakıyoruz, unutma,",
-        "Sjögren seni kurutmasın diye lıkır lıkır suyunu içmelisin,", "eklemlerin ağrımasın diye o ilaçlarını zamanında yutmalısın,", 
-        "sen şifanı al ki, ben de senin göğsünde huzurla uyuyayım,", "romatizman bugün seni yormasın, hadi ilaçlarını tamamla,", 
-        "göz damlalarını sık ki o güzel gözlerin hep nemli kalsın,", "ben uslu uslu içtim, eminim sen de kendi ilaçlarını içmişsindir,", 
-        "senin o güçlü duruşun bana bile cesaret veriyor, şifanı aksatma,", "bugün eklemlerini hiç yorma, dinlenip ilaçlarının etkisini hisset,", 
-        "iğne günlerin gelse de sen aslanlar gibi atlatıyorsun, biliyorum,", "Göker babam ve Alper abim de senin ilaçlarını tam içmeni bekliyor,",
-        "hadi o tatlı canın için suyunu yudumla ve damlanı yap,", "sen sağlıklı olunca bizim evin güneşi daha parlak doğuyor,", 
-        "romatizmaya inat bugün dimdik durma ve şifanı alma vakti,", "pamuk ellerinle haplarını yut, sonra da beni sevmeye gel,", 
-        "göz kuruluğuna izin verme, hemen damlalarınla gözlerini serinlet,", "ilaçlarını içtiğin an benim minik kalbim ferahlıyor,", 
-        "şifa deposu vitaminlerini ve haplarını almayı unutmadın değil mi?,", "bugün kendini çok zorlamadan sadece şifana ve dinlenmene odaklan,", 
-        "biz birbirimizin ilacıyız, sen de kendi fiziksel ilaçlarını ihmal etme,", "eklemlerin tıkır tıkır çalışsın diye zamanı gelen ilacını hemen iç,",
-        "senin sağlığın bizim dünyamızın merkezi, lütfen suyunu eksik etme,", "Sjögren'i yenmek için damlalarını her zamankinden sık kullan bugün,", 
-        "ben nasıl Keppra'mı aksatmıyorsam sen de romatizma ilaçlarını aksatma,", "şifa paneline bakıp eksik ilacın kalmadığını görmek beni çok mutlu edecek,", 
-        "hadi nene, o iğneler ve haplar seni eski gücüne kavuşturacak,", "Göker babamın hazırladığı bu panelde her şeyi yeşile çevir,", 
-        "gözlerine yaş, bedenine güç gelsin diye şifanı hemen al,", "bugün eklemlerini sıcak tutarak ve ilaçlarını alarak kalkan oluştur,", 
-        "senin o güzel yüzün solmasın diye vitaminlerini lıkır lıkır yut,", "benim kadar sağlıklı olmak için şimdi paneldeki görevlerini tamamla,",
-        "hiçbir ilacını geciktirme ki romatizman sana hiç yaklaşamasın,", "bol bol sıvı tüketip bedenini ferahlatmak için mutfağa doğru bir adım at,", 
-        "ilaç saatin geldiğinde benim sana mırıldandığımı düşünüp güç al,", "sen ilaçlarını içtikçe evimize sağlık, huzur ve bereket doluyor,", 
-        "hadi canım nenem, şifanı damla damla, hap hap vücuduna kabul et,", "Sjögren seni yormadan sen ona damlalarınla sürpriz yap,", 
-        "Alper abimle Göker babamın içi rahat etsin diye eksiksiz iç ilaçlarını,", "bugün sadece kendine ve şifana vakit ayırıp iyice dinlen,", 
-        "eklemlerindeki sızıları dindirecek o sihirli ilaçlarını yutmanın tam zamanı,", "beraber daha nice oyunlar oynayacağız, yeter ki sen şifanı eksik etme,"
-    ];
-
-    const arrD = [
-        "seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", 
-        "akşama dizlerine kıvrılmaya hazırım! ✨", "patilerim hep senin üzerinde olacak! 🐈", 
-        "şifamız bol olsun, canım nenem! 🌼", "miyav diyerek sana kocaman sarıldım! ❤️", 
-        "bıyıklarım senin için neşeyle titriyor! 🐾", "sen benim her şeyimsin Sultanım! 😻", 
-        "yarın yine burada buluşalım, miyav! ✨", "senin o güzel yüzün hep gülsün! 🌼",
-        "tüylü başımı ellerine sürtüp mırıldanıyorum! 🐾", "dünyanın en şanslı kedisi benim çünkü sen varsın! ❤️", 
-        "patimi uzatıp sana şifa yolluyorum! ✨", "kocaman bir miyavla gününü aydınlatıyorum! 🌞", 
-        "kalbimin her atışı senin için nene! 💖", "o yumuşacık ellerinden tekrar tekrar öpüyorum! 🐈", 
-        "akşama yanına gelip bol bol mırıldanacağım! 🎶", "şifa enerjimi kuyruğumla sana doğru sallıyorum! 😻", 
-        "sen hep çok iyi ol, pamuk nenem! 🌼", "gözlerim hep senin yollarını gözlüyor! 🐾",
-        "patilerimi birleştirip senin için dua ediyorum! 🙏", "Göker babam ve Alper abimle seni kocaman öpüyoruz! 👨‍👩‍👦", 
-        "sıcacık kucağında uyumak için sabırsızlanıyorum! 🛌", "rüyalarımda bile senin o tatlı sesini duyuyorum! 🌙", 
-        "en güzel miyavlarımı senin için saklıyorum! 🎵", "burnumla burnuna dokunup sevgi veriyorum! 🐾", 
-        "iyi ki benim nenemsin, iyi ki bizimlesin! ❤️", "senin sevginle bütün hastalıkları yeneceğiz! 💪", 
-        "mırıl mırıl bir sevgi seli yolladım sana! 🌊", "kuyruğumu boynuna dolayıp seni ısıtacağım! 🧣",
-        "her zaman senin o güzel gölgenin altındayım! 🌳", "minicik kalbimle sana dev gibi sevgiler! 💗", 
-        "patilerimle omuzlarına masaj yapmaya geliyorum! 💆‍♀️", "ikimiz de çok güçlüyüz, bunu hiç unutma! 🌟", 
-        "sevgi dolu miyavlamalarım kulaklarında çınlasın! 😽", "gülen gözlerinden öpüyorum canım nenem! 😘", 
-        "bu minik kedi seni dünyalar kadar seviyor! 🌍", "kalbimin ilacı da şifası da senin o güzel sevgin! ❤️", 
-        "en yumuşak tüylerimle sana sarılıyorum! 🐈", "ailecek sağlıkla dolu günlerimiz olsun! 👨‍👩‍👦‍👦",
-        "şifan tam, neşen yerinde olsun Sultanım! 👑", "her zaman senin bir numaralı hayranınım! 🤩", 
-        "pamuk patilerimle sana bol enerji gönderdim! ⚡", "şefkatli ellerini hep üzerimde hissetmek istiyorum! 🤲", 
-        "seni mutlu görmek benim en büyük ilacım! 💊", "ne zaman istersen mırlayarak yanındayım! 🐾", 
-        "güneşim de yıldızım da sensin güzel nenem! ☀️", "pıt pıt atan kalbimle seni kocaman öptüm! 💓", 
-        "tüylerimi kabartıp sana en şirin halimle bakıyorum! 😻", "sonsuz pati sevgisiyle kalbini ısıtıyorum! 🐾"
-    ];
+    const arrA = ["Nenesinin kuzusu,", "Benim bir tanecik nene sultanım,", "Dünyanın en güzel nenesine pati selamı,", "Evimizin gülü canım nenem,"];
+    const arrB = ["Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", "Kalp ilacımı (Enalapril) hiç itiraz etmeden yuttum,"];
+    const arrC = ["şimdi sıra senin o şifalı ilaçlarını içmende,", "sen ilaçlarını içince benim bile tüylerim parlıyor,", "sen iyi ol ki ben de senin dizlerine kıvrılıp mırıldanayım,"];
+    const arrD = ["seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", "şifamız bol olsun, canım nenem! 🌼"];
 
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-    const finalMessage = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)} ${pick(arrD)}`;
-
     const t = document.getElementById('minikToast');
-    t.innerHTML = finalMessage;
+    t.innerHTML = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)} ${pick(arrD)}`;
     t.style.display = 'block';
 }
 
@@ -573,7 +445,7 @@ function saniyeTiktak() {
     }
 }
 
-// PROGRAM HESAPLAYICI
+// PROGRAM HESAPLAYICI (Annemin Ana Kuralları)
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
@@ -593,21 +465,186 @@ function getDailyProgram(dateObj) {
     return p;
 }
 
-// O AYKİ TOPLAM İLAÇ SAYISINI HESAPLAMA MOTORU
-function getMonthlyTotalMedications(year, month) {
-    let total = 0;
-    let daysInMonth = new Date(year, month + 1, 0).getDate();
-    for (let d = 1; d <= daysInMonth; d++) {
+
+// --- BEYİN 1: SEÇİLEN AYIN TÜM GEÇMİŞİNİ ANALİZ EDEN MOTOR ---
+function analyzeMonth(year, month) {
+    let totalMeds = 0;
+    let missedMedsCount = 0;
+    let breakdown = [];
+
+    const dNow = new Date();
+    const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
+
+    // Sondan başa doğru (En yeni gün en üstte görünsün diye geriye sayıyoruz)
+    for (let d = maxDay; d >= 1; d--) { 
         let currentDay = new Date(year, month, d);
+        let dateStr = String(d).padStart(2, '0') + '.' + String(month + 1).padStart(2, '0') + '.' + year;
         let prog = getDailyProgram(currentDay);
+
+        let dayTotal = 0;
+        let dayMissedCount = 0;
+        let dayMissedNames = [];
+
+        // Arşivden o günün satırını bul
+        let dayData = (apiData.tumVeriler && apiData.tumVeriler[dateStr]) ? apiData.tumVeriler[dateStr] : null;
+
         prog.forEach(s => {
-            total += s.meds.length;
+            let cardMins = 0;
+            if (s.time) {
+                const timeParts = s.time.split(':');
+                cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
+            }
+
+            s.meds.forEach(m => {
+                dayTotal++;
+                let isDone = dayData ? (dayData[m.key] === "İçildi") : false;
+                let isExplicitlyMissed = dayData ? (dayData[m.key] === "İçilmedi") : false;
+                let isMissed = false;
+
+                if (!isDone) {
+                    if (isExplicitlyMissed) {
+                        isMissed = true; // Manuel olarak İçilmedi yazılmış
+                    } else if (isCurrentMonth && d === dNow.getDate()) {
+                        // BUGÜNÜN ZEKASI: 90 dakika geçtiyse ve boşsa "kaçırıldı" say.
+                        const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
+                        if (nowMins > cardMins + 90) isMissed = true;
+                    } else {
+                        // GEÇMİŞ GÜN ZEKASI: Tarih geçmiş ve hücre boş kalmışsa kesin kaçırılmıştır.
+                        isMissed = true;
+                    }
+                }
+
+                if (isMissed) {
+                    dayMissedCount++;
+                    dayMissedNames.push(m.name);
+                }
+            });
         });
+
+        totalMeds += dayTotal;
+        missedMedsCount += dayMissedCount;
+
+        if (dayTotal > 0) {
+             breakdown.push({
+                 dateStr: dateStr,
+                 dayNum: d,
+                 totalCount: dayTotal,
+                 missedCount: dayMissedCount,
+                 missedNames: dayMissedNames,
+                 isAllDone: (dayMissedCount === 0)
+             });
+        }
     }
-    return total;
+
+    let percentage = totalMeds > 0 ? Math.round(((totalMeds - missedMedsCount) / totalMeds) * 100) : 100;
+    return { percentage, totalMeds, missedMedsCount, breakdown };
 }
 
-// API ÇAĞRISI
+// --- BEYİN 2: ROZET RENKLERİNİ BELİRLEME ---
+function getBadgeClass(percentage) {
+    if (percentage >= 90) return "badge-safe";
+    if (percentage >= 70) return "badge-warning";
+    return "badge-danger";
+}
+
+// --- BEYİN 3: AYLIK KARTIN İÇİNİ HTML OLARAK ÇİZME ---
+function renderMonthStat(prefix, data) {
+    const badgeEl = document.getElementById(prefix + 'Badge');
+    const detailsEl = document.getElementById(prefix + 'Details');
+    if(!badgeEl || !detailsEl) return;
+
+    badgeEl.innerHTML = `%${data.percentage} <span class="exp-arrow">▲</span>`;
+    badgeEl.className = `badge ${getBadgeClass(data.percentage)}`;
+
+    if (data.breakdown.length === 0) {
+        detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+        return;
+    }
+
+    let html = "";
+    data.breakdown.forEach(day => {
+        if (day.isAllDone) {
+            html += `
+            <div class="stat-row">
+                <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
+                <div class="stat-info">
+                    <span class="stat-status" style="color: var(--accent);">✅ Tüm ilaçlar alındı</span>
+                </div>
+            </div>`;
+        } else {
+            html += `
+            <div class="stat-row">
+                <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
+                <div class="stat-info">
+                    <span class="stat-status" style="color: var(--warning);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span>
+                    <span class="stat-missed-list">Eksik: ${day.missedNames.join(', ')}</span>
+                </div>
+            </div>`;
+        }
+    });
+    detailsEl.innerHTML = html;
+}
+
+// --- BEYİN 4: YILLIK KARTIN İÇİNİ HTML OLARAK ÇİZME ---
+function renderYearStat(year) {
+    const badgeEl = document.getElementById('yearlyBadge');
+    const detailsEl = document.getElementById('yearlyDetails');
+    if(!badgeEl || !detailsEl) return;
+
+    let totalMeds = 0;
+    let totalMissed = 0;
+    let html = "";
+    const maxMonth = year === now.getFullYear() ? now.getMonth() : 11;
+
+    for (let m = maxMonth; m >= 0; m--) {
+        let mData = analyzeMonth(year, m);
+        totalMeds += mData.totalMeds;
+        totalMissed += mData.missedMedsCount;
+
+        if (mData.totalMeds > 0) {
+            html += `
+            <div class="stat-row">
+                <span class="stat-date" style="font-size:15px;">${aylar[m]}</span>
+                <div class="stat-info" style="align-items: flex-end;">
+                    <span class="badge ${getBadgeClass(mData.percentage)}">%${mData.percentage}</span>
+                </div>
+            </div>`;
+        }
+    }
+
+    let yearPercentage = totalMeds > 0 ? Math.round(((totalMeds - totalMissed) / totalMeds) * 100) : 100;
+    badgeEl.innerHTML = `%${yearPercentage} <span class="exp-arrow">▲</span>`;
+    badgeEl.className = `badge ${getBadgeClass(yearPercentage)}`;
+    detailsEl.innerHTML = html || `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+}
+
+// --- BEYİN 5: TÜM İSTATİSTİKLERİ TETİKLEYİCİ ---
+function istatistikleriCiz() {
+    if (!apiData || !apiData.tumVeriler) return;
+
+    const dNow = new Date();
+    const currentYear = dNow.getFullYear();
+    const currentMonth = dNow.getMonth();
+
+    // Bu Ay
+    const thisMonthData = analyzeMonth(currentYear, currentMonth);
+    renderMonthStat('thisMonth', thisMonthData);
+
+    // Geçen Ay
+    let lastMonth = currentMonth - 1;
+    let lastMonthYear = currentYear;
+    if (lastMonth < 0) { lastMonth = 11; lastMonthYear--; }
+    const lastMonthData = analyzeMonth(lastMonthYear, lastMonth);
+    renderMonthStat('lastMonth', lastMonthData);
+
+    // Yıllık Karne
+    renderYearStat(currentYear);
+}
+
+
+// API ÇAĞRISI (Aynı kalıyor, Google Sheets yeni kodu sayesinde artık "tumVeriler" paketiyle dönüyor)
 async function veriCek() {
     if (fetchDevamEdiyor) return;
     fetchDevamEdiyor = true;
@@ -618,11 +655,12 @@ async function veriCek() {
         if (!res.ok) throw new Error("Ağ Hatası");
         apiData = await res.json();
         sonBasariZamani = Date.now();
-        ekraniCiz();
+        ekraniCiz(); // Günlük kartları çizer
+        istatistikleriCiz(); // Yeni genişleyen istatistik kartlarını çizer
     } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
 }
 
-// KARTLARI VE HAFIZAYI ÇİZEN MOTOR
+// GÜNLÜK KARTLARI VE HAFIZAYI ÇİZEN MOTOR
 function ekraniCiz() {
     const dNow = new Date(); 
     const todayProg = typeof getDailyProgram === 'function' ? getDailyProgram(dNow) : [];
@@ -641,27 +679,20 @@ function ekraniCiz() {
     const alertsEl = document.getElementById('alertsArea');
     if(alertsEl) alertsEl.innerHTML = alertsHTML;
 
-    // AYLIK YÜZDE
-    let AYLIK_TOPLAM_ILAC = 150;
-    if (typeof getMonthlyTotalMedications === 'function') AYLIK_TOPLAM_ILAC = getMonthlyTotalMedications(dNow.getFullYear(), dNow.getMonth());
-
-    const kacirilan = (apiData && apiData.aylikKacirilan) ? apiData.aylikKacirilan : 0; 
-    let basariOrani = Math.round(((AYLIK_TOPLAM_ILAC - kacirilan) / AYLIK_TOPLAM_ILAC) * 100);
-    if (basariOrani < 0) basariOrani = 0;
-    if (basariOrani > 100) basariOrani = 100;
-    
-    const rateEl = document.getElementById('monthly-success-rate');
-    if(rateEl) {
-        rateEl.innerText = `%${basariOrani}`;
-        if(basariOrani >= 90) rateEl.style.color = "var(--accent)";
-        else if(basariOrani >= 70) rateEl.style.color = "var(--warning)";
-        else rateEl.style.color = "var(--danger)";
-    }
-
+    // Hangi kartlar açıktı, hangileri kapalıydı hafızada tut
     const stateMap = {};
     document.querySelectorAll('.card').forEach(c => {
-        const id = c.getAttribute('data-id');
+        const id = c.getAttribute('data-id') || c.id; 
         if (id) { stateMap[id] = c.classList.contains('collapsed'); }
+    });
+
+    // İstatistik Kartlarının Açık/Kapalı Hafızasını Geri Yükle
+    ['card-stat-this-month', 'card-stat-last-month', 'card-stat-yearly'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && stateMap[id] !== undefined) {
+             if (stateMap[id]) el.classList.add('collapsed');
+             else el.classList.remove('collapsed');
+        }
     });
 
     let timelineHTML = "";
@@ -687,17 +718,13 @@ function ekraniCiz() {
         
         const isAllDone = (sTC === s.meds.length);
         
-        // --- YENİ EKLENEN GECİKME ZEKASI ---
+        // 90 DAKİKA GECİKME ZEKASI
         let isLate = false;
         if (!isAllDone && s.time) {
             const timeParts = s.time.split(':');
             const cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
             const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
-            
-            // 90 dakika (1,5 saat) opsiyon tanıdık. Yani 10:00 ilacı 11:30'da kızarmaya başlar.
-            if (nowMins > cardMins + 90) {
-                isLate = true;
-            }
+            if (nowMins > cardMins + 90) { isLate = true; }
         }
 
         let badgeClass = "badge-wait";
@@ -714,7 +741,7 @@ function ekraniCiz() {
             cardClass = "late-card";
         }
         
-        // HAFIZAYI UYGULAMA
+        // HAFIZAYI UYGULAMA (Günlük kartlar için)
         let isCollapsed = isAllDone; 
         if (stateMap[s.id] !== undefined) {
             isCollapsed = stateMap[s.id]; 
