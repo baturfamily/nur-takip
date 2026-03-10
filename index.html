@@ -756,7 +756,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU VE ZAMANLAMA SİHRİ (İLAÇ FİLTRELİ KOD)
+// DOKTOR RAPORU OLUŞTURUCU (İLAÇ UYUM ORANI VE KORELASYON EKLENDİ)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -764,41 +764,58 @@ function doktorRaporuOlustur() {
         return;
     }
 
-    // --- AKILLI VERİ OKUYUCU (İlaçları Atlar) ---
     function veriBul(gunlukVeri, aranacakKelimeler) {
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
-            
-            // EĞER CEVAP İLAÇ KAYDIYSA (İçildi/İçilmedi) VEYA BOŞSA, ONU DİREKT ATLA!
-            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) {
-                continue;
-            }
-
+            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
             var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
             for (var i = 0; i < aranacakKelimeler.length; i++) {
-                var aranan = aranacakKelimeler[i].toLowerCase();
-                if (temizKolon.includes(aranan)) {
-                    return cevap;
-                }
+                if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
             }
         }
-        return "-"; // Bulamazsa tire koy
+        return "-";
     }
 
-    // Tarihleri yeniden eskiye sıralama
     var tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
-        var pA = a.split('.');
-        var pB = b.split('.');
+        var pA = a.split('.'); var pB = b.split('.');
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
+    // --- İLAÇ UYUM ORANI HESAPLAYICI ---
+    var toplamBeklenenIlac = 0;
+    var toplamIcilenIlac = 0;
+
+    tarihler.forEach(function(tarih) {
+        var p = tarih.split('.');
+        var dObj = new Date(p[2], p[1]-1, p[0]);
+        var gunlukProgram = getDailyProgram(dObj); // O günün reçetesini getir
+        var veri = apiData.tumVeriler[tarih] || {};
+
+        gunlukProgram.forEach(function(ogun) {
+            ogun.meds.forEach(function(ilac) {
+                toplamBeklenenIlac++;
+                if (veri[ilac.key] === "İçildi") {
+                    toplamIcilenIlac++;
+                }
+            });
+        });
+    });
+
+    var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
+    // ------------------------------------
+
     var tabloSatirlari = "";
     var atesliGunSayisi = 0;
+    
+    // --- AKILLI ÖZET İÇİN SAYAÇLAR ---
+    var bolgeFrekans = {};
+    var sorunluUykuGecesi = 0;
+    var agirTutuklukGunu = 0;
+    var aktifGunSayisi = 0;
 
     tarihler.forEach(function(tarih) {
         var veri = apiData.tumVeriler[tarih];
         
-        // Sütun ismi ne olursa olsun içindeki anahtar kelimeden bulur!
         var atesHam = veriBul(veri, ["ates", "ateş"]);
         var tutukluk = veriBul(veri, ["tutuk", "sabah"]);
         var agri = veriBul(veri, ["agri", "ağrı", "şiş", "sis"]);
@@ -806,13 +823,23 @@ function doktorRaporuOlustur() {
         var aktivite = veriBul(veri, ["aktivite"]);
         var uyku = veriBul(veri, ["uyku", "gece"]);
 
-        // Ateş kontrolü 37.0 ve üzeri
+        // Ateş Hesaplama
         var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
         var atesGosterim = ates > 0 ? ates + "°C" : "-";
-        
-        if (ates >= 37.0) {
-            atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`;
-            atesliGunSayisi++;
+        if (ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
+
+        // --- KORELASYON VERİSİ TOPLAMA ---
+        if (bolge !== "-" && bolge.toLowerCase() !== "hayır") {
+            bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
+        }
+        if (uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("uyuyamadim") || uyku.toLowerCase().includes("vardı")) {
+            sorunluUykuGecesi++;
+        }
+        if (tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("1-2 saat") || tutukluk.toLowerCase().includes("surdu")) {
+            agirTutuklukGunu++;
+        }
+        if (aktivite !== "-" && !aktivite.toLowerCase().includes("yapmadim") && !aktivite.toLowerCase().includes("hayır")) {
+            aktifGunSayisi++;
         }
 
         tabloSatirlari += `
@@ -828,18 +855,35 @@ function doktorRaporuOlustur() {
         `;
     });
 
+    // --- EN ÇOK AĞRI YAPAN BÖLGEYİ BULMA ---
+    var enCokAgriyanBolge = "Belirgin bir bölge yok";
+    var maxTekrar = 0;
+    for (var b in bolgeFrekans) {
+        if (bolgeFrekans[b] > maxTekrar) {
+            maxTekrar = bolgeFrekans[b];
+            enCokAgriyanBolge = b;
+        }
+    }
+
+    // --- AKILLI YORUM METNİNİ OLUŞTURMA ---
+    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta <strong>${sorunluUykuGecesi} gece</strong> ağrı veya diğer sebeplerle bölünen kalitesiz bir uyku geçirmiş ve <strong>${agirTutuklukGunu} gün</strong> sabah tutukluğunu normalden uzun (ağır) yaşamıştır. Toplam <strong>${aktifGunSayisi} gün</strong> fiziksel aktivite (yürüyüş, yüzme vb.) yapabilmiştir.`;
+
     var raporHTML = `
         <div class="rap-baslik">
             Nurten Sultan - Romatoloji & Sjögren İzlem Raporu
         </div>
         
         <div class="rap-bolum">
-            <h3>📋 Hasta Özeti ve Klinik Notlar</h3>
+            <h3>📋 Hasta Özeti ve Akıllı Korelasyon</h3>
             <ul>
                 <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün</li>
+                <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
                 <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
                 <li><strong>Kullanılan Biyolojik Ajan:</strong> Cimzia (14 günde bir) & Metoartcon (Haftalık)</li>
             </ul>
+            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px 15px; margin-top: 15px; font-size: 13px; line-height: 1.5; border-radius: 4px;">
+                <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
+            </div>
         </div>
 
         <div class="rap-bolum">
@@ -851,7 +895,7 @@ function doktorRaporuOlustur() {
                         <th>Ateş</th>
                         <th>Sabah Tutukluğu</th>
                         <th>Eklem Ağrısı</th>
-                        <th>Bölge</th>
+                        <th>Alevlenme Bölgesi</th>
                         <th>Aktivite</th>
                         <th>Uyku</th>
                     </tr>
