@@ -267,7 +267,7 @@ body {
 }
 
 /* =======================================================
-   DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ (GÜÇLÜ KİLİT AÇICI)
+   DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ (BÜYÜTÜLMÜŞ YAZILAR)
    ======================================================= */
 .rapor-btn { 
     background: linear-gradient(135deg, #0A84FF 0%, #0040dd 100%); 
@@ -302,7 +302,7 @@ body {
         display: none !important;
     }
 
-    /* 3. Sadece raporu görünür yap */
+    /* 3. Sadece raporu görünür yap ve baz yazı boyutunu büyüt */
     #print-report-area {
         display: block !important;
         position: relative !important;
@@ -310,15 +310,22 @@ body {
         padding: 20px !important;
         font-family: Arial, sans-serif !important;
         color: #000 !important;
+        font-size: 16px !important; 
     }
     
-    /* Tablo Tasarımları */
-    .rap-baslik { font-size: 22px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
-    .rap-bolum { margin-bottom: 20px; break-inside: avoid; }
-    .rap-bolum h3 { font-size: 16px; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; color: #333; }
-    .rap-tablo { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-    .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 6px; text-align: center; }
-    .rap-tablo th { background-color: #e0e0e0; font-weight: bold; }
+    /* Geliştirilmiş, Okunaklı Tablo ve Başlık Tasarımları */
+    .rap-baslik { font-size: 26px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 24px; color: #111; }
+    .rap-bolum { margin-bottom: 24px; break-inside: avoid; }
+    .rap-bolum h3 { font-size: 19px; border-bottom: 2px solid #ccc; padding-bottom: 6px; margin-bottom: 12px; color: #222; }
+    
+    /* Madde imleri (Hasta Özeti) daha okunaklı */
+    .rap-bolum ul { padding-left: 20px; margin-bottom: 10px; }
+    .rap-bolum ul li { margin-bottom: 8px; font-size: 16px; line-height: 1.5; }
+    
+    /* Tablo Yazıları ve Hücre İçi Boşluklar Büyütüldü */
+    .rap-tablo { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+    .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 8px 6px; text-align: center; }
+    .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 15px; }
     .rap-alert { color: red; font-weight: bold; }
 }
 /* ======================================================= */
@@ -579,14 +586,11 @@ function analyzeMonth(year, month) {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
 
-    // SİSTEMİN BAŞLANGIÇ TARİHİ (28 Şubat 2026 - Aylar 0'dan başlar: 1 = Şubat)
+    // SİSTEMİN BAŞLANGIÇ TARİHİ (28 Şubat 2026)
     const START_DATE = new Date(2026, 1, 28);
 
-    // Sondan başa doğru (En yeni gün en üstte görünsün diye geriye sayıyoruz)
     for (let d = maxDay; d >= 1; d--) { 
         let currentDay = new Date(year, month, d);
-
-        // Eğer incelenen gün, başlama tarihinden (28 Şub) önceyse, döngüyü atla ve o günleri hesaba katma!
         if (currentDay < START_DATE) {
             continue; 
         }
@@ -598,7 +602,6 @@ function analyzeMonth(year, month) {
         let dayMissedCount = 0;
         let dayMissedNames = [];
 
-        // Arşivden o günün satırını bul
         let dayData = (apiData.tumVeriler && apiData.tumVeriler[dateStr]) ? apiData.tumVeriler[dateStr] : null;
 
         prog.forEach(s => {
@@ -616,13 +619,11 @@ function analyzeMonth(year, month) {
 
                 if (!isDone) {
                     if (isExplicitlyMissed) {
-                        isMissed = true; // Manuel olarak İçilmedi yazılmış
+                        isMissed = true; 
                     } else if (isCurrentMonth && d === dNow.getDate()) {
-                        // BUGÜNÜN ZEKASI: 90 dakika geçtiyse ve boşsa "kaçırıldı" say.
                         const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
                         if (nowMins > cardMins + 90) isMissed = true;
                     } else {
-                        // GEÇMİŞ GÜN ZEKASI: Tarih geçmiş ve hücre boş kalmışsa kesin kaçırılmıştır.
                         isMissed = true;
                     }
                 }
@@ -756,7 +757,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU (SAAT KORUMALI + İLAÇ ŞEMASI EKLENDİ)
+// DOKTOR RAPORU OLUŞTURUCU (SAAT KORUMALI + İLAÇ ŞEMASI + BÜYÜTÜLMÜŞ YAZILAR)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -764,7 +765,6 @@ function doktorRaporuOlustur() {
         return;
     }
 
-    // --- AKILLI VERİ OKUYUCU (İlaçları Atlar) ---
     function veriBul(gunlukVeri, aranacakKelimeler) {
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
@@ -782,11 +782,9 @@ function doktorRaporuOlustur() {
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
-    // --- SAAT KORUMALI İLAÇ UYUM ORANI HESAPLAYICI ---
     var toplamBeklenenIlac = 0;
     var toplamIcilenIlac = 0;
     
-    // Şu anki tam zamanı alıyoruz
     var anlikTarih = new Date();
     var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
     var anlikDakika = (anlikTarih.getHours() * 60) + anlikTarih.getMinutes();
@@ -800,14 +798,12 @@ function doktorRaporuOlustur() {
         var bugunMu = (tarih === bugunTarihStr);
 
         gunlukProgram.forEach(function(ogun) {
-            // Öğünün saatini dakikaya çevir
             var ogunDakika = 0;
             if (ogun.time) {
                 var timeParts = ogun.time.split(':');
                 ogunDakika = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
             }
 
-            // Gelecekteki ilaçları hesaba katma
             if (bugunMu && anlikDakika < ogunDakika) {
                 return; 
             }
@@ -822,12 +818,10 @@ function doktorRaporuOlustur() {
     });
 
     var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
-    // ------------------------------------
 
     var tabloSatirlari = "";
     var atesliGunSayisi = 0;
     
-    // --- AKILLI ÖZET İÇİN SAYAÇLAR ---
     var bolgeFrekans = {};
     var sorunluUykuGecesi = 0;
     var agirTutuklukGunu = 0;
@@ -843,12 +837,10 @@ function doktorRaporuOlustur() {
         var aktivite = veriBul(veri, ["aktivite"]);
         var uyku = veriBul(veri, ["uyku", "gece"]);
 
-        // Ateş Hesaplama
         var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
         var atesGosterim = ates > 0 ? ates + "°C" : "-";
         if (ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
 
-        // --- KORELASYON VERİSİ TOPLAMA ---
         if (bolge !== "-" && bolge.toLowerCase() !== "hayır") {
             bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
         }
@@ -875,7 +867,6 @@ function doktorRaporuOlustur() {
         `;
     });
 
-    // --- EN ÇOK AĞRI YAPAN BÖLGEYİ BULMA ---
     var enCokAgriyanBolge = "Belirgin bir bölge yok";
     var maxTekrar = 0;
     for (var b in bolgeFrekans) {
@@ -885,12 +876,11 @@ function doktorRaporuOlustur() {
         }
     }
 
-    // --- AKILLI YORUM METNİNİ OLUŞTURMA ---
     var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta <strong>${sorunluUykuGecesi} gece</strong> ağrı veya diğer sebeplerle bölünen kalitesiz bir uyku geçirmiş ve <strong>${agirTutuklukGunu} gün</strong> sabah tutukluğunu normalden uzun (ağır) yaşamıştır. Toplam <strong>${aktifGunSayisi} gün</strong> fiziksel aktivite (yürüyüş, yüzme vb.) yapabilmiştir.`;
 
     var raporHTML = `
         <div class="rap-baslik">
-            Nurten BATUR - Romatoloji & Sjögren İzlem Raporu
+            Nurten Sultan - Romatoloji & Sjögren İzlem Raporu
         </div>
         
         <div class="rap-bolum">
@@ -899,8 +889,9 @@ function doktorRaporuOlustur() {
                 <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün</li>
                 <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
                 <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
+                <li><strong>Kullanılan Biyolojik Ajan:</strong> Cimzia (14 günde bir) & Metoartcon (Haftalık)</li>
             </ul>
-            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px 15px; margin-top: 15px; font-size: 13px; line-height: 1.5; border-radius: 4px;">
+            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 14px 18px; margin-top: 15px; font-size: 15px; line-height: 1.6; border-radius: 4px;">
                 <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
             </div>
         </div>
@@ -916,23 +907,23 @@ function doktorRaporuOlustur() {
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#555;">(06:00)</span></td>
+                        <td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td>
                         <td style="text-align: left;">INH <em>(Her gün)</em></td>
                     </tr>
                     <tr>
-                        <td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#555;">(10:00)</span></td>
+                        <td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td>
                         <td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td>
                     </tr>
                     <tr>
-                        <td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#555;">(13:00)</span></td>
+                        <td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td>
                         <td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td>
                     </tr>
                     <tr>
-                        <td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#555;">(18:00)</span></td>
+                        <td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td>
                         <td style="text-align: left;">Plaquenil <em>(Her gün)</em></td>
                     </tr>
                     <tr>
-                        <td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#555;">(21:00)</span></td>
+                        <td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td>
                         <td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td>
                     </tr>
                 </tbody>
@@ -1066,7 +1057,7 @@ function ekraniCiz() {
             cardClass = "late-card";
         }
         
-        // HAFIZAYI UYGULAMA (Günlük kartlar için)
+        // HAFIZAYI UYGULAMA
         let isCollapsed = isAllDone; 
         if (stateMap[s.id] !== undefined) {
             isCollapsed = stateMap[s.id]; 
