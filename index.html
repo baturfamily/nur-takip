@@ -756,7 +756,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU (SAAT KORUMALI İLAÇ UYUMU)
+// DOKTOR RAPORU OLUŞTURUCU (SAAT KORUMALI + İLAÇ ŞEMASI EKLENDİ)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -800,16 +800,16 @@ function doktorRaporuOlustur() {
         var bugunMu = (tarih === bugunTarihStr);
 
         gunlukProgram.forEach(function(ogun) {
-            // Öğünün saatini dakikaya çevir (Örn: 18:00 = 1080)
+            // Öğünün saatini dakikaya çevir
             var ogunDakika = 0;
             if (ogun.time) {
                 var timeParts = ogun.time.split(':');
                 ogunDakika = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
             }
 
-            // MANTIK: Eğer günlerden BUGÜNSE ve saati henüz GELMEDİYSE bu öğünü atla!
+            // Gelecekteki ilaçları hesaba katma
             if (bugunMu && anlikDakika < ogunDakika) {
-                return; // Gelecekteki ilaçları hesaba katma
+                return; 
             }
 
             ogun.meds.forEach(function(ilac) {
@@ -899,11 +899,44 @@ function doktorRaporuOlustur() {
                 <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün</li>
                 <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
                 <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
-                <li><strong>Kullanılan Biyolojik Ajan:</strong> Cimzia (14 günde bir) & Metoartcon (Haftalık)</li>
             </ul>
             <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px 15px; margin-top: 15px; font-size: 13px; line-height: 1.5; border-radius: 4px;">
                 <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
             </div>
+        </div>
+
+        <div class="rap-bolum">
+            <h3>💊 Aktif Tedavi ve İlaç Şeması</h3>
+            <table class="rap-tablo">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Zaman</th>
+                        <th>Kullanılan İlaçlar ve Rutinleri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#555;">(06:00)</span></td>
+                        <td style="text-align: left;">INH <em>(Her gün)</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#555;">(10:00)</span></td>
+                        <td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#555;">(13:00)</span></td>
+                        <td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#555;">(18:00)</span></td>
+                        <td style="text-align: left;">Plaquenil <em>(Her gün)</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#555;">(21:00)</span></td>
+                        <td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="rap-bolum">
