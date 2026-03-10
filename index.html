@@ -448,7 +448,7 @@ document.querySelectorAll('.app-title .greeting, .clock-text').forEach(el => {
     el.style.color = "rgba(255, 255, 255, 0.85)";
 });
 
-// HAVA DURUMU (Öncekiyle Birebir Aynı)
+// HAVA DURUMU
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=uv_index_max&timezone=auto');
@@ -509,7 +509,7 @@ async function fetchWeather() {
 }
 fetchWeather();
 
-// MİNİK TOAST (Öncekiyle Aynı)
+// MİNİK TOAST
 function mewMsg() {
     const arrA = ["Nenesinin kuzusu,", "Benim bir tanecik nene sultanım,", "Dünyanın en güzel nenesine pati selamı,", "Evimizin gülü canım nenem,"];
     const arrB = ["Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", "Kalp ilacımı (Enalapril) hiç itiraz etmeden yuttum,"];
@@ -756,7 +756,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU VE ZAMANLAMA SİHRİ
+// DOKTOR RAPORU OLUŞTURUCU VE ZAMANLAMA SİHRİ (AKILLI KOD)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -764,34 +764,45 @@ function doktorRaporuOlustur() {
         return;
     }
 
-    // Tarihleri yeniden eskiye sıralama (Örn: "05.03.2026")
+    // --- AKILLI VERİ OKUYUCU ---
+    function veriBul(gunlukVeri, aranacakKelimeler) {
+        for (var kolonIsmi in gunlukVeri) {
+            var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+            for (var i = 0; i < aranacakKelimeler.length; i++) {
+                var aranan = aranacakKelimeler[i].toLowerCase();
+                if (temizKolon.includes(aranan) && gunlukVeri[kolonIsmi] !== "" && gunlukVeri[kolonIsmi] !== null) {
+                    return gunlukVeri[kolonIsmi];
+                }
+            }
+        }
+        return "-"; // Bulamazsa veya boşsa tire koy
+    }
+
+    // Tarihleri yeniden eskiye sıralama
     var tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
         var pA = a.split('.');
         var pB = b.split('.');
-        var dateA = new Date(pA[2], pA[1]-1, pA[0]);
-        var dateB = new Date(pB[2], pB[1]-1, pB[0]);
-        return dateB - dateA; 
+        return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
     var tabloSatirlari = "";
     var atesliGunSayisi = 0;
-    var toplamKayit = tarihler.length;
 
     tarihler.forEach(function(tarih) {
         var veri = apiData.tumVeriler[tarih];
         
-        // Sütun isimleri tam eşleşmese de yakalayabilmesi için hem uzun hem kısa hallerini yazdım
-        var atesHam = veri["Ateşin kaç?"] || veri["Ateş"];
-        var ates = atesHam ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
-        
-        var tutukluk = veri["Sabah tutukluğun nasıldı?"] || veri["Sabah Tutukluğu"] || "-";
-        var agri = veri["Eklem Şişliği / Ağrısı"] || veri["Eklem Ağrısı"] || "-";
-        var bolge = veri["Rahatsızlık Bölgesi"] || veri["Alevlenme Bölgesi"] || "-";
-        var aktivite = veri["Aktivite"] || "-";
-        var uyku = veri["Dün gece rahat uyuyabildin mi"] || veri["Uyku Kalitesi"] || "-";
+        // Sütun ismi ne olursa olsun içindeki anahtar kelimeden bulur!
+        var atesHam = veriBul(veri, ["ates", "ateş"]);
+        var tutukluk = veriBul(veri, ["tutuk", "sabah"]);
+        var agri = veriBul(veri, ["agri", "ağrı", "şiş", "sis"]);
+        var bolge = veriBul(veri, ["bölge", "bolge", "rahatsiz"]);
+        var aktivite = veriBul(veri, ["aktivite"]);
+        var uyku = veriBul(veri, ["uyku", "gece"]);
 
         // Ateş kontrolü 37.0 ve üzeri
+        var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
         var atesGosterim = ates > 0 ? ates + "°C" : "-";
+        
         if (ates >= 37.0) {
             atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`;
             atesliGunSayisi++;
@@ -818,7 +829,7 @@ function doktorRaporuOlustur() {
         <div class="rap-bolum">
             <h3>📋 Hasta Özeti ve Klinik Notlar</h3>
             <ul>
-                <li><strong>Rapor Dönemi:</strong> Son ${toplamKayit} Kayıtlı Gün</li>
+                <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün</li>
                 <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
                 <li><strong>Kullanılan Biyolojik Ajan:</strong> Cimzia (14 günde bir) & Metoartcon (Haftalık)</li>
             </ul>
@@ -833,7 +844,7 @@ function doktorRaporuOlustur() {
                         <th>Ateş</th>
                         <th>Sabah Tutukluğu</th>
                         <th>Eklem Ağrısı</th>
-                        <th>Alevlenme Bölgesi</th>
+                        <th>Bölge</th>
                         <th>Aktivite</th>
                         <th>Uyku</th>
                     </tr>
@@ -845,13 +856,11 @@ function doktorRaporuOlustur() {
         </div>
     `;
 
-    // Hazırlanan HTML'i gizli alana bas
     document.getElementById("print-report-area").innerHTML = raporHTML;
 
-    // SİHİR BURADA: Tarayıcıya HTML'i çizmesi için çok kısa bir süre (200ms) ver
     setTimeout(function() {
         window.print();
-    }, 200);
+    }, 250);
 }
 // =======================================================
 
