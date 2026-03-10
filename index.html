@@ -156,7 +156,6 @@ body {
     .ios-w-hum { background: rgba(0,0,0,0.4); }
 }
 
-
 /* --- YENİ: İSTATİSTİK KARTLARI (GENİŞLEYEN YAPI) --- */
 .stat-card .card-header { margin-bottom: 0; cursor: pointer; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
@@ -266,6 +265,53 @@ body {
         border: 1px solid #3D322C !important;
     }
 }
+
+/* =======================================================
+   YENİ EKLENEN KISIM: DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ
+   ======================================================= */
+.rapor-btn { 
+    background: linear-gradient(135deg, #0A84FF 0%, #0040dd 100%); 
+    color: white; 
+    padding: 14px 20px; 
+    border: none; 
+    border-radius: 16px; 
+    font-weight: 800; 
+    font-size: 16px; 
+    cursor: pointer; 
+    margin-bottom: 12px; 
+    width: 100%; 
+    box-shadow: var(--card-shadow); 
+    flex-shrink:0; 
+}
+
+#print-report-area { display: none; }
+
+@media print {
+    body * { visibility: hidden; } /* Ekranda görünen her şeyi gizle */
+    #print-report-area, #print-report-area * { visibility: visible; } /* Sadece raporu göster */
+    
+    #print-report-area { 
+        display: block; 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        padding: 20px; 
+        font-family: Arial, sans-serif; 
+        color: #000; 
+        background: #fff;
+    }
+    
+    .rap-baslik { font-size: 22px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+    .rap-bolum { margin-bottom: 20px; }
+    .rap-bolum h3 { font-size: 16px; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; color: #333; }
+    .rap-tablo { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
+    .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 6px; text-align: center; }
+    .rap-tablo th { background-color: #e0e0e0; font-weight: bold; }
+    .rap-alert { color: red; font-weight: bold; }
+}
+/* ======================================================= */
+
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
@@ -304,6 +350,8 @@ body {
     <div id="timelineArea"></div>
 
     <div id="statsArea">
+        
+        <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
         <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed')">
             <div class="card-header">
                 <div class="drug-name">📊 Bu Ayki Özet</div>
@@ -340,6 +388,7 @@ body {
 <div class="minik-button" onclick="event.stopPropagation(); mewMsg()">🐾</div>
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
 
+<div id="print-report-area"></div>
 <script>
 // API URL (Apps Script güncellenmiş dağıtım linkin)
 const API_URL = "https://script.google.com/macros/s/AKfycbw3iPSChuSoEGJMJH5ICubbO0PZDYcDAqgzZYM466JvMGEZFWHvFM5eor3tbETup2r1/exec"; 
@@ -696,6 +745,104 @@ function istatistikleriCiz() {
     // Yıllık Karne
     renderYearStat(currentYear);
 }
+
+// =======================================================
+// YENİ EKLENEN BEYİN 6: DOKTOR RAPORU OLUŞTURUCU 
+// =======================================================
+function doktorRaporuOlustur() {
+    if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
+        alert("Henüz veri yüklenmedi veya veri bulunamadı. Lütfen birkaç saniye bekleyip tekrar deneyin.");
+        return;
+    }
+
+    // Tarihleri yeniden eskiye sıralama (Örn: "05.03.2026")
+    var tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
+        var pA = a.split('.');
+        var pB = b.split('.');
+        var dateA = new Date(pA[2], pA[1]-1, pA[0]);
+        var dateB = new Date(pB[2], pB[1]-1, pB[0]);
+        return dateB - dateA; 
+    });
+
+    var tabloSatirlari = "";
+    var atesliGunSayisi = 0;
+    var toplamKayit = tarihler.length;
+
+    tarihler.forEach(function(tarih) {
+        var veri = apiData.tumVeriler[tarih];
+        
+        // Sütun isimleri tam eşleşmese de yakalayabilmesi için hem uzun hem kısa hallerini yazdım
+        var atesHam = veri["Ateşin kaç?"] || veri["Ateş"];
+        var ates = atesHam ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
+        
+        var tutukluk = veri["Sabah tutukluğun nasıldı?"] || veri["Sabah Tutukluğu"] || "-";
+        var agri = veri["Eklem Şişliği / Ağrısı"] || veri["Eklem Ağrısı"] || "-";
+        var bolge = veri["Rahatsızlık Bölgesi"] || veri["Alevlenme Bölgesi"] || "-";
+        var aktivite = veri["Aktivite"] || "-";
+        var uyku = veri["Dün gece rahat uyuyabildin mi"] || veri["Uyku Kalitesi"] || "-";
+
+        // Ateş kontrolü 37.0 ve üzeri
+        var atesGosterim = ates > 0 ? ates + "°C" : "-";
+        if (ates >= 37.0) {
+            atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`;
+            atesliGunSayisi++;
+        }
+
+        tabloSatirlari += `
+        <tr>
+            <td>${tarih}</td>
+            <td>${atesGosterim}</td>
+            <td>${tutukluk}</td>
+            <td>${agri}</td>
+            <td>${bolge}</td>
+            <td>${aktivite}</td>
+            <td>${uyku}</td>
+        </tr>
+        `;
+    });
+
+    var raporHTML = `
+        <div class="rap-baslik">
+            Nurten Sultan - Romatoloji & Sjögren İzlem Raporu
+        </div>
+        
+        <div class="rap-bolum">
+            <h3>📋 Hasta Özeti ve Klinik Notlar</h3>
+            <ul>
+                <li><strong>Rapor Dönemi:</strong> Son ${toplamKayit} Kayıtlı Gün</li>
+                <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
+                <li><strong>Kullanılan Biyolojik Ajan:</strong> Cimzia (14 günde bir) & Metoartcon (Haftalık)</li>
+            </ul>
+        </div>
+
+        <div class="rap-bolum">
+            <h3>📅 Günlük Detay Çizelgesi</h3>
+            <table class="rap-tablo">
+                <thead>
+                    <tr>
+                        <th>Tarih</th>
+                        <th>Ateş</th>
+                        <th>Sabah Tutukluğu</th>
+                        <th>Eklem Ağrısı</th>
+                        <th>Alevlenme Bölgesi</th>
+                        <th>Aktivite</th>
+                        <th>Uyku</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tabloSatirlari}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    // Hazırlanan HTML'i gizli alana bas
+    document.getElementById("print-report-area").innerHTML = raporHTML;
+
+    // Tarayıcının yazdırma/PDF kaydetme penceresini tetikle
+    window.print();
+}
+// =======================================================
 
 
 // API ÇAĞRISI (Aynı kalıyor, Google Sheets yeni kodu sayesinde artık "tumVeriler" paketiyle dönüyor)
