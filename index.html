@@ -267,7 +267,7 @@ body {
 }
 
 /* =======================================================
-   DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ (YENİ GÜÇLÜ KİLİT AÇICI)
+   DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ (GÜÇLÜ KİLİT AÇICI)
    ======================================================= */
 .rapor-btn { 
     background: linear-gradient(135deg, #0A84FF 0%, #0040dd 100%); 
@@ -756,7 +756,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU VE ZAMANLAMA SİHRİ (AKILLI KOD)
+// DOKTOR RAPORU OLUŞTURUCU VE ZAMANLAMA SİHRİ (İLAÇ FİLTRELİ KOD)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -764,18 +764,25 @@ function doktorRaporuOlustur() {
         return;
     }
 
-    // --- AKILLI VERİ OKUYUCU ---
+    // --- AKILLI VERİ OKUYUCU (İlaçları Atlar) ---
     function veriBul(gunlukVeri, aranacakKelimeler) {
         for (var kolonIsmi in gunlukVeri) {
+            var cevap = gunlukVeri[kolonIsmi];
+            
+            // EĞER CEVAP İLAÇ KAYDIYSA (İçildi/İçilmedi) VEYA BOŞSA, ONU DİREKT ATLA!
+            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) {
+                continue;
+            }
+
             var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
             for (var i = 0; i < aranacakKelimeler.length; i++) {
                 var aranan = aranacakKelimeler[i].toLowerCase();
-                if (temizKolon.includes(aranan) && gunlukVeri[kolonIsmi] !== "" && gunlukVeri[kolonIsmi] !== null) {
-                    return gunlukVeri[kolonIsmi];
+                if (temizKolon.includes(aranan)) {
+                    return cevap;
                 }
             }
         }
-        return "-"; // Bulamazsa veya boşsa tire koy
+        return "-"; // Bulamazsa tire koy
     }
 
     // Tarihleri yeniden eskiye sıralama
@@ -865,7 +872,7 @@ function doktorRaporuOlustur() {
 // =======================================================
 
 
-// API ÇAĞRISI (Aynı kalıyor)
+// API ÇAĞRISI
 async function veriCek() {
     if (fetchDevamEdiyor) return;
     fetchDevamEdiyor = true;
