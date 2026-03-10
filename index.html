@@ -283,7 +283,9 @@ body {
     box-shadow: var(--card-shadow); 
     flex-shrink:0; 
 }
-
+/* Rapor alanını normal telefon ekranında tamamen gizle */
+#print-report-area { display: none; }
+  
 @media print {
     /* 1. Tüm sayfa kilitlerini aç */
     html, body {
