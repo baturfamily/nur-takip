@@ -778,7 +778,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (HAFIZALI)
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (ZAMAN FARKINDALIĞI)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
@@ -825,6 +825,17 @@ function renderHealthDiary() {
 
     if (!sonGunVerisi) return; 
 
+    // --- ZAMAN KONTROLÜ (BUGÜNÜN VERİSİ GİRİLMİŞ Mİ?) ---
+    let bugun = new Date();
+    let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
+    
+    let dun = new Date();
+    dun.setDate(dun.getDate() - 1);
+    let dunTarihStr = String(dun.getDate()).padStart(2, '0') + '.' + String(dun.getMonth() + 1).padStart(2, '0') + '.' + dun.getFullYear();
+
+    let isTodayData = (sonGunTarihi === bugunTarihStr);
+    // ---------------------------------------------------
+
     let atesHam = veriBul(sonGunVerisi, ["ates", "ateş"]);
     let tutukluk = veriBul(sonGunVerisi, ["tutuk", "sabah"]);
     let agri = veriBul(sonGunVerisi, ["agri", "ağrı", "şiş", "sis"]);
@@ -835,8 +846,6 @@ function renderHealthDiary() {
     let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
     
     let streak = 0;
-    let bugun = new Date();
-    let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
     
     for (let t of tarihler) {
         if (t === bugunTarihStr) continue; 
@@ -916,8 +925,22 @@ function renderHealthDiary() {
         aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
     }
 
+    // --- EĞER BUGÜNÜN VERİSİ GİRİLMEDİYSE AKŞAM 9 UYARISI EKLE ---
+    if (!isTodayData) {
+        aiMsg.push(`<div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); color: #0284c7; font-weight: 800; font-size: 14px; text-align: center;">⏳ Bugünün analizi için akşam saat 21:00'i bekliyorum!</div>`);
+    }
+
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
-    let baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
+    
+    // --- BAŞLIK ZAMANA GÖRE DEĞİŞSİN ---
+    let baslik = "";
+    if (isTodayData) {
+        baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
+    } else if (sonGunTarihi === dunTarihStr) {
+        baslik = "⏪ Dünün Özeti";
+    } else {
+        baslik = `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`;
+    }
     
     let pillsHTML = "";
     if (uyku !== "-") {
@@ -938,7 +961,6 @@ function renderHealthDiary() {
 
     let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
 
-    // Kart HTML'i oluşturulurken collapseClass kullanılıyor (Hafızadan gelen durum)
     let finalHTML = `
         <div class="diary-card ${moodClass} ${collapseClass}" onclick="this.classList.toggle('collapsed')">
             <div class="diary-header">
