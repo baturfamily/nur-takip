@@ -156,6 +156,33 @@ body {
     .ios-w-hum { background: rgba(0,0,0,0.4); }
 }
 
+/* --- YENİ: SAĞLIK GÜNLÜĞÜ (ASİSTAN) KARTI --- */
+.diary-card { padding: 16px; border-radius: 20px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; box-shadow: var(--card-shadow); }
+.diary-mood-good { background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; }
+.diary-mood-rest { background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border: 1px solid #FED7AA; }
+
+.diary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px;}
+.diary-streak { font-size: 12px; font-weight: 800; background: rgba(255,255,255,0.8); padding: 5px 10px; border-radius: 12px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.04);}
+
+.diary-pills { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.diary-pill { background: rgba(255,255,255,0.9); padding: 6px 12px; border-radius: 12px; font-size: 13px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+.diary-pill.alert { background: #FEE2E2; color: #EF4444; border: 1px solid #FCA5A5; }
+
+.diary-ai-box { background: rgba(255,255,255,0.65); padding: 12px 14px; border-radius: 14px; font-size: 14px; font-weight: 600; color: #475569; line-height: 1.5; border-left: 4px solid #3B82F6; }
+.diary-mood-good .diary-ai-box { border-left-color: #10B981; }
+.diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
+
+@media (prefers-color-scheme: dark) {
+    .diary-mood-good { background: linear-gradient(135deg, #064E3B 0%, #065F46 100%); border-color: #047857; }
+    .diary-mood-rest { background: linear-gradient(135deg, #78350F 0%, #92400E 100%); border-color: #B45309; }
+    .diary-title { color: #F8FAFC; }
+    .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; }
+    .diary-pill { background: rgba(0,0,0,0.3); color: #E2E8F0; }
+    .diary-ai-box { background: rgba(0,0,0,0.2); color: #CBD5E1; }
+    .diary-pill.alert { background: rgba(239,68,68,0.2); color: #FCA5A5; border-color: #DC2626; }
+}
+
 /* --- YENİ: İSTATİSTİK KARTLARI (GENİŞLEYEN YAPI) --- */
 .stat-card .card-header { margin-bottom: 0; cursor: pointer; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
@@ -367,6 +394,7 @@ body {
 
 <div class="vertical-list">
     
+    <div id="healthDiaryArea"></div>
     <div id="timelineArea"></div>
 
     <div id="statsArea">
@@ -759,6 +787,188 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU
+// =======================================================
+function renderHealthDiary() {
+    if (!apiData || !apiData.tumVeriler) return;
+
+    function veriBul(gunlukVeri, aranacakKelimeler) {
+        for (var kolonIsmi in gunlukVeri) {
+            var cevap = gunlukVeri[kolonIsmi];
+            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
+            var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+            for (var i = 0; i < aranacakKelimeler.length; i++) {
+                if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
+            }
+        }
+        return "-";
+    }
+
+    // Tarihleri en yeniden eskiye sırala
+    const tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
+        var pA = a.split('.'); var pB = b.split('.');
+        return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
+    });
+
+    // En son doldurulan GÜNLÜK ÖZET gününü bul (Sadece ilaç olan günleri atlar)
+    let sonGunVerisi = null;
+    let sonGunTarihi = "";
+    
+    for (let t of tarihler) {
+        let veri = apiData.tumVeriler[t];
+        let vUyku = veriBul(veri, ["uyku", "gece"]);
+        let vSabah = veriBul(veri, ["tutuk", "sabah"]);
+        // Eğer uyku veya sabah tutukluğu sorusuna cevap verilmişse, o günü "en son gün" kabul et
+        if (vUyku !== "-" || vSabah !== "-") {
+            sonGunVerisi = veri;
+            sonGunTarihi = t;
+            break;
+        }
+    }
+
+    if (!sonGunVerisi) return; // Henüz tabloya hiç veri girilmemişse kartı çizme
+
+    // Verileri çıkar
+    let atesHam = veriBul(sonGunVerisi, ["ates", "ateş"]);
+    let tutukluk = veriBul(sonGunVerisi, ["tutuk", "sabah"]);
+    let agri = veriBul(sonGunVerisi, ["agri", "ağrı", "şiş", "sis"]);
+    let bolge = veriBul(sonGunVerisi, ["bölge", "bolge", "rahatsiz"]);
+    let aktivite = veriBul(sonGunVerisi, ["aktivite"]);
+    let uyku = veriBul(sonGunVerisi, ["uyku", "gece"]);
+
+    let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
+    
+    // --- İLAÇ İÇME SERİSİ HESAPLAMA (Geçmiş günlerden geriye) ---
+    let streak = 0;
+    let bugun = new Date();
+    let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
+    
+    for (let t of tarihler) {
+        if (t === bugunTarihStr) continue; // Bugünü seriye katma, henüz akşamı gelmedi
+        
+        let p = t.split('.');
+        let dObj = new Date(p[2], p[1]-1, p[0]);
+        let gunlukProgram = getDailyProgram(dObj);
+        let veri = apiData.tumVeriler[t] || {};
+        
+        let gunTumuIcildi = true;
+        let oGunIlacVarMi = false;
+        
+        gunlukProgram.forEach(ogun => {
+            ogun.meds.forEach(ilac => {
+                oGunIlacVarMi = true;
+                if (veri[ilac.key] !== "İçildi") { gunTumuIcildi = false; }
+            });
+        });
+        
+        if (oGunIlacVarMi && gunTumuIcildi) {
+            streak++;
+        } else if (oGunIlacVarMi && !gunTumuIcildi) {
+            break; // Geçmişe doğru giderken ilk aksayan günde saymayı bırak
+        }
+    }
+
+    // --- LEGO: SENARYO MOTORU ---
+    let aiMsg = [];
+    let isBadDay = false;
+
+    // 1. Ateş Kontrolü (Hayati)
+    if (ates >= 37.0) {
+        aiMsg.push(`Sultanım, son kayıtlarda ateşin ${ates}°C görünüyor. Lütfen bol sıvı alıp kendini sıcak tut, gerekirse doktoruna haber verelim.`);
+        isBadDay = true;
+    }
+
+    // 2. Uyku ve Sabah Tutukluğu
+    let isUykuBad = uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("uyuyamad") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("vardı");
+    let isSabahBad = tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("saat") || tutukluk.toLowerCase().includes("sürdü");
+    let isUykuGood = uyku.toLowerCase().includes("deliksiz") || uyku.toLowerCase().includes("iyi") || uyku.toLowerCase().includes("normal");
+    let isSabahGood = tutukluk.toLowerCase().includes("hemen") || tutukluk.toLowerCase().includes("yok");
+
+    if (isUykuBad && isSabahBad) {
+        aiMsg.push(`Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir.`);
+        isBadDay = true;
+    } else if (isUykuGood && isSabahGood) {
+        aiMsg.push(`Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor.`);
+    } else if (isUykuBad) {
+        aiMsg.push(`Uykunu tam alamamışsın, bugün fırsat bulursan biraz şekerleme yapıp dinlenmeye çalış.`);
+        isBadDay = true;
+    } else if (isSabahBad) {
+        aiMsg.push(`Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme.`);
+    }
+
+    // 3. Bölge ve Aktivite
+    let isEller = bolge.toLowerCase().includes("el");
+    let isHerYer = bolge.toLowerCase().includes("her yer");
+    let isAktiviteVar = aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad");
+
+    if (isEller) {
+        aiMsg.push(`Semptomların en çok ellerinde toplanmış. Bugün yorucu ev veya el işlerine kesinlikle mola veriyoruz.`);
+        isBadDay = true;
+    } else if (isHerYer) {
+        aiMsg.push(`Vücudunun genelinde bir sızı var, bu günlerde kendini şımartma ve bolca dinlenme vaktidir.`);
+        isBadDay = true;
+    }
+
+    if (isAktiviteVar && !isBadDay) {
+        aiMsg.push(`Yaptığın yürüyüş ve aktivite eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`);
+    }
+
+    // 4. İlaç Serisi (Motivasyon)
+    if (streak >= 3) {
+        aiMsg.push(`Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun, gerisini şifaya bırak. 🌼`);
+    } else if (streak === 0) {
+        aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç canını sıkma. Önümüzdeki öğünlerde telafi eder, yola devam ederiz. 💖`);
+    } else {
+        aiMsg.push(`İlaçlarını güzel takip ediyorsun, şifa seninle olsun canım nenem! 🌼`);
+    }
+
+    // Fallback: Eğer çok az veri girilmişse boş kalmasın
+    if (aiMsg.length === 1 && ates < 37.0) {
+        aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
+    }
+
+    // --- HTML ÇİZİMİ ---
+    let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
+    let baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün, Sultanım! 🌼";
+    
+    let pillsHTML = "";
+    if (uyku !== "-") {
+        let uIcon = isUykuBad ? "🛌" : "😴";
+        pillsHTML += `<div class="diary-pill">${uIcon} Uyku: ${uyku}</div>`;
+    }
+    if (tutukluk !== "-") {
+        let tIcon = isSabahBad ? "🦴" : "✨";
+        pillsHTML += `<div class="diary-pill">${tIcon} Sabah: ${tutukluk}</div>`;
+    }
+    if (ates >= 37.0) {
+        pillsHTML += `<div class="diary-pill alert">🌡️ Ateş: ${ates}°C</div>`;
+    } else if (aktivite !== "-" && isAktiviteVar) {
+        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${aktivite}</div>`;
+    } else if (agri !== "-" && bolge !== "-" && bolge.toLowerCase() !== "hayır") {
+        pillsHTML += `<div class="diary-pill">🎯 Bölge: ${bolge}</div>`;
+    }
+
+    let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
+
+    let finalHTML = `
+        <div class="diary-card ${moodClass}">
+            <div class="diary-header">
+                <h3 class="diary-title">${baslik}</h3>
+                ${streakHTML}
+            </div>
+            <div class="diary-pills">
+                ${pillsHTML}
+            </div>
+            <div class="diary-ai-box">
+                ${aiMsg.join(" ")}
+            </div>
+        </div>
+    `;
+
+    document.getElementById('healthDiaryArea').innerHTML = finalHTML;
+}
+
+// =======================================================
 // DOKTOR RAPORU OLUŞTURUCU (SAAT KORUMALI + İLAÇ ŞEMASI + BÜYÜTÜLMÜŞ YAZILAR)
 // =======================================================
 function doktorRaporuOlustur() {
@@ -975,6 +1185,7 @@ async function veriCek() {
         sonBasariZamani = Date.now();
         ekraniCiz(); 
         istatistikleriCiz(); 
+        renderHealthDiary(); // YAPAY ZEKA GÜNLÜĞÜNÜ TETİKLE
     } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
 }
 
