@@ -778,10 +778,19 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (OPTİMİZE EDİLDİ)
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (HAFIZALI)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
+
+    // --- KARTIN AÇIK/KAPALI HAFIZASINI AL ---
+    let asistanKapaliMi = true; // Varsayılan durum: kapalı
+    const mevcutKart = document.querySelector('#healthDiaryArea .diary-card');
+    if (mevcutKart) {
+        asistanKapaliMi = mevcutKart.classList.contains('collapsed');
+    }
+    const collapseClass = asistanKapaliMi ? "collapsed" : "";
+    // ----------------------------------------
 
     function veriBul(gunlukVeri, aranacakKelimeler) {
         for (var kolonIsmi in gunlukVeri) {
@@ -910,7 +919,6 @@ function renderHealthDiary() {
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
     let baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
     
-    // GEREKSİZ YAZILAR KALDIRILDI - SADECE İKON VE CEVAP
     let pillsHTML = "";
     if (uyku !== "-") {
         let uIcon = isUykuBad ? "🛌" : "😴";
@@ -930,8 +938,9 @@ function renderHealthDiary() {
 
     let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
 
+    // Kart HTML'i oluşturulurken collapseClass kullanılıyor (Hafızadan gelen durum)
     let finalHTML = `
-        <div class="diary-card ${moodClass} collapsed" onclick="this.classList.toggle('collapsed')">
+        <div class="diary-card ${moodClass} ${collapseClass}" onclick="this.classList.toggle('collapsed')">
             <div class="diary-header">
                 <h3 class="diary-title">${baslik}</h3>
                 ${streakHTML}
