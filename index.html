@@ -156,8 +156,8 @@ body {
     .ios-w-hum { background: rgba(0,0,0,0.4); }
 }
 
-/* --- YENİ: SAĞLIK GÜNLÜĞÜ (ASİSTAN) KARTI (BÜYÜTÜLMÜŞ TASARIM) --- */
-.diary-card { padding: 16px; border-radius: 20px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; box-shadow: var(--card-shadow); }
+/* --- SAĞLIK GÜNLÜĞÜ (AÇILIR KAPANIR) KARTI --- */
+.diary-card { padding: 16px; border-radius: 20px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; box-shadow: var(--card-shadow); cursor: pointer; }
 .diary-mood-good { background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; }
 .diary-mood-rest { background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border: 1px solid #FED7AA; }
 
@@ -165,11 +165,20 @@ body {
 .diary-title { font-size: 19px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 4px;}
 .diary-streak { font-size: 13px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 12px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; flex-shrink: 0;}
 
-.diary-pills { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+.diary-pills { display: flex; gap: 8px; flex-wrap: wrap; }
 .diary-pill { background: rgba(255,255,255,0.9); padding: 6px 12px; border-radius: 12px; font-size: 15px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
 .diary-pill.alert { background: #FEE2E2; color: #EF4444; border: 1px solid #FCA5A5; }
 
-.diary-ai-box { background: rgba(255,255,255,0.65); padding: 14px 16px; border-radius: 14px; font-size: 17px; font-weight: 600; color: #475569; line-height: 1.5; border-left: 4px solid #3B82F6; }
+/* Akordeon Mantığı Sınıfları */
+.diary-card.collapsed .diary-ai-box { display: none; }
+.diary-card.collapsed .dt-opened { display: none; }
+.diary-card:not(.collapsed) .dt-closed { display: none; }
+
+.diary-toggle-bar { text-align: center; font-size: 15px; font-weight: 800; margin-top: 12px; transition: 0.2s;}
+.diary-mood-good .diary-toggle-bar { color: #047857; }
+.diary-mood-rest .diary-toggle-bar { color: #B45309; }
+
+.diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.65); padding: 14px 16px; border-radius: 14px; font-size: 17px; font-weight: 600; color: #475569; line-height: 1.5; border-left: 4px solid #3B82F6; }
 .diary-mood-good .diary-ai-box { border-left-color: #10B981; }
 .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
 
@@ -181,6 +190,8 @@ body {
     .diary-pill { background: rgba(0,0,0,0.3); color: #E2E8F0; }
     .diary-ai-box { background: rgba(0,0,0,0.2); color: #CBD5E1; }
     .diary-pill.alert { background: rgba(239,68,68,0.2); color: #FCA5A5; border-color: #DC2626; }
+    .diary-mood-good .diary-toggle-bar { color: #34D399; }
+    .diary-mood-rest .diary-toggle-bar { color: #FBBF24; }
 }
 
 /* --- İSTATİSTİK KARTLARI (GENİŞLEYEN YAPI) --- */
@@ -927,7 +938,7 @@ function renderHealthDiary() {
         aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
     }
 
-    // --- HTML ÇİZİMİ ---
+    // --- HTML ÇİZİMİ (AKORDEON YAPI) ---
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
     let baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
     
@@ -950,8 +961,9 @@ function renderHealthDiary() {
 
     let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
 
+    // Kart varsayılan olarak kapalı ("collapsed") gelecek
     let finalHTML = `
-        <div class="diary-card ${moodClass}">
+        <div class="diary-card ${moodClass} collapsed" onclick="this.classList.toggle('collapsed')">
             <div class="diary-header">
                 <h3 class="diary-title">${baslik}</h3>
                 ${streakHTML}
@@ -959,6 +971,12 @@ function renderHealthDiary() {
             <div class="diary-pills">
                 ${pillsHTML}
             </div>
+            
+            <div class="diary-toggle-bar">
+                <span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:12px;">▼</span></span>
+                <span class="dt-opened">Gizle <span style="font-size:12px;">▲</span></span>
+            </div>
+
             <div class="diary-ai-box">
                 ${aiMsg.join(" ")}
             </div>
