@@ -185,11 +185,36 @@ body {
 .diary-card.collapsed .dt-opened { display: none; }
 .diary-card:not(.collapsed) .dt-closed { display: none; }
 
-.diary-toggle-bar { text-align: center; font-size: 13px; font-weight: 700; margin-top: 8px; opacity: 0.85; transition: 0.2s;}
+/* Buton Hissiyatı Verilmiş Yorum Yazısı */
+.diary-toggle-bar { 
+    text-align: center; 
+    font-size: 13px; 
+    font-weight: 700; 
+    margin: 12px auto 0 auto; 
+    transition: 0.2s;
+    background: rgba(255,255,255,0.5); 
+    display: block; 
+    width: max-content; 
+    padding: 6px 16px; 
+    border-radius: 20px; 
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03); 
+}
 .diary-mood-good .diary-toggle-bar { color: #047857; }
 .diary-mood-rest .diary-toggle-bar { color: #B45309; }
 
-.diary-ai-box { margin-top: 10px; background: rgba(255,255,255,0.65); padding: 12px 14px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #475569; line-height: 1.5; border-left: 3px solid #3B82F6; }
+/* Büyütülmüş Asistan Yazı Boyutu */
+.diary-ai-box { 
+    margin-top: 12px; 
+    background: rgba(255,255,255,0.65); 
+    padding: 14px 16px; 
+    border-radius: 12px; 
+    font-size: 17px; 
+    font-weight: 600; 
+    letter-spacing: -0.3px; 
+    color: #475569; 
+    line-height: 1.5; 
+    border-left: 3px solid #3B82F6; 
+}
 .diary-mood-good .diary-ai-box { border-left-color: #10B981; }
 .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
 
@@ -201,6 +226,7 @@ body {
     .diary-pill { background: rgba(0,0,0,0.3); color: #E2E8F0; }
     .diary-ai-box { background: rgba(0,0,0,0.2); color: #CBD5E1; }
     .diary-pill.alert { background: rgba(239,68,68,0.2); color: #FCA5A5; border-color: #DC2626; }
+    .diary-toggle-bar { background: rgba(0,0,0,0.3); }
     .diary-mood-good .diary-toggle-bar { color: #34D399; }
     .diary-mood-rest .diary-toggle-bar { color: #FBBF24; }
 }
@@ -318,18 +344,20 @@ body {
 /* =======================================================
    DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ
    ======================================================= */
+/* Doktor Raporu Butonu Yumuşatıldı */
 .rapor-btn { 
-    background: linear-gradient(135deg, #0A84FF 0%, #0040dd 100%); 
+    background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); 
     color: white; 
     padding: 14px 20px; 
     border: none; 
-    border-radius: 16px; 
+    border-radius: 18px; 
     font-weight: 800; 
     font-size: 16px; 
     cursor: pointer; 
-    margin-bottom: 12px; 
+    margin-top: 4px;
+    margin-bottom: 24px; 
     width: 100%; 
-    box-shadow: var(--card-shadow); 
+    box-shadow: 0 4px 15px rgba(142, 84, 233, 0.25); 
     flex-shrink:0; 
 }
 #print-report-area { display: none; }
@@ -408,10 +436,9 @@ body {
 
     <div id="statsArea">
         
-        <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
         <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed')">
             <div class="card-header">
-                <div class="drug-name">📊 Bu Ayki Özet</div>
+                <div class="drug-name">📊 <span>Bu Ayki Özet</span></div>
                 <div class="badge badge-wait" id="thisMonthBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="thisMonthDetails">
@@ -421,7 +448,7 @@ body {
 
         <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed')">
             <div class="card-header">
-                <div class="drug-name">⏪ Geçen Ayın Özeti</div>
+                <div class="drug-name">⏪ <span>Geçen Ayın Özeti</span></div>
                 <div class="badge badge-wait" id="lastMonthBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="lastMonthDetails">
@@ -431,13 +458,16 @@ body {
 
         <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed')">
             <div class="card-header">
-                <div class="drug-name">🏆 Yıllık Karne (<span id="currentYearText"></span>)</div>
+                <div class="drug-name">🏆 <span>Yıllık Karne (<span id="currentYearText"></span>)</span></div>
                 <div class="badge badge-wait" id="yearlyBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="yearlyDetails">
                 <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
             </div>
         </div>
+        
+        <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
+
     </div>
 
 </div>
@@ -778,13 +808,13 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (ZAMAN FARKINDALIĞI)
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
 
     // --- KARTIN AÇIK/KAPALI HAFIZASINI AL ---
-    let asistanKapaliMi = true; // Varsayılan durum: kapalı
+    let asistanKapaliMi = true; 
     const mevcutKart = document.querySelector('#healthDiaryArea .diary-card');
     if (mevcutKart) {
         asistanKapaliMi = mevcutKart.classList.contains('collapsed');
