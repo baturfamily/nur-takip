@@ -671,31 +671,94 @@ function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
 }
 
 // AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU
+// AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU (ZENGİNLEŞTİRİLMİŞ DİNAMİK VERSİYON)
 function donemOzetiOlustur(hStats, pct, isYearly) {
     let text = "";
     let donem = isYearly ? "Bu yıl" : "Bu ay";
+    
+    // Rastgelelik (Flicker olmaması için) veriye dayalı bir "seed" oluşturuyoruz
+    let seed = pct + hStats.atesliGun + hStats.kotuUyku + hStats.kotuSabah + hStats.aktifGun;
+    const sec = (arr) => arr[seed % arr.length];
 
-    if(pct >= 90) text += `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. `;
-    else if (pct >= 70) text += `${donem} tedavine %${pct} oranında uyum sağladın, ufak tefek aksamalar olsa da harika toparladın. `;
-    else text += `${donem} ilaç saatlerinde (%${pct}) biraz aksamalarımız oldu, önümüzdeki dönem daha dikkatli olacağız. `;
-
-    if(hStats.atesliGun > 0) text += `Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `;
-
-    if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0 && hStats.aktifGun > 0) {
-        text += `Genel olarak geceleri deliksiz uyuyup, sabahları güne kuş gibi başladığın çok rahat bir dönem oldu. `;
+    // 1. İLAÇ UYUMU
+    if(pct >= 90) {
+        text += sec([
+            `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. `,
+            `${donem} tedavine <strong>%${pct}</strong> gibi harika bir oranla sadık kaldın, seninle gurur duyuyorum! `,
+            `${donem} ilaç saatlerini <strong>%${pct}</strong> uyumla neredeyse kusursuz yönettin. `
+        ]);
+    } else if (pct >= 70) {
+        text += sec([
+            `${donem} tedavine <strong>%${pct}</strong> oranında uyum sağladın, ufak tefek aksamalar olsa da genel tablo gayet iyi. `,
+            `${donem} ilaç rutinin <strong>%${pct}</strong> seviyesinde kaldı, yoğunluktan bazı öğünler kaçmış olabilir ama kontrol sende. `,
+            `${donem} <strong>%${pct}</strong> ilaç uyumuyla ayı kapattık, bir sonraki dönem daha da dikkatli olabiliriz. `
+        ]);
     } else {
-        if(hStats.kotuUyku > 0) text += `Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `;
-        if(hStats.kotuSabah > 0) text += `<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `;
+        text += sec([
+            `${donem} ilaç saatlerinde (<strong>%${pct}</strong>) biraz aksamalarımız oldu, önümüzdeki dönem bu konuya daha çok odaklanmalıyız. `,
+            `${donem} tedavi uyumumuz <strong>%${pct}</strong> seviyesine düşmüş. Hastalıkla savaşımızda ilaçları zamanında almak en büyük silahımız. `,
+            `${donem} ilaç düzenimiz (<strong>%${pct}</strong>) biraz sarsılmış. Şifan için sonraki dönemde saatleri daha sıkı takip edelim. `
+        ]);
     }
 
-    if(hStats.enCokBolge) {
-        text += `Sızılar en çok <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende yoğunlaşarak seni yordu. `;
+    // 2. ATEŞ DURUMU
+    if(hStats.atesliGun > 0) {
+        text += sec([
+            `Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `,
+            `Bu dönemde <strong>${hStats.atesliGun} kez</strong> ateşin sınırın üzerine çıktı. `,
+            `Kayıtlara göre <strong>${hStats.atesliGun} gün</strong> ateşli geçti. `
+        ]);
+    } else {
+        text += sec([
+            `Bu dönemi hiç ateşin çıkmadan atlatman harika bir bağışıklık işareti. `,
+            `Süreç boyunca hiç ateş sorunu yaşamaman tedavinin güzel çalıştığını gösteriyor. `
+        ]);
     }
 
+    // 3. UYKU VE SABAH TUTUKLUĞU
+    if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0) {
+        text += sec([
+            `Geceleri deliksiz uyuman ve sabahları kuş gibi uyanman en güzel haber! `,
+            `Hiç bölünen uykun veya inatçı sabah tutukluğun olmamış, eklemlerin oldukça huzurluymuş. `,
+            `Uyku kaliten ve sabah esnekliğin bu dönemde mükemmel seyretmiş. `
+        ]);
+    } else {
+        if(hStats.kotuUyku > 0) {
+            text += sec([
+                `Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `,
+                `Kayıtlara göre <strong>${hStats.kotuUyku} gece</strong> uykunu tam alamamışsın. `
+            ]);
+        }
+        if(hStats.kotuSabah > 0) {
+            text += sec([
+                `<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `,
+                `Ayrıca <strong>${hStats.kotuSabah} sabah</strong> yataktan kalkarken eklemlerinde zorlu tutukluklar yaşadın. `
+            ]);
+        }
+    }
+
+    // 4. AĞRI BÖLGESİ
+    if(hStats.enCokBolge && hStats.enCokBolge !== "Belirgin bir bölge yok") {
+        text += sec([
+            `Sızılar en çok <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende yoğunlaşarak seni yordu. `,
+            `Bu dönem romatizma en çok <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende hassasiyet yarattı. `,
+            `En inatçı ağrıları <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende hissettin. `
+        ]);
+    }
+
+    // 5. AKTİVİTE VE FİNAL MOTİVASYONU
     if(hStats.aktifGun > 0) {
-        text += `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`;
+        text += sec([
+            `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`,
+            `Buna rağmen <strong>${hStats.aktifGun} günlük</strong> hareket rutininle eklem sıvılarını çok iyi dengeledin, harikasın! 🏅`,
+            `Tam <strong>${hStats.aktifGun} gün</strong> egzersiz yapıp bedenine çok iyi baktığını da unutmayalım! 💖`
+        ]);
     } else {
-        text += `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, bir sonraki dönem bol hareket hedefimiz olsun. 💖`;
+        text += sec([
+            `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, bir sonraki dönem bol hareket hedefimiz olsun. 💖`,
+            `Süreç boyunca fiziksel olarak pek aktif kalamamışız, hafif egzersizlerin eklemlerine şifa olacağını unutma. 🌼`,
+            `Hareket kaydımız bu dönem biraz zayıf. Eklemlerini mutlu etmek için ufak egzersizleri hayatına katabilirsin. 🚶‍♀️`
+        ]);
     }
     
     return text;
