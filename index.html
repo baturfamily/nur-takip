@@ -9,6 +9,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="İlaç Paneli">
 
+<meta name="theme-color" content="#F4F4F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0B0B0E" media="(prefers-color-scheme: dark)">
+
 <style>
 /* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
@@ -242,15 +245,14 @@ body {
 .stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
-/* AYLIK VE YILLIK ASİSTAN ÖZET KUTUSU (Mevcut kartın içine gömülü) */
 /* --- AYLIK VE YILLIK ASİSTAN ÖZET KUTUSU (BÜYÜTÜLMÜŞ YAZI TİPİ) --- */
 .stat-ai-summary {
     background: rgba(255,255,255,0.6);
     padding: 16px;
     border-radius: 12px;
-    font-size: 17px; /* Hava durumu kartı ile birebir aynı boyuta getirildi */
-    font-weight: 600; /* Okumayı kolaylaştırmak için hafif dolgunlaştırıldı */
-    letter-spacing: -0.3px; /* Hava durumu kartının tipografi stili uygulandı */
+    font-size: 17px; 
+    font-weight: 600; 
+    letter-spacing: -0.3px; 
     line-height: 1.5;
     color: #334155;
     margin-bottom: 16px;
@@ -259,7 +261,7 @@ body {
 .stat-ai-summary strong { 
     color: var(--purple); 
     font-weight: 800; 
-    font-size: 14px; /* Başlık kısmı da orantılı olarak 1 tık büyütüldü */
+    font-size: 14px; 
     text-transform: uppercase; 
     letter-spacing: 0.5px; 
     display: block; 
@@ -670,7 +672,6 @@ function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
     return "-";
 }
 
-// AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU
 // AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU (ZENGİNLEŞTİRİLMİŞ DİNAMİK VERSİYON)
 function donemOzetiOlustur(hStats, pct, isYearly) {
     let text = "";
@@ -1592,7 +1593,14 @@ function ekraniCiz() {
 veriCek();
 setInterval(veriCek, 10000); 
 setInterval(saniyeTiktak, 1000); 
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === 'visible') veriCek(); });
+
+// YENİLENMİŞ VİSİBİLİTY DİNLEYİCİSİ (Hava durumu da yenilenir)
+document.addEventListener("visibilitychange", () => { 
+    if (document.visibilityState === 'visible') {
+        veriCek(); 
+        fetchWeather(); 
+    }
+});
 </script>
 </body>
 </html>
