@@ -158,8 +158,8 @@ body {
 
 /* --- SAĞLIK GÜNLÜĞÜ (TAM OPTİMİZE - SIKIŞTIRILMIŞ) KARTI --- */
 .diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; box-shadow: var(--card-shadow); cursor: pointer; }
-.diary-mood-good { background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border: 1px solid #BBF7D0; }
-.diary-mood-rest { background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border: 1px solid #FED7AA; }
+.diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
+.diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
 
 .diary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
 .diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 4px;}
@@ -219,12 +219,12 @@ body {
 .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
 
 @media (prefers-color-scheme: dark) {
-    .diary-mood-good { background: linear-gradient(135deg, #064E3B 0%, #065F46 100%); border-color: #047857; }
-    .diary-mood-rest { background: linear-gradient(135deg, #78350F 0%, #92400E 100%); border-color: #B45309; }
+    .diary-mood-good { background: var(--card); border-color: #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.12); }
+    .diary-mood-rest { background: var(--card); border-color: #D97706; box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); }
     .diary-title { color: #F8FAFC; }
     .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; }
     .diary-pill { background: rgba(0,0,0,0.3); color: #E2E8F0; }
-    .diary-ai-box { background: rgba(0,0,0,0.2); color: #CBD5E1; }
+    .diary-ai-box { background: rgba(255,255,255,0.06); color: #E2E8F0; font-weight: 500; }
     .diary-pill.alert { background: rgba(239,68,68,0.2); color: #FCA5A5; border-color: #DC2626; }
     .diary-toggle-bar { background: rgba(0,0,0,0.3); }
     .diary-mood-good .diary-toggle-bar { color: #34D399; }
