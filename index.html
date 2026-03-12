@@ -943,9 +943,14 @@ function renderHealthDiary() {
         ]));
     }
 
-    let isEller = bolge.toLowerCase().includes("el");
-    let isHerYer = bolge.toLowerCase().includes("her yer");
-    let isBaskaBolge = bolge !== "-" && bolge.toLowerCase() !== "hayır" && !isEller && !isHerYer;
+    // YENİ EKLENEN AĞRI/BÖLGE MANTIĞI (YOK/YOKTU TEMİZLİĞİ)
+    let bolgeKucuk = bolge.toLowerCase();
+    let isBolgeYok = bolge === "-" || bolgeKucuk.includes("hayır") || bolgeKucuk.includes("yok");
+    
+    let isEller = bolgeKucuk.includes("el");
+    let isHerYer = bolgeKucuk.includes("her yer");
+    let isBaskaBolge = !isBolgeYok && !isEller && !isHerYer;
+
     let isAktiviteVar = aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad");
 
     if (isEller) {
@@ -1033,16 +1038,16 @@ function renderHealthDiary() {
     if (ates >= 37.0) {
         pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
     } else if (aktivite !== "-" && isAktiviteVar) {
-        // ROZET KISMI DA TEMİZLENDİ (Örn: "Pilates Yaptım" yerine sadece "Pilates")
         let rawAktivite = aktivite.toLowerCase();
         let pillAkt = rawAktivite.includes("pilates") ? "Pilates" : 
                       rawAktivite.includes("yürü") ? "Yürüyüş" : 
                       rawAktivite.includes("yüz") ? "Yüzme" : 
                       rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
-        // İlk harfi büyük yapma
         pillAkt = pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1);
         pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt}</div>`;
-    } else if (agri !== "-" && bolge !== "-" && bolge.toLowerCase() !== "hayır") {
+    } 
+    // YENİ: EĞER BÖLGE YOK İSE HEDEF (🎯) ROZETİ ÇIKARTMA!
+    else if (agri !== "-" && !isBolgeYok) {
         pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
     }
 
