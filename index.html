@@ -157,7 +157,7 @@ body {
 }
 
 /* --- SAĞLIK GÜNLÜĞÜ (TAM OPTİMİZE - SIKIŞTIRILMIŞ) KARTI --- */
-.diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; box-shadow: var(--card-shadow); cursor: pointer; }
+.diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; cursor: pointer; }
 .diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
 .diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
 
@@ -242,6 +242,25 @@ body {
 .stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
+/* AYLIK VE YILLIK ASİSTAN ÖZET KUTUSU (Mevcut kartın içine gömülü) */
+.stat-ai-summary {
+    background: rgba(255,255,255,0.6);
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #334155;
+    margin-bottom: 16px;
+    border-left: 3px solid var(--purple);
+    font-weight: 500;
+}
+.stat-ai-summary strong { color: var(--purple); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+
+@media (prefers-color-scheme: dark) {
+    .stat-ai-summary { background: rgba(0,0,0,0.2); color: #CBD5E1; border-left-color: #BF5AF2; }
+    .stat-ai-summary strong { color: #BF5AF2; }
+}
+
 /* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
 .vertical-list { 
   display: flex; 
@@ -312,15 +331,8 @@ body {
 }
 
 /* --- GECİKEN İLAÇ KARTI ANİMASYONU --- */
-.badge-danger { 
-    background: rgba(255, 59, 48, 0.15); 
-    color: var(--danger); 
-    font-weight: 900; 
-}
-.late-card { 
-    border-color: var(--danger) !important; 
-    animation: latePulse 2s infinite; 
-}
+.badge-danger { background: rgba(255, 59, 48, 0.15); color: var(--danger); font-weight: 900; }
+.late-card { border-color: var(--danger) !important; animation: latePulse 2s infinite; }
 
 @keyframes latePulse {
     0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
@@ -344,7 +356,6 @@ body {
 /* =======================================================
    DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ
    ======================================================= */
-/* Doktor Raporu Butonu Yumuşatıldı */
 .rapor-btn { 
     background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); 
     color: white; 
@@ -373,9 +384,7 @@ body {
         padding: 0 !important;
         margin: 0 !important;
     }
-    body > :not(#print-report-area) {
-        display: none !important;
-    }
+    body > :not(#print-report-area) { display: none !important; }
     #print-report-area {
         display: block !important;
         position: relative !important;
@@ -637,10 +646,58 @@ function getDailyProgram(dateObj) {
     return p;
 }
 
+// GENEL KELİME ARAMA YARDIMCISI (İstatistikler için)
+function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
+    if(!gunlukVeri) return "-";
+    for (var kolonIsmi in gunlukVeri) {
+        var cevap = gunlukVeri[kolonIsmi];
+        if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
+        var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+        for (var i = 0; i < aranacakKelimeler.length; i++) {
+            if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
+        }
+    }
+    return "-";
+}
+
+// AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU
+function donemOzetiOlustur(hStats, pct, isYearly) {
+    let text = "";
+    let donem = isYearly ? "Bu yıl" : "Bu ay";
+
+    if(pct >= 90) text += `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. `;
+    else if (pct >= 70) text += `${donem} tedavine %${pct} oranında uyum sağladın, ufak tefek aksamalar olsa da harika toparladın. `;
+    else text += `${donem} ilaç saatlerinde (%${pct}) biraz aksamalarımız oldu, önümüzdeki dönem daha dikkatli olacağız. `;
+
+    if(hStats.atesliGun > 0) text += `Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `;
+
+    if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0 && hStats.aktifGun > 0) {
+        text += `Genel olarak geceleri deliksiz uyuyup, sabahları güne kuş gibi başladığın çok rahat bir dönem oldu. `;
+    } else {
+        if(hStats.kotuUyku > 0) text += `Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `;
+        if(hStats.kotuSabah > 0) text += `<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `;
+    }
+
+    if(hStats.enCokBolge) {
+        text += `Sızılar en çok <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende yoğunlaşarak seni yordu. `;
+    }
+
+    if(hStats.aktifGun > 0) {
+        text += `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`;
+    } else {
+        text += `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, bir sonraki dönem bol hareket hedefimiz olsun. 💖`;
+    }
+    
+    return text;
+}
+
 function analyzeMonth(year, month) {
     let totalMeds = 0;
     let missedMedsCount = 0;
     let breakdown = [];
+    
+    // Sağlık verilerini biriktireceğimiz obje
+    let hStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {} };
 
     const dNow = new Date();
     const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
@@ -676,14 +733,11 @@ function analyzeMonth(year, month) {
                 let isMissed = false;
 
                 if (!isDone) {
-                    if (isExplicitlyMissed) {
-                        isMissed = true; 
-                    } else if (isCurrentMonth && d === dNow.getDate()) {
+                    if (isExplicitlyMissed) { isMissed = true; } 
+                    else if (isCurrentMonth && d === dNow.getDate()) {
                         const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
                         if (nowMins > cardMins + 90) isMissed = true;
-                    } else {
-                        isMissed = true;
-                    }
+                    } else { isMissed = true; }
                 }
 
                 if (isMissed) {
@@ -698,18 +752,43 @@ function analyzeMonth(year, month) {
 
         if (dayTotal > 0) {
              breakdown.push({
-                 dateStr: dateStr,
-                 dayNum: d,
-                 totalCount: dayTotal,
-                 missedCount: dayMissedCount,
-                 missedNames: dayMissedNames,
+                 dateStr: dateStr, dayNum: d, totalCount: dayTotal,
+                 missedCount: dayMissedCount, missedNames: dayMissedNames,
                  isAllDone: (dayMissedCount === 0)
              });
         }
+
+        // GÜNLÜK SAĞLIK VERİSİNİ BİRİKTİRME
+        if (dayData) {
+            let atesHam = veriBulGlobal(dayData, ["ates", "ateş"]);
+            let tutukluk = veriBulGlobal(dayData, ["tutuk", "sabah"]);
+            let bolge = veriBulGlobal(dayData, ["bölge", "bolge", "rahatsiz"]);
+            let aktivite = veriBulGlobal(dayData, ["aktivite"]);
+            let uyku = veriBulGlobal(dayData, ["uyku", "gece"]);
+
+            let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
+            if(ates >= 37.0) hStats.atesliGun++;
+
+            if (uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("uyuyamad") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("vardı")) hStats.kotuUyku++;
+            if (tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("saat") || tutukluk.toLowerCase().includes("sürdü")) hStats.kotuSabah++;
+            if (aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad")) hStats.aktifGun++;
+
+            let bKucuk = bolge.toLowerCase();
+            if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
+                hStats.bolgeler[bolge] = (hStats.bolgeler[bolge] || 0) + 1;
+            }
+        }
     }
 
+    // EN ÇOK AĞRIYAN BÖLGEYİ BUL
+    let maxT = 0; let enCok = "";
+    for (let b in hStats.bolgeler) {
+        if (hStats.bolgeler[b] > maxT) { maxT = hStats.bolgeler[b]; enCok = b; }
+    }
+    hStats.enCokBolge = enCok;
+
     let percentage = totalMeds > 0 ? Math.round(((totalMeds - missedMedsCount) / totalMeds) * 100) : 100;
-    return { percentage, totalMeds, missedMedsCount, breakdown };
+    return { percentage, totalMeds, missedMedsCount, breakdown, healthStats: hStats };
 }
 
 function getBadgeClass(percentage) {
@@ -731,7 +810,14 @@ function renderMonthStat(prefix, data) {
         return;
     }
 
-    let html = "";
+    // YENİ: ASİSTAN ÖZET METNİNİ EN ÜSTE EKLE (Kartın İçinde)
+    let aiText = donemOzetiOlustur(data.healthStats, data.percentage, false);
+    let html = `
+    <div class="stat-ai-summary">
+        <strong>✨ Dönem Özeti</strong>
+        ${aiText}
+    </div>`;
+
     data.breakdown.forEach(day => {
         if (day.isAllDone) {
             html += `
@@ -761,9 +847,9 @@ function renderYearStat(year) {
     const detailsEl = document.getElementById('yearlyDetails');
     if(!badgeEl || !detailsEl) return;
 
-    let totalMeds = 0;
-    let totalMissed = 0;
-    let html = "";
+    let totalMeds = 0; let totalMissed = 0;
+    let yStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {} };
+    let monthRowsHTML = "";
     const maxMonth = year === now.getFullYear() ? now.getMonth() : 11;
 
     for (let m = maxMonth; m >= 0; m--) {
@@ -771,8 +857,18 @@ function renderYearStat(year) {
         totalMeds += mData.totalMeds;
         totalMissed += mData.missedMedsCount;
 
+        // Yıllık verileri birleştir
+        yStats.atesliGun += mData.healthStats.atesliGun;
+        yStats.kotuUyku += mData.healthStats.kotuUyku;
+        yStats.kotuSabah += mData.healthStats.kotuSabah;
+        yStats.aktifGun += mData.healthStats.aktifGun;
+        
+        for (let b in mData.healthStats.bolgeler) {
+            yStats.bolgeler[b] = (yStats.bolgeler[b] || 0) + mData.healthStats.bolgeler[b];
+        }
+
         if (mData.totalMeds > 0) {
-            html += `
+            monthRowsHTML += `
             <div class="stat-row">
                 <span class="stat-date" style="font-size:15px;">${aylar[m]}</span>
                 <div class="stat-info" style="align-items: flex-end;">
@@ -782,10 +878,31 @@ function renderYearStat(year) {
         }
     }
 
+    // Yıllık en çok ağrıyan bölge
+    let maxT = 0; let enCok = "";
+    for (let b in yStats.bolgeler) {
+        if (yStats.bolgeler[b] > maxT) { maxT = yStats.bolgeler[b]; enCok = b; }
+    }
+    yStats.enCokBolge = enCok;
+
     let yearPercentage = totalMeds > 0 ? Math.round(((totalMeds - totalMissed) / totalMeds) * 100) : 100;
     badgeEl.innerHTML = `%${yearPercentage} <span class="exp-arrow">▲</span>`;
     badgeEl.className = `badge ${getBadgeClass(yearPercentage)}`;
-    detailsEl.innerHTML = html || `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+
+    if(totalMeds === 0) {
+        detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+    } else {
+        // YENİ: YILLIK ASİSTAN ÖZET METNİ (Kartın İçinde)
+        let aiText = donemOzetiOlustur(yStats, yearPercentage, true);
+        let finalHTML = `
+        <div class="stat-ai-summary">
+            <strong>🏆 ${year} Yılı Özeti</strong>
+            ${aiText}
+        </div>
+        ${monthRowsHTML}`;
+        
+        detailsEl.innerHTML = finalHTML;
+    }
 }
 
 function istatistikleriCiz() {
@@ -943,7 +1060,6 @@ function renderHealthDiary() {
         ]));
     }
 
-    // YENİ EKLENEN AĞRI/BÖLGE MANTIĞI (YOK/YOKTU TEMİZLİĞİ)
     let bolgeKucuk = bolge.toLowerCase();
     let isBolgeYok = bolge === "-" || bolgeKucuk.includes("hayır") || bolgeKucuk.includes("yok");
     
@@ -1046,7 +1162,6 @@ function renderHealthDiary() {
         pillAkt = pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1);
         pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt}</div>`;
     } 
-    // YENİ: EĞER BÖLGE YOK İSE HEDEF (🎯) ROZETİ ÇIKARTMA!
     else if (agri !== "-" && !isBolgeYok) {
         pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
     }
@@ -1193,7 +1308,6 @@ function doktorRaporuOlustur() {
         }
     }
 
-    // YENİ: DİNAMİK VE "SIFIR" (0) KONTROLLÜ RAPOR METİNLERİ
     var uykuMetni = sorunluUykuGecesi > 0 
         ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı veya diğer sebeplerle bölünen kalitesiz bir uyku geçirmiş` 
         : `uyku kalitesi genel olarak stabil seyretmiş`;
