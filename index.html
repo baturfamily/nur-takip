@@ -243,21 +243,31 @@ body {
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
 /* AYLIK VE YILLIK ASİSTAN ÖZET KUTUSU (Mevcut kartın içine gömülü) */
+/* --- AYLIK VE YILLIK ASİSTAN ÖZET KUTUSU (BÜYÜTÜLMÜŞ YAZI TİPİ) --- */
 .stat-ai-summary {
     background: rgba(255,255,255,0.6);
-    padding: 14px 16px;
+    padding: 16px;
     border-radius: 12px;
-    font-size: 15px;
+    font-size: 17px; /* Hava durumu kartı ile birebir aynı boyuta getirildi */
+    font-weight: 600; /* Okumayı kolaylaştırmak için hafif dolgunlaştırıldı */
+    letter-spacing: -0.3px; /* Hava durumu kartının tipografi stili uygulandı */
     line-height: 1.5;
     color: #334155;
     margin-bottom: 16px;
     border-left: 3px solid var(--purple);
-    font-weight: 500;
 }
-.stat-ai-summary strong { color: var(--purple); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px; }
+.stat-ai-summary strong { 
+    color: var(--purple); 
+    font-weight: 800; 
+    font-size: 14px; /* Başlık kısmı da orantılı olarak 1 tık büyütüldü */
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    display: block; 
+    margin-bottom: 8px; 
+}
 
 @media (prefers-color-scheme: dark) {
-    .stat-ai-summary { background: rgba(0,0,0,0.2); color: #CBD5E1; border-left-color: #BF5AF2; }
+    .stat-ai-summary { background: rgba(0,0,0,0.2); color: #E2E8F0; border-left-color: #BF5AF2; }
     .stat-ai-summary strong { color: #BF5AF2; }
 }
 
