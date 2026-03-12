@@ -808,7 +808,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (DİNAMİK)
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (SABİT DİNAMİK)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
@@ -898,8 +898,14 @@ function renderHealthDiary() {
         }
     }
 
-    // --- YENİ: DİNAMİK CÜMLE SEÇİCİ ---
-    const rastgeleSec = (arr) => arr[Math.floor(Math.random() * arr.length)];
+    // --- VERİYE DAYALI SABİT SEÇİM (FLICKER ÇÖZÜMÜ) ---
+    // Her 10 saniyede bir metnin değişmemesi için, rastgeleliği girilen verilerin toplam karakter değerine (hash) bağladık.
+    // Böylece sadece veri değiştiğinde cümle değişecek.
+    let seedStr = sonGunTarihi + ates + uyku + tutukluk + aktivite + bolge;
+    let seedNum = 0;
+    for (let i = 0; i < seedStr.length; i++) { seedNum += seedStr.charCodeAt(i); }
+    const veriyeGoreSec = (arr) => arr[seedNum % arr.length];
+
     let aiMsg = [];
     let isBadDay = false;
 
@@ -914,25 +920,25 @@ function renderHealthDiary() {
     let isSabahGood = tutukluk.toLowerCase().includes("hemen") || tutukluk.toLowerCase().includes("yok");
 
     if (isUykuBad && isSabahBad) {
-        aiMsg.push(rastgeleSec([
+        aiMsg.push(veriyeGoreSec([
             "Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir.",
             "Geceyi biraz zorlu geçirmişsin, eklemlerin de sabah inatçılık yapmış. Bugün lütfen kendini yorma ve bolca dinlen."
         ]));
         isBadDay = true;
     } else if (isUykuGood && isSabahGood) {
-        aiMsg.push(rastgeleSec([
+        aiMsg.push(veriyeGoreSec([
             "Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor.",
             "Harika bir gece uykusu ve rahat bir sabah! İlaçların gücünü gösterdiği, eklemlerinin mutlu olduğu bir gün.",
             "Uyku kalitenin iyi olması ve sabah tutukluğunun olmaması çok güzel bir işaret. Vücudun tedaviye harika yanıt veriyor!"
         ]));
     } else if (isUykuBad) {
-        aiMsg.push(rastgeleSec([
+        aiMsg.push(veriyeGoreSec([
             "Uykunu tam alamamışsın, bugün fırsat bulursan biraz şekerleme yapıp dinlenmeye çalış.",
             "Gece uykun bölünmüş görünüyor. Vücudunun toparlanması için bugün temponu düşük tutmalısın."
         ]));
         isBadDay = true;
     } else if (isSabahBad) {
-        aiMsg.push(rastgeleSec([
+        aiMsg.push(veriyeGoreSec([
             "Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme.",
             "Sabah tutukluğun biraz uzun sürmüş, sıcak bir şeyler içip eklemlerinin nazikçe açılmasını bekle Sultanım."
         ]));
@@ -951,17 +957,16 @@ function renderHealthDiary() {
     }
 
     if (isAktiviteVar && !isBadDay) {
-        // Hangi aktiviteyi girdiyse onu cümleye gömüyoruz
-        let aktKucuk = aktivite.toLowerCase(); 
-        aiMsg.push(rastgeleSec([
-            `Yaptığın "${aktKucuk}" eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`,
-            `Hareket berekettir! "${aktKucuk}" ile eklemlerini açık tutman tedavin için çok kıymetli.`,
-            `"${aktKucuk}" yaparak vücuduna en büyük iyiliği yapmışsın, kasların güçlendikçe eklemlerin rahatlayacak.`
+        // DİLBİLGİSİ DÜZELTMESİ YAPILDI ("Pilates Yaptım" vs.)
+        aiMsg.push(veriyeGoreSec([
+            `Aktivite olarak "${aktivite}" kaydını gördüm. Hareket berekettir, eklemlerini açık tutman tedavin için çok kıymetli.`,
+            `Bugün formunda "${aktivite}" demişsin, vücuduna en büyük iyiliği yapmışsın. Kasların güçlendikçe eklemlerin rahatlayacak.`,
+            `Fiziksel olarak aktif kalıp "${aktivite}" rutinini tamamlaman eklem sıvılarını harika şekilde dengeleyecek.`
         ]));
     }
 
     if (streak >= 3) {
-        aiMsg.push(rastgeleSec([
+        aiMsg.push(veriyeGoreSec([
             `Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun, gerisini şifaya bırak. 🌼`,
             `Bu arada ${streak} günlük harika bir ilaç serin var! Disiplinin sayesinde hastalığa hiç açık kapı bırakmıyoruz. 🧿`
         ]));
@@ -975,14 +980,12 @@ function renderHealthDiary() {
         aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
     }
 
-    // --- EĞER BUGÜNÜN VERİSİ GİRİLMEDİYSE AKŞAM 9 UYARISI EKLE ---
     if (!isTodayData) {
         aiMsg.push(`<div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); color: #0284c7; font-weight: 800; font-size: 14px; text-align: center;">⏳ Bugünün analizi için akşam saat 21:00'i bekliyorum!</div>`);
     }
 
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
     
-    // --- BAŞLIK ZAMANA GÖRE DEĞİŞSİN ---
     let baslik = "";
     if (isTodayData) {
         baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
