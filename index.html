@@ -956,12 +956,27 @@ function renderHealthDiary() {
         isBadDay = true;
     }
 
-    if (isAktiviteVar && !isBadDay) {
-        // DİLBİLGİSİ DÜZELTMESİ YAPILDI ("Pilates Yaptım" vs.)
+if (isAktiviteVar && !isBadDay) {
+        // Gelen ham veriyi (örn: "Pilates Yaptım" veya "Yürüdüm") temiz isim haline (örn: "pilates", "yürüyüş") çeviriyoruz.
+        let rawAktivite = aktivite.toLowerCase();
+        let temizAktivite = rawAktivite;
+
+        if (rawAktivite.includes("pilates")) temizAktivite = "pilates";
+        else if (rawAktivite.includes("yürü")) temizAktivite = "yürüyüş";
+        else if (rawAktivite.includes("yüz")) temizAktivite = "yüzme";
+        else if (rawAktivite.includes("bisiklet")) temizAktivite = "bisiklet";
+        else if (rawAktivite.includes("egzersiz")) temizAktivite = "egzersiz";
+        else if (rawAktivite.includes("yoga")) temizAktivite = "yoga";
+        else {
+            // Tanımsız bir şey girilirse sonundaki "yaptım/ettim" kelimelerini silip temizler
+            temizAktivite = rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
+        }
+
+        // Senin önerdiğin doğal ve şık şablonlar
         aiMsg.push(veriyeGoreSec([
-            `Aktivite olarak "${aktivite}" kaydını gördüm. Hareket berekettir, eklemlerini açık tutman tedavin için çok kıymetli.`,
-            `Bugün formunda "${aktivite}" demişsin, vücuduna en büyük iyiliği yapmışsın. Kasların güçlendikçe eklemlerin rahatlayacak.`,
-            `Fiziksel olarak aktif kalıp "${aktivite}" rutinini tamamlaman eklem sıvılarını harika şekilde dengeleyecek.`
+            `Yaptığın ${temizAktivite} aktivitesi eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`,
+            `Hareket berekettir! Yaptığın ${temizAktivite} aktivitesi ile eklemlerini açık tutman tedavin için çok kıymetli.`,
+            `Bugün ${temizAktivite} aktivitesi yaparak vücuduna en büyük iyiliği yapmışsın, kasların güçlendikçe eklemlerin rahatlayacak.`
         ]));
     }
 
