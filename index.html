@@ -808,12 +808,11 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (SABİT DİNAMİK)
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (NİHAİ ZEKÂ)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
 
-    // --- KARTIN AÇIK/KAPALI HAFIZASINI AL ---
     let asistanKapaliMi = true; 
     const mevcutKart = document.querySelector('#healthDiaryArea .diary-card');
     if (mevcutKart) {
@@ -854,7 +853,6 @@ function renderHealthDiary() {
 
     if (!sonGunVerisi) return; 
 
-    // --- ZAMAN KONTROLÜ ---
     let bugun = new Date();
     let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
     let dun = new Date();
@@ -898,9 +896,6 @@ function renderHealthDiary() {
         }
     }
 
-    // --- VERİYE DAYALI SABİT SEÇİM (FLICKER ÇÖZÜMÜ) ---
-    // Her 10 saniyede bir metnin değişmemesi için, rastgeleliği girilen verilerin toplam karakter değerine (hash) bağladık.
-    // Böylece sadece veri değiştiğinde cümle değişecek.
     let seedStr = sonGunTarihi + ates + uyku + tutukluk + aktivite + bolge;
     let seedNum = 0;
     for (let i = 0; i < seedStr.length; i++) { seedNum += seedStr.charCodeAt(i); }
@@ -910,7 +905,11 @@ function renderHealthDiary() {
     let isBadDay = false;
 
     if (ates >= 37.0) {
-        aiMsg.push(`Sultanım, son kayıtlarda ateşin ${ates}°C görünüyor. Lütfen bol sıvı alıp kendini sıcak tut, gerekirse doktoruna haber verelim.`);
+        aiMsg.push(veriyeGoreSec([
+            `Sultanım, son kayıtlarda ateşin ${ates}°C görünüyor. Lütfen bol sıvı alıp kendini sıcak tut, gerekirse doktoruna haber verelim.`,
+            `Ateşin ${ates}°C seviyesine çıkmış. Vücudun bir şeylerle savaşıyor olabilir, lütfen dinlenmeyi birinci önceliğin yap.`,
+            `Bugün ${ates}°C ateşin var. İlaç saatlerini aksatmadan dinlenmeli ve bol bol su içmelisin.`
+        ]));
         isBadDay = true;
     }
 
@@ -946,6 +945,7 @@ function renderHealthDiary() {
 
     let isEller = bolge.toLowerCase().includes("el");
     let isHerYer = bolge.toLowerCase().includes("her yer");
+    let isBaskaBolge = bolge !== "-" && bolge.toLowerCase() !== "hayır" && !isEller && !isHerYer;
     let isAktiviteVar = aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad");
 
     if (isEller) {
@@ -954,10 +954,16 @@ function renderHealthDiary() {
     } else if (isHerYer) {
         aiMsg.push(`Vücudunun genelinde bir sızı var, bu günlerde kendini şımartma ve bolca dinlenme vaktidir.`);
         isBadDay = true;
+    } else if (isBaskaBolge) {
+        aiMsg.push(veriyeGoreSec([
+            `Özellikle ${bolge.toLowerCase()} bölgende bir hassasiyet belirtmişsin. Orayı sıcak tutmak ve çok zorlamamak iyi olacaktır.`,
+            `Bugün ${bolge.toLowerCase()} bölgesindeki ağrın için o kısmı zorlayacak hareketlerden kesinlikle kaçınmalısın.`,
+            `Sızılar ${bolge.toLowerCase()} kısmında toplanmış, doktorumuzun önerdiği merhemler veya hafif kompresler orayı rahatlatabilir.`
+        ]));
+        isBadDay = true;
     }
 
-if (isAktiviteVar && !isBadDay) {
-        // Gelen ham veriyi (örn: "Pilates Yaptım" veya "Yürüdüm") temiz isim haline (örn: "pilates", "yürüyüş") çeviriyoruz.
+    if (isAktiviteVar && !isBadDay) {
         let rawAktivite = aktivite.toLowerCase();
         let temizAktivite = rawAktivite;
 
@@ -968,11 +974,9 @@ if (isAktiviteVar && !isBadDay) {
         else if (rawAktivite.includes("egzersiz")) temizAktivite = "egzersiz";
         else if (rawAktivite.includes("yoga")) temizAktivite = "yoga";
         else {
-            // Tanımsız bir şey girilirse sonundaki "yaptım/ettim" kelimelerini silip temizler
             temizAktivite = rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
         }
 
-        // Senin önerdiğin doğal ve şık şablonlar
         aiMsg.push(veriyeGoreSec([
             `Yaptığın ${temizAktivite} aktivitesi eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`,
             `Hareket berekettir! Yaptığın ${temizAktivite} aktivitesi ile eklemlerini açık tutman tedavin için çok kıymetli.`,
@@ -983,16 +987,23 @@ if (isAktiviteVar && !isBadDay) {
     if (streak >= 3) {
         aiMsg.push(veriyeGoreSec([
             `Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun, gerisini şifaya bırak. 🌼`,
-            `Bu arada ${streak} günlük harika bir ilaç serin var! Disiplinin sayesinde hastalığa hiç açık kapı bırakmıyoruz. 🧿`
+            `Bu arada ${streak} günlük harika bir ilaç serin var! Disiplinin sayesinde hastalığa hiç açık kapı bırakmıyoruz. 🧿`,
+            `Harika giden ${streak} günlük bir ilaç rutinin var. Bu istikrarın Romatizma ile savaşımızda en büyük kalkanımız! 🛡️`
         ]));
     } else if (streak === 0) {
-        aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç canını sıkma. Önümüzdeki öğünlerde telafi eder, yola devam ederiz. 💖`);
+        aiMsg.push(veriyeGoreSec([
+            `İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç canını sıkma. Önümüzdeki öğünlerde telafi eder, yola devam ederiz. 💖`,
+            `İlaç saatleri bazen gözden kaçabilir, hiç dert değil. Sonraki ilaçlarımızı zamanında alarak yeni bir seri başlatabiliriz. 🌼`
+        ]));
     } else {
         aiMsg.push(`İlaçlarını güzel takip ediyorsun, şifa seninle olsun canım nenem! 🌼`);
     }
 
     if (aiMsg.length === 1 && ates < 37.0) {
-        aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
+        aiMsg[0] = veriyeGoreSec([
+            `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`,
+            `Bugün seni çok yoracak bir durum görünmüyor. Eklemlerini nazikçe koruyarak günün tadını çıkar. 🌼`
+        ]);
     }
 
     if (!isTodayData) {
@@ -1022,7 +1033,15 @@ if (isAktiviteVar && !isBadDay) {
     if (ates >= 37.0) {
         pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
     } else if (aktivite !== "-" && isAktiviteVar) {
-        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${aktivite}</div>`;
+        // ROZET KISMI DA TEMİZLENDİ (Örn: "Pilates Yaptım" yerine sadece "Pilates")
+        let rawAktivite = aktivite.toLowerCase();
+        let pillAkt = rawAktivite.includes("pilates") ? "Pilates" : 
+                      rawAktivite.includes("yürü") ? "Yürüyüş" : 
+                      rawAktivite.includes("yüz") ? "Yüzme" : 
+                      rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
+        // İlk harfi büyük yapma
+        pillAkt = pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1);
+        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt}</div>`;
     } else if (agri !== "-" && bolge !== "-" && bolge.toLowerCase() !== "hayır") {
         pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
     }
@@ -1055,7 +1074,7 @@ if (isAktiviteVar && !isBadDay) {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU (SAAT KORUMALI + İLAÇ ŞEMASI)
+// DOKTOR RAPORU OLUŞTURUCU (NİHAİ DİL GÜNCELLEMESİ)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -1169,7 +1188,20 @@ function doktorRaporuOlustur() {
         }
     }
 
-    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta <strong>${sorunluUykuGecesi} gece</strong> ağrı veya diğer sebeplerle bölünen kalitesiz bir uyku geçirmiş ve <strong>${agirTutuklukGunu} gün</strong> sabah tutukluğunu normalden uzun (ağır) yaşamıştır. Toplam <strong>${aktifGunSayisi} gün</strong> fiziksel aktivite (yürüyüş, yüzme vb.) yapabilmiştir.`;
+    // YENİ: DİNAMİK VE "SIFIR" (0) KONTROLLÜ RAPOR METİNLERİ
+    var uykuMetni = sorunluUykuGecesi > 0 
+        ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı veya diğer sebeplerle bölünen kalitesiz bir uyku geçirmiş` 
+        : `uyku kalitesi genel olarak stabil seyretmiş`;
+
+    var tutuklukMetni = agirTutuklukGunu > 0 
+        ? `<strong>${agirTutuklukGunu} gün</strong> sabah tutukluğunu normalden uzun (ağır) yaşamıştır.` 
+        : `sabah tutuklukları iyi yönetilmiş ve hızlı açılmalar kaydedilmiştir.`;
+
+    var aktiviteMetni = aktifGunSayisi > 0 
+        ? `Toplam <strong>${aktifGunSayisi} gün</strong> fiziksel aktivite (yürüyüş, pilates vb.) yapabilmiştir.` 
+        : `Bu dönemde belirgin bir fiziksel aktivite kaydedilmemiştir, eklem esnekliği için hafif egzersizler önerilebilir.`;
+
+    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni} ve ${tutuklukMetni} ${aktiviteMetni}`;
 
     var raporHTML = `
         <div class="rap-baslik">
