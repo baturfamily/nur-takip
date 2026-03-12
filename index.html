@@ -808,7 +808,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (DİNAMİK)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
@@ -820,7 +820,6 @@ function renderHealthDiary() {
         asistanKapaliMi = mevcutKart.classList.contains('collapsed');
     }
     const collapseClass = asistanKapaliMi ? "collapsed" : "";
-    // ----------------------------------------
 
     function veriBul(gunlukVeri, aranacakKelimeler) {
         for (var kolonIsmi in gunlukVeri) {
@@ -855,16 +854,14 @@ function renderHealthDiary() {
 
     if (!sonGunVerisi) return; 
 
-    // --- ZAMAN KONTROLÜ (BUGÜNÜN VERİSİ GİRİLMİŞ Mİ?) ---
+    // --- ZAMAN KONTROLÜ ---
     let bugun = new Date();
     let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
-    
     let dun = new Date();
     dun.setDate(dun.getDate() - 1);
     let dunTarihStr = String(dun.getDate()).padStart(2, '0') + '.' + String(dun.getMonth() + 1).padStart(2, '0') + '.' + dun.getFullYear();
 
     let isTodayData = (sonGunTarihi === bugunTarihStr);
-    // ---------------------------------------------------
 
     let atesHam = veriBul(sonGunVerisi, ["ates", "ateş"]);
     let tutukluk = veriBul(sonGunVerisi, ["tutuk", "sabah"]);
@@ -876,7 +873,6 @@ function renderHealthDiary() {
     let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
     
     let streak = 0;
-    
     for (let t of tarihler) {
         if (t === bugunTarihStr) continue; 
         
@@ -902,6 +898,8 @@ function renderHealthDiary() {
         }
     }
 
+    // --- YENİ: DİNAMİK CÜMLE SEÇİCİ ---
+    const rastgeleSec = (arr) => arr[Math.floor(Math.random() * arr.length)];
     let aiMsg = [];
     let isBadDay = false;
 
@@ -916,15 +914,28 @@ function renderHealthDiary() {
     let isSabahGood = tutukluk.toLowerCase().includes("hemen") || tutukluk.toLowerCase().includes("yok");
 
     if (isUykuBad && isSabahBad) {
-        aiMsg.push(`Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir.`);
+        aiMsg.push(rastgeleSec([
+            "Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir.",
+            "Geceyi biraz zorlu geçirmişsin, eklemlerin de sabah inatçılık yapmış. Bugün lütfen kendini yorma ve bolca dinlen."
+        ]));
         isBadDay = true;
     } else if (isUykuGood && isSabahGood) {
-        aiMsg.push(`Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor.`);
+        aiMsg.push(rastgeleSec([
+            "Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor.",
+            "Harika bir gece uykusu ve rahat bir sabah! İlaçların gücünü gösterdiği, eklemlerinin mutlu olduğu bir gün.",
+            "Uyku kalitenin iyi olması ve sabah tutukluğunun olmaması çok güzel bir işaret. Vücudun tedaviye harika yanıt veriyor!"
+        ]));
     } else if (isUykuBad) {
-        aiMsg.push(`Uykunu tam alamamışsın, bugün fırsat bulursan biraz şekerleme yapıp dinlenmeye çalış.`);
+        aiMsg.push(rastgeleSec([
+            "Uykunu tam alamamışsın, bugün fırsat bulursan biraz şekerleme yapıp dinlenmeye çalış.",
+            "Gece uykun bölünmüş görünüyor. Vücudunun toparlanması için bugün temponu düşük tutmalısın."
+        ]));
         isBadDay = true;
     } else if (isSabahBad) {
-        aiMsg.push(`Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme.`);
+        aiMsg.push(rastgeleSec([
+            "Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme.",
+            "Sabah tutukluğun biraz uzun sürmüş, sıcak bir şeyler içip eklemlerinin nazikçe açılmasını bekle Sultanım."
+        ]));
     }
 
     let isEller = bolge.toLowerCase().includes("el");
@@ -940,11 +951,20 @@ function renderHealthDiary() {
     }
 
     if (isAktiviteVar && !isBadDay) {
-        aiMsg.push(`Yaptığın yürüyüş ve aktivite eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`);
+        // Hangi aktiviteyi girdiyse onu cümleye gömüyoruz
+        let aktKucuk = aktivite.toLowerCase(); 
+        aiMsg.push(rastgeleSec([
+            `Yaptığın "${aktKucuk}" eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`,
+            `Hareket berekettir! "${aktKucuk}" ile eklemlerini açık tutman tedavin için çok kıymetli.`,
+            `"${aktKucuk}" yaparak vücuduna en büyük iyiliği yapmışsın, kasların güçlendikçe eklemlerin rahatlayacak.`
+        ]));
     }
 
     if (streak >= 3) {
-        aiMsg.push(`Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun, gerisini şifaya bırak. 🌼`);
+        aiMsg.push(rastgeleSec([
+            `Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun, gerisini şifaya bırak. 🌼`,
+            `Bu arada ${streak} günlük harika bir ilaç serin var! Disiplinin sayesinde hastalığa hiç açık kapı bırakmıyoruz. 🧿`
+        ]));
     } else if (streak === 0) {
         aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç canını sıkma. Önümüzdeki öğünlerde telafi eder, yola devam ederiz. 💖`);
     } else {
