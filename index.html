@@ -1332,9 +1332,12 @@ function doktorRaporuOlustur() {
         var atesGosterim = ates > 0 ? ates + "°C" : "-";
         if (ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
 
-        if (bolge !== "-" && bolge.toLowerCase() !== "hayır") {
+        // DÜZELTİLEN KISIM: İçinde "yok" veya "hayır" geçenleri sayma!
+        var bKucuk = bolge.toLowerCase();
+        if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
             bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
         }
+
         if (uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("uyuyamadim") || uyku.toLowerCase().includes("vardı")) {
             sorunluUykuGecesi++;
         }
