@@ -481,15 +481,11 @@ body {
 
 <div id="print-report-area"></div>
 <script>
-// API URL (Apps Script güncellenmiş dağıtım linkin)
+// API URL
 const API_URL = "https://script.google.com/macros/s/AKfycbw3iPSChuSoEGJMJH5ICubbO0PZDYcDAqgzZYM466JvMGEZFWHvFM5eor3tbETup2r1/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
-
-// GLOBAL HAVA DURUMU (Asistan Korelasyonu İçin)
-window.currentWTemp = 0;
-window.currentWHum = 0;
 
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
 
@@ -539,10 +535,6 @@ async function fetchWeather() {
         const h = data.current.relative_humidity_2m;
         const w = data.current.wind_speed_10m; 
         const uv = data.daily.uv_index_max[0]; 
-        
-        // Global değişkenlere ata (Asistan motoru kullanacak)
-        window.currentWTemp = t;
-        window.currentWHum = h;
 
         let icon = "🌥️", advIcon = "🩺", advColor = "var(--accent)", adviceList = [];
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -589,9 +581,6 @@ async function fetchWeather() {
         document.getElementById('wAdvIcon').innerText = advIcon;
         document.getElementById('wAdvIcon').style.color = advColor; 
         document.getElementById('wAdvice').innerText = pick(adviceList);
-
-        // Hava durumu çekildikten sonra asistanı tetikle ki hava verisini kullansın
-        if(apiData && apiData.tumVeriler) renderHealthDiary();
 
     } catch(e) { console.error("Hava durumu çekilemedi:", e); }
 }
@@ -954,7 +943,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SEVİYE 4: PROAKTİF SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) 
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
@@ -1054,7 +1043,7 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
-    // --- ZAMAN YOLCULUĞU (1 ve 2 Gün Öncesi) ---
+    // --- ZAMAN YOLCULUĞU (1 Gün Öncesi) ---
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
     
@@ -1062,11 +1051,6 @@ function renderHealthDiary() {
     oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
     let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
     let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
-
-    let ikiGunOnceObj = new Date(gosterilenTarihObj);
-    ikiGunOnceObj.setDate(ikiGunOnceObj.getDate() - 2);
-    let ikiGunOnceStr = String(ikiGunOnceObj.getDate()).padStart(2, '0') + '.' + String(ikiGunOnceObj.getMonth() + 1).padStart(2, '0') + '.' + ikiGunOnceObj.getFullYear();
-    let ikiGunOnceVeri = apiData.tumVeriler[ikiGunOnceStr];
 
     // ÖNCEKİ GÜN DEĞİŞKENLERİ
     let oncekiGunCimziaAlindiMi = oncekiGunVeri && oncekiGunVeri['GECE_CIMZIA'] === "İçildi";
@@ -1082,11 +1066,6 @@ function renderHealthDiary() {
         });
     }
 
-    // İKİ GÜN ÖNCE DEĞİŞKENLERİ (Boom & Bust İçin)
-    let ikiGunOnceAktVarMi = ikiGunOnceVeri && veriBul(ikiGunOnceVeri, ["aktivite"]) !== "-" && !String(veriBul(ikiGunOnceVeri, ["aktivite"])).toLowerCase().includes("hayır") && !String(veriBul(ikiGunOnceVeri, ["aktivite"])).toLowerCase().includes("yapmad");
-    let ikiGunOnceDeltaAlindiMi = ikiGunOnceVeri && ikiGunOnceVeri['SABAH_TOK_DELTA'] === "İçildi";
-
-
     // BUGÜNKÜ DEĞİŞKENLER
     let isUykuBad = String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("uyuyamad") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("vardı");
     let isSabahBad = String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü");
@@ -1095,10 +1074,10 @@ function renderHealthDiary() {
     let isAgriVar = agri !== "-" && !String(agri).toLowerCase().includes("yok");
 
     // ==========================================
-    // SEVİYE 4 KORELASYONLAR (ÖNCELİKLİ UYARILAR)
+    // SEVİYE 4 KORELASYONLAR
     // ==========================================
 
-    // 1. ATEŞ & ENFEKSİYON (En Yüksek Öncelik)
+    // 1. ATEŞ & ENFEKSİYON
     if (!isNaN(ates) && ates >= 37.0) {
         aiMsg.push(veriyeGoreSec([
             `🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`,
@@ -1106,14 +1085,10 @@ function renderHealthDiary() {
         isBadDay = true;
     }
 
-    // 2. BOOM & BUST (AŞIRI YÜKLENME KOTASI) - Son 2 gün hareketliyse ve en az 1 gün kortizon aldıysa
-    if (oncekiGunAktVarMi && ikiGunOnceAktVarMi && (oncekiGunDeltaAlindiMi || ikiGunOnceDeltaAlindiMi)) {
-        if (isSabahBad || isAgriVar || isUykuBad) {
-            aiMsg.push(`🛑 <b>Vücut Pili Uyarısı:</b> İki gündür kortizonun enerjisiyle harika hareket ettin ama bugün vücut "yeter" diyor. Lütfen bugün tam bir "Sıfır Aktivite" günü ilan et.`);
-            isBadDay = true;
-        } else {
-            aiMsg.push(`⚠️ <b>Temponu Düşür:</b> İki gündür çok aktifsin, eklemlerin henüz sinyal vermemiş olsa da Boom&Bust (aşırı yüklenip çökme) döngüsüne girmemek için bugün dinlenmeye geçmelisin.`);
-        }
+    // 2. KORTİZON YANILGISI (Önceki vücut pili uyarısı yerine daha mantıklı olan düzeltildi)
+    if (oncekiGunDeltaAlindiMi && oncekiGunAktVarMi && (isSabahBad || isAgriVar || isUykuBad)) {
+        aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun (Deltacortril) verdiği sahte enerjiyle kendini biraz yormuşsun. Bugün hissettiğin bu tutukluk veya ağrı dünün faturası, lütfen bugün eklemlerine yüklenme.`);
+        isBadDay = true;
     }
 
     // 3. CIMZIA WEAR-OFF (ETKİ AZALMASI) TAHMİNİ
@@ -1123,12 +1098,7 @@ function renderHealthDiary() {
     let cimziaDonguGunu = cimziaFarkGun % 14; 
     
     if (isTodayData && (cimziaDonguGunu === 11 || cimziaDonguGunu === 12 || cimziaDonguGunu === 13)) {
-        aiMsg.push(`📉 <b>Cimzia Uyarı:</b> İğne gününe ${14 - cimziaDonguGunu} gün kaldı. İlacın koruyucu kalkanı bugünlerde zayıflamaya başlar, eklemlerin normalden hassas olabilir. Sabret, yeni doza çok az kaldı.`);
-    }
-
-    // 4. HAVA DURUMU KORELASYONU (Proaktif)
-    if (isTodayData && window.currentWHum > 70 && window.currentWTemp < 15) {
-        aiMsg.push(`🌧️ <b>Hava Durumu Alarmı:</b> Dışarıda tam romatizmanın sevmediği soğuk ve nemli hava var (%${window.currentWHum} Nem, ${window.currentWTemp}°C). Eklemlerin bugün basınca karşı çok hassas, lütfen dizlerini sıcak tut.`);
+        aiMsg.push(`📉 <b>Cimzia Uyarısı:</b> İğne gününe ${14 - cimziaDonguGunu} gün kaldı. İlacın koruyucu kalkanı bugünlerde zayıflamaya başlar, eklemlerin normalden hassas olabilir. Sabret, yeni doza çok az kaldı.`);
     }
 
     // ==========================================
@@ -1148,7 +1118,6 @@ function renderHealthDiary() {
         aiMsg.push("Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor.");
     }
 
-    // GİZLİ ENERJİ VE KURULUK
     if (enerji !== "-") {
         let numE = parseInt(enerji);
         if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) {
@@ -1262,7 +1231,7 @@ function renderHealthDiary() {
 }
 
 // =======================================================
-// SEVİYE 4: DOKTOR RAPORU (KÖK NEDEN ANALİZİ & KORTİZON HARİTASI)
+// DOKTOR RAPORU (GENEL İZLEM + KÖK NEDEN ANALİZİ & KORTİZON HARİTASI)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -1371,7 +1340,6 @@ function doktorRaporuOlustur() {
         if (isAktif) aktifGunSayisi++;
 
         // SEVİYE 4: KORTİZON BAĞIMLILIK HARİTASI
-        let deltaAlindiMi = veri['SABAH_TOK_DELTA'] === "İçildi";
         let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
         let dS = new Date(2026, 1, 16);
         let bugunDeltaGunuMu = Math.round((dObj - dS)/(1000*60*60*24)) % 2 === 0;
@@ -1430,6 +1398,12 @@ function doktorRaporuOlustur() {
         }
     }
 
+    // --- GENEL İZLEM YORUMU (GERİ GETİRİLDİ!) ---
+    var uykuMetni = sorunluUykuGecesi > 0 ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` : `uyku sürecini genel olarak stabil geçirmiş`;
+    var tutuklukMetni = agirTutuklukGunu > 0 ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` : `sabah açılmalarını iyi yönetmiş`;
+    var aktiviteMetni = aktifGunSayisi > 0 ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
+    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
+
     // SEVİYE 4 DOKTOR KORELASYON METİNLERİ
     let kokNedenMetni = "";
     if (toplamAlevlenme > 0) {
@@ -1442,7 +1416,7 @@ function doktorRaporuOlustur() {
             Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. Çapraz geçmiş analizine göre bu alevlenmelerin;
             <ul style="margin-top: 5px; margin-bottom: 5px;">
                 ${pUyku > 0 ? `<li><strong>%${pUyku}</strong>'si şiddetli uykusuzluk veya kalitesiz uyku geçirilen geceleri takip etmiştir. (Ağrı eşiği düşüklüğü / Sekonder fibromiyaljik reaksiyon)</li>` : ''}
-                ${pAktivite > 0 ? `<li><strong>%${pAktivite}</strong>'si fiziksel aşırı yüklenme (Boom & Bust) veya zorlayıcı aktivite sonrası gerçekleşmiştir. (Mekanik Zorlanma)</li>` : ''}
+                ${pAktivite > 0 ? `<li><strong>%${pAktivite}</strong>'si fiziksel aşırı yüklenme veya zorlayıcı aktivite sonrası gerçekleşmiştir. (Mekanik Zorlanma)</li>` : ''}
                 ${pIlac > 0 ? `<li><strong>%${pIlac}</strong>'u eksik veya düzensiz ilaç kullanımına denk gelmektedir.</li>` : ''}
                 ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir yaşam tarzı tetikleyicisi bulunamamıştır. Temel hastalık aktivitesi değerlendirilmelidir.</li>` : ''}
             </ul>
@@ -1486,6 +1460,7 @@ function doktorRaporuOlustur() {
                 <li><strong>En Aktif Semptom Bölgesi:</strong> ${enCokAgriyanBolge}</li>
             </ul>
             <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 14px 18px; margin-top: 15px; font-size: 14px; line-height: 1.6; border-radius: 4px;">
+                <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
                 ${kokNedenMetni}
                 ${deltaBagimlilikMetni}
                 ${toksisiteMetni}
