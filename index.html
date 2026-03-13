@@ -1053,19 +1053,31 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
-    // --- YENİ: DÜNDEN BUGÜNE AKILLI KORELASYON MOTORU ---
-    let dunkuVeri = apiData.tumVeriler[dunTarihStr];
-    let dunkuProgram = getDailyProgram(dun);
-    let dunCimziaAlindiMi = false;
-    let dunMetoartconAlindiMi = false;
-    let dunIlacAksadiMi = false;
+    // --- GÜNCELLENMİŞ: ZAMAN YOLCULUĞUNU DÜZELTEN MOTOR ---
+    // Gösterilen verinin tarihinden bir gün öncesini buluyoruz
+    let pGosterilen = sonGunTarihi.split('.');
+    let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
+    
+    let oncekiGunObj = new Date(gosterilenTarihObj);
+    oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
+    
+    let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + 
+                       String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + 
+                       oncekiGunObj.getFullYear();
 
-    if (dunkuVeri) {
-        dunkuProgram.forEach(ogun => {
+    let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
+    let oncekiGunProgram = getDailyProgram(oncekiGunObj);
+    
+    let oncekiGunCimziaAlindiMi = false;
+    let oncekiGunMetoartconAlindiMi = false;
+    let oncekiGunIlacAksadiMi = false;
+
+    if (oncekiGunVeri) {
+        oncekiGunProgram.forEach(ogun => {
             ogun.meds.forEach(ilac => {
-                if (ilac.key === 'GECE_CIMZIA' && dunkuVeri[ilac.key] === "İçildi") dunCimziaAlindiMi = true;
-                if (ilac.key === 'GECE_METOARTCON' && dunkuVeri[ilac.key] === "İçildi") dunMetoartconAlindiMi = true;
-                if (dunkuVeri[ilac.key] === "İçilmedi") dunIlacAksadiMi = true;
+                if (ilac.key === 'GECE_CIMZIA' && oncekiGunVeri[ilac.key] === "İçildi") oncekiGunCimziaAlindiMi = true;
+                if (ilac.key === 'GECE_METOARTCON' && oncekiGunVeri[ilac.key] === "İçildi") oncekiGunMetoartconAlindiMi = true;
+                if (oncekiGunVeri[ilac.key] === "İçilmedi") oncekiGunIlacAksadiMi = true;
             });
         });
     }
@@ -1083,11 +1095,11 @@ function renderHealthDiary() {
     let isUykuGood = uyku.toLowerCase().includes("deliksiz") || uyku.toLowerCase().includes("iyi") || uyku.toLowerCase().includes("normal");
     let isSabahGood = tutukluk.toLowerCase().includes("hemen") || tutukluk.toLowerCase().includes("yok");
 
-    // AKILLI İLAÇ - SEMPTOM KORELASYONU
-    if ((dunCimziaAlindiMi || dunMetoartconAlindiMi) && isSabahGood) {
-        aiMsg.push("💉 Dün aldığın biyolojik iğnenin şifası hemen kendini göstermiş, sabahki rahatlık ve esnekliğinden belli!");
-    } else if (dunIlacAksadiMi && (isUykuBad || isSabahBad || agri !== "-")) {
-        aiMsg.push("🚨 Dün atladığımız ilaçlar, bugün vücudunda biraz yorgunluk ve inatçı sızılar yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
+    // AKILLI İLAÇ - SEMPTOM KORELASYONU (Zamanlaması düzeltildi)
+    if ((oncekiGunCimziaAlindiMi || oncekiGunMetoartconAlindiMi) && isSabahGood) {
+        aiMsg.push("💉 Bir önceki gece aldığın biyolojik iğnenin şifası hemen kendini göstermiş, sabahki rahatlık ve esnekliğinden belli!");
+    } else if (oncekiGunIlacAksadiMi && (isUykuBad || isSabahBad || agri !== "-")) {
+        aiMsg.push("🚨 Bir önceki gün atladığımız ilaçlar, vücudunda biraz yorgunluk ve inatçı sızılar yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
     }
 
     if (isUykuBad && isSabahBad) {
@@ -1095,7 +1107,7 @@ function renderHealthDiary() {
             "Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir."
         ]));
         isBadDay = true;
-    } else if (isUykuGood && isSabahGood && !dunCimziaAlindiMi && !dunMetoartconAlindiMi) {
+    } else if (isUykuGood && isSabahGood && !oncekiGunCimziaAlindiMi && !oncekiGunMetoartconAlindiMi) {
         aiMsg.push(veriyeGoreSec([
             "Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor."
         ]));
@@ -1104,7 +1116,7 @@ function renderHealthDiary() {
             "Gece uykun bölünmüş görünüyor. Vücudunun toparlanması için bugün temponu düşük tutmalısın."
         ]));
         isBadDay = true;
-    } else if (isSabahBad && !dunIlacAksadiMi) {
+    } else if (isSabahBad && !oncekiGunIlacAksadiMi) {
         aiMsg.push(veriyeGoreSec([
             "Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme."
         ]));
@@ -1156,7 +1168,7 @@ function renderHealthDiary() {
 
     if (streak >= 3) {
         aiMsg.push(`Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun.`);
-    } else if (streak === 0 && !dunIlacAksadiMi) {
+    } else if (streak === 0 && !oncekiGunIlacAksadiMi) {
         aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç dert değil. Sonraki öğünlerde telafi eder, yola devam ederiz. 💖`);
     } else if (streak > 0) {
         aiMsg.push(`İlaçlarını güzel takip ediyorsun, şifa seninle olsun canım nenem! 🌼`);
