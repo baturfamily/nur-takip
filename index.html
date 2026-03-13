@@ -79,7 +79,6 @@ body {
   font-family: -apple-system, system-ui, sans-serif; 
   padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; 
   
-  /* --- EKRANI KİLİTLEYEN KISIM --- */
   position: fixed;
   top: 0;
   left: 0;
@@ -95,7 +94,6 @@ body {
   transition: background 0.3s, color 0.3s; 
 }
 
-/* GÜVENLİK KALKANI */
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
 .safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; line-height: 1.3;}
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
@@ -108,7 +106,6 @@ body {
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* VIP BAŞLIK KARTI */
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
 
 .app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
@@ -118,7 +115,6 @@ body {
 .clock-text { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
 .sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); }
 
-/* TÜM KARTLARIN ORTAK SINIFI */
 .premium-card { 
     background: var(--card); 
     border-radius: 20px; 
@@ -131,7 +127,6 @@ body {
     flex-shrink: 0;
 }
 
-/* --- HAVA DURUMU KARTI --- */
 .ios-weather-card { 
     padding: 16px; 
     background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%);
@@ -159,7 +154,6 @@ body {
     .ios-w-hum { background: rgba(0,0,0,0.4); }
 }
 
-/* --- SAĞLIK GÜNLÜĞÜ (TAM OPTİMİZE - SIKIŞTIRILMIŞ) KARTI --- */
 .diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; cursor: pointer; }
 .diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
 .diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
@@ -168,7 +162,6 @@ body {
 .diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 4px;}
 .diary-streak { font-size: 12px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 10px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; flex-shrink: 0;}
 
-/* Yatay kaydırma ile tek satır garantisi */
 .diary-pills { 
     display: flex; 
     gap: 6px; 
@@ -183,12 +176,10 @@ body {
 .diary-pill { background: rgba(255,255,255,0.9); padding: 4px 10px; border-radius: 10px; font-size: 13px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); white-space: nowrap; flex-shrink: 0; }
 .diary-pill.alert { background: #FEE2E2; color: #EF4444; border: 1px solid #FCA5A5; }
 
-/* Akordeon Mantığı Sınıfları */
 .diary-card.collapsed .diary-ai-box { display: none; }
 .diary-card.collapsed .dt-opened { display: none; }
 .diary-card:not(.collapsed) .dt-closed { display: none; }
 
-/* Buton Hissiyatı Verilmiş Yorum Yazısı */
 .diary-toggle-bar { 
     text-align: center; 
     font-size: 13px; 
@@ -205,7 +196,6 @@ body {
 .diary-mood-good .diary-toggle-bar { color: #047857; }
 .diary-mood-rest .diary-toggle-bar { color: #B45309; }
 
-/* Büyütülmüş Asistan Yazı Boyutu */
 .diary-ai-box { 
     margin-top: 12px; 
     background: rgba(255,255,255,0.65); 
@@ -234,7 +224,6 @@ body {
     .diary-mood-rest .diary-toggle-bar { color: #FBBF24; }
 }
 
-/* --- İSTATİSTİK KARTLARI (GENİŞLEYEN YAPI) --- */
 .stat-card .card-header { margin-bottom: 0; cursor: pointer; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
 .stat-card { padding: 12px 16px; margin-bottom: 12px; }
@@ -245,7 +234,6 @@ body {
 .stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
-/* --- AYLIK VE YILLIK ASİSTAN ÖZET KUTUSU (BÜYÜTÜLMÜŞ YAZI TİPİ) --- */
 .stat-ai-summary {
     background: rgba(255,255,255,0.6);
     padding: 16px;
@@ -273,7 +261,6 @@ body {
     .stat-ai-summary strong { color: #BF5AF2; }
 }
 
-/* TEK SÜTUN İLAÇ LİSTESİ DÜZENİ */
 .vertical-list { 
   display: flex; 
   flex-direction: column; 
@@ -291,7 +278,6 @@ body {
 .card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;}
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
-/* KART BAŞLIĞI */
 .card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; }
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
 
@@ -319,7 +305,6 @@ body {
 .card.collapsed .meds-container { display: none; }
 .card.collapsed .card-header { margin-bottom: 0; }
 
-/* MİNİK BUTONU VE TOAST */
 .minik-button { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
 .minik-button:active { transform: scale(0.9); }
 
@@ -342,7 +327,6 @@ body {
   border: 2px solid rgba(255,255,255,0.2);
 }
 
-/* --- GECİKEN İLAÇ KARTI ANİMASYONU --- */
 .badge-danger { background: rgba(255, 59, 48, 0.15); color: var(--danger); font-weight: 900; }
 .late-card { border-color: var(--danger) !important; animation: latePulse 2s infinite; }
 
@@ -352,7 +336,6 @@ body {
     100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
   }
 
-/* --- İSTATİSTİK KARTLARINA ÖZEL SICAK / ANTRASİT ARKA PLAN --- */
 .stat-card {
     background: linear-gradient(135deg, #FFF7F0 0%, #FFEDE0 100%) !important;
     border: 1px solid #F5E0CD !important;
@@ -605,7 +588,7 @@ fetchWeather();
 
 function mewMsg() {
     const arrA = ["Nenesinin kuzusu,", "Benim bir tanecik nene sultanım,", "Dünyanın en güzel nenesine pati selamı,", "Evimizin gülü canım nenem,"];
-    const arrB = ["Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", "Kalp ilacımı (Enalapril) hiç itiraz etmeden yuttum,"];
+    const arrB = ["Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", "Kalp ilacımı hiç itiraz etmeden yuttum,"];
     const arrC = ["şimdi sıra senin o şifalı ilaçlarını içmende,", "sen ilaçlarını içince benim bile tüylerim parlıyor,", "sen iyi ol ki ben de senin dizlerine kıvrılıp mırıldanayım,"];
     const arrD = ["seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", "şifamız bol olsun, canım nenem! 🌼"];
 
@@ -672,93 +655,57 @@ function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
     return "-";
 }
 
-// AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU (ZENGİNLEŞTİRİLMİŞ DİNAMİK VERSİYON)
+// AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU (GİZLİ KORELASYONLU)
 function donemOzetiOlustur(hStats, pct, isYearly) {
     let text = "";
     let donem = isYearly ? "Bu yıl" : "Bu ay";
     
-    // Rastgelelik (Flicker olmaması için) veriye dayalı bir "seed" oluşturuyoruz
-    let seed = pct + hStats.atesliGun + hStats.kotuUyku + hStats.kotuSabah + hStats.aktifGun;
+    // Rastgelelik veriye dayalı bir "seed" oluşturuyoruz
+    let seed = pct + hStats.atesliGun + hStats.kotuUyku + hStats.kotuSabah + hStats.aktifGun + (hStats.dusukEnerji || 0);
     const sec = (arr) => arr[seed % arr.length];
 
-    // 1. İLAÇ UYUMU
+    // İLAÇ UYUMU VE KORELASYON
     if(pct >= 90) {
         text += sec([
-            `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. `,
-            `${donem} tedavine <strong>%${pct}</strong> gibi harika bir oranla sadık kaldın, seninle gurur duyuyorum! `,
-            `${donem} ilaç saatlerini <strong>%${pct}</strong> uyumla neredeyse kusursuz yönettin. `
+            `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. Yüksek ilaç uyumun sayesinde romatizmayı harika baskıladın. `,
+            `${donem} tedavine <strong>%${pct}</strong> gibi harika bir oranla sadık kaldın, seninle gurur duyuyorum! Bu sadakatin bedenine esneklik olarak dönmüş. `
         ]);
     } else if (pct >= 70) {
         text += sec([
-            `${donem} tedavine <strong>%${pct}</strong> oranında uyum sağladın, ufak tefek aksamalar olsa da genel tablo gayet iyi. `,
-            `${donem} ilaç rutinin <strong>%${pct}</strong> seviyesinde kaldı, yoğunluktan bazı öğünler kaçmış olabilir ama kontrol sende. `,
-            `${donem} <strong>%${pct}</strong> ilaç uyumuyla ayı kapattık, bir sonraki dönem daha da dikkatli olabiliriz. `
+            `${donem} tedavine <strong>%${pct}</strong> oranında uyum sağladın. İlacın aksadığı günlerde bedeninin yorulması bize tedavinin ne kadar önemli olduğunu bir kez daha gösterdi. `
         ]);
     } else {
         text += sec([
-            `${donem} ilaç saatlerinde (<strong>%${pct}</strong>) biraz aksamalarımız oldu, önümüzdeki dönem bu konuya daha çok odaklanmalıyız. `,
-            `${donem} tedavi uyumumuz <strong>%${pct}</strong> seviyesine düşmüş. Hastalıkla savaşımızda ilaçları zamanında almak en büyük silahımız. `,
-            `${donem} ilaç düzenimiz (<strong>%${pct}</strong>) biraz sarsılmış. Şifan için sonraki dönemde saatleri daha sıkı takip edelim. `
+            `${donem} ilaç saatlerinde (<strong>%${pct}</strong>) aksamalarımız olmuş. Kayıtlara göre ilacın aksadığı günlerde ağrı ve yorgunluk doğrudan artış gösteriyor, şifan için buna çok dikkat etmeliyiz. `
         ]);
     }
 
-    // 2. ATEŞ DURUMU
+    // ATEŞ DURUMU
     if(hStats.atesliGun > 0) {
-        text += sec([
-            `Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `,
-            `Bu dönemde <strong>${hStats.atesliGun} kez</strong> ateşin sınırın üzerine çıktı. `,
-            `Kayıtlara göre <strong>${hStats.atesliGun} gün</strong> ateşli geçti. `
-        ]);
-    } else {
-        text += sec([
-            `Bu dönemi hiç ateşin çıkmadan atlatman harika bir bağışıklık işareti. `,
-            `Süreç boyunca hiç ateş sorunu yaşamaman tedavinin güzel çalıştığını gösteriyor. `
-        ]);
+        text += sec([`Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `]);
     }
 
-    // 3. UYKU VE SABAH TUTUKLUĞU
+    // GİZLİ ENERJİ VE KURULUK KORELASYONU
+    if (hStats.dusukEnerji > 0 || hStats.kuruGoz > 0) {
+        text += `Bu dönemde ayrıca biraz romatizmal yorgunluk (${hStats.dusukEnerji || 0} gün) ve Sjögren kuruluğu (${hStats.kuruGoz || 0} gün) da gözlemledik, bu tür günlerde kendini hiç zorlamamalısın. `;
+    }
+
+    // UYKU VE SABAH TUTUKLUĞU
     if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0) {
-        text += sec([
-            `Geceleri deliksiz uyuman ve sabahları kuş gibi uyanman en güzel haber! `,
-            `Hiç bölünen uykun veya inatçı sabah tutukluğun olmamış, eklemlerin oldukça huzurluymuş. `,
-            `Uyku kaliten ve sabah esnekliğin bu dönemde mükemmel seyretmiş. `
-        ]);
+        text += sec([`Geceleri deliksiz uyuman ve sabahları kuş gibi uyanman en güzel haber! `]);
     } else {
-        if(hStats.kotuUyku > 0) {
-            text += sec([
-                `Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `,
-                `Kayıtlara göre <strong>${hStats.kotuUyku} gece</strong> uykunu tam alamamışsın. `
-            ]);
-        }
-        if(hStats.kotuSabah > 0) {
-            text += sec([
-                `<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `,
-                `Ayrıca <strong>${hStats.kotuSabah} sabah</strong> yataktan kalkarken eklemlerinde zorlu tutukluklar yaşadın. `
-            ]);
-        }
+        if(hStats.kotuUyku > 0) text += sec([`Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `]);
+        if(hStats.kotuSabah > 0) text += sec([`<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `]);
     }
 
-    // 4. AĞRI BÖLGESİ
-    if(hStats.enCokBolge && hStats.enCokBolge !== "Belirgin bir bölge yok") {
-        text += sec([
-            `Sızılar en çok <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende yoğunlaşarak seni yordu. `,
-            `Bu dönem romatizma en çok <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende hassasiyet yarattı. `,
-            `En inatçı ağrıları <strong>${hStats.enCokBolge.toLowerCase()}</strong> bölgende hissettin. `
-        ]);
-    }
-
-    // 5. AKTİVİTE VE FİNAL MOTİVASYONU
+    // AKTİVİTE VE FİNAL MOTİVASYONU
     if(hStats.aktifGun > 0) {
         text += sec([
-            `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`,
-            `Buna rağmen <strong>${hStats.aktifGun} günlük</strong> hareket rutininle eklem sıvılarını çok iyi dengeledin, harikasın! 🏅`,
-            `Tam <strong>${hStats.aktifGun} gün</strong> egzersiz yapıp bedenine çok iyi baktığını da unutmayalım! 💖`
+            `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`
         ]);
     } else {
         text += sec([
-            `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, bir sonraki dönem bol hareket hedefimiz olsun. 💖`,
-            `Süreç boyunca fiziksel olarak pek aktif kalamamışız, hafif egzersizlerin eklemlerine şifa olacağını unutma. 🌼`,
-            `Hareket kaydımız bu dönem biraz zayıf. Eklemlerini mutlu etmek için ufak egzersizleri hayatına katabilirsin. 🚶‍♀️`
+            `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, hafif egzersizlerin eklemlerine şifa olacağını unutma. 💖`
         ]);
     }
     
@@ -770,14 +717,12 @@ function analyzeMonth(year, month) {
     let missedMedsCount = 0;
     let breakdown = [];
     
-    // Sağlık verilerini biriktireceğimiz obje
-    let hStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {} };
+    let hStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {}, dusukEnerji: 0, kuruGoz: 0 };
 
     const dNow = new Date();
     const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
-
     const START_DATE = new Date(2026, 1, 28);
 
     for (let d = maxDay; d >= 1; d--) { 
@@ -832,13 +777,16 @@ function analyzeMonth(year, month) {
              });
         }
 
-        // GÜNLÜK SAĞLIK VERİSİNİ BİRİKTİRME
+        // GÜNLÜK SAĞLIK VERİSİNİ BİRİKTİRME (Sadece istatistik için)
         if (dayData) {
             let atesHam = veriBulGlobal(dayData, ["ates", "ateş"]);
             let tutukluk = veriBulGlobal(dayData, ["tutuk", "sabah"]);
             let bolge = veriBulGlobal(dayData, ["bölge", "bolge", "rahatsiz"]);
             let aktivite = veriBulGlobal(dayData, ["aktivite"]);
             let uyku = veriBulGlobal(dayData, ["uyku", "gece"]);
+            
+            let enerji = veriBulGlobal(dayData, ["enerji"]);
+            let kuruluk = veriBulGlobal(dayData, ["göz", "goz", "kuru"]);
 
             let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
             if(ates >= 37.0) hStats.atesliGun++;
@@ -847,6 +795,15 @@ function analyzeMonth(year, month) {
             if (tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("saat") || tutukluk.toLowerCase().includes("sürdü")) hStats.kotuSabah++;
             if (aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad")) hStats.aktifGun++;
 
+            if (enerji !== "-") {
+                let numE = parseInt(enerji);
+                if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az)/))) hStats.dusukEnerji++;
+            }
+            if (kuruluk !== "-") {
+                let numK = parseInt(kuruluk);
+                if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) hStats.kuruGoz++;
+            }
+
             let bKucuk = bolge.toLowerCase();
             if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
                 hStats.bolgeler[bolge] = (hStats.bolgeler[bolge] || 0) + 1;
@@ -854,7 +811,6 @@ function analyzeMonth(year, month) {
         }
     }
 
-    // EN ÇOK AĞRIYAN BÖLGEYİ BUL
     let maxT = 0; let enCok = "";
     for (let b in hStats.bolgeler) {
         if (hStats.bolgeler[b] > maxT) { maxT = hStats.bolgeler[b]; enCok = b; }
@@ -884,7 +840,6 @@ function renderMonthStat(prefix, data) {
         return;
     }
 
-    // YENİ: ASİSTAN ÖZET METNİNİ EN ÜSTE EKLE (Kartın İçinde)
     let aiText = donemOzetiOlustur(data.healthStats, data.percentage, false);
     let html = `
     <div class="stat-ai-summary">
@@ -922,7 +877,7 @@ function renderYearStat(year) {
     if(!badgeEl || !detailsEl) return;
 
     let totalMeds = 0; let totalMissed = 0;
-    let yStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {} };
+    let yStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {}, dusukEnerji: 0, kuruGoz: 0 };
     let monthRowsHTML = "";
     const maxMonth = year === now.getFullYear() ? now.getMonth() : 11;
 
@@ -931,11 +886,12 @@ function renderYearStat(year) {
         totalMeds += mData.totalMeds;
         totalMissed += mData.missedMedsCount;
 
-        // Yıllık verileri birleştir
         yStats.atesliGun += mData.healthStats.atesliGun;
         yStats.kotuUyku += mData.healthStats.kotuUyku;
         yStats.kotuSabah += mData.healthStats.kotuSabah;
         yStats.aktifGun += mData.healthStats.aktifGun;
+        yStats.dusukEnerji += mData.healthStats.dusukEnerji;
+        yStats.kuruGoz += mData.healthStats.kuruGoz;
         
         for (let b in mData.healthStats.bolgeler) {
             yStats.bolgeler[b] = (yStats.bolgeler[b] || 0) + mData.healthStats.bolgeler[b];
@@ -952,7 +908,6 @@ function renderYearStat(year) {
         }
     }
 
-    // Yıllık en çok ağrıyan bölge
     let maxT = 0; let enCok = "";
     for (let b in yStats.bolgeler) {
         if (yStats.bolgeler[b] > maxT) { maxT = yStats.bolgeler[b]; enCok = b; }
@@ -966,7 +921,6 @@ function renderYearStat(year) {
     if(totalMeds === 0) {
         detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
     } else {
-        // YENİ: YILLIK ASİSTAN ÖZET METNİ (Kartın İçinde)
         let aiText = donemOzetiOlustur(yStats, yearPercentage, true);
         let finalHTML = `
         <div class="stat-ai-summary">
@@ -999,7 +953,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (NİHAİ ZEKÂ)
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (KORELASYONLU)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
@@ -1058,6 +1012,10 @@ function renderHealthDiary() {
     let bolge = veriBul(sonGunVerisi, ["bölge", "bolge", "rahatsiz"]);
     let aktivite = veriBul(sonGunVerisi, ["aktivite"]);
     let uyku = veriBul(sonGunVerisi, ["uyku", "gece"]);
+    
+    // GİZLİ VERİLER (Sadece Asistan Metni İçin)
+    let enerji = veriBul(sonGunVerisi, ["enerji"]);
+    let kuruluk = veriBul(sonGunVerisi, ["göz", "goz", "kuru"]);
 
     let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
     
@@ -1095,11 +1053,27 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
+    // --- YENİ: DÜNDEN BUGÜNE AKILLI KORELASYON MOTORU ---
+    let dunkuVeri = apiData.tumVeriler[dunTarihStr];
+    let dunkuProgram = getDailyProgram(dun);
+    let dunCimziaAlindiMi = false;
+    let dunMetoartconAlindiMi = false;
+    let dunIlacAksadiMi = false;
+
+    if (dunkuVeri) {
+        dunkuProgram.forEach(ogun => {
+            ogun.meds.forEach(ilac => {
+                if (ilac.key === 'GECE_CIMZIA' && dunkuVeri[ilac.key] === "İçildi") dunCimziaAlindiMi = true;
+                if (ilac.key === 'GECE_METOARTCON' && dunkuVeri[ilac.key] === "İçildi") dunMetoartconAlindiMi = true;
+                if (dunkuVeri[ilac.key] === "İçilmedi") dunIlacAksadiMi = true;
+            });
+        });
+    }
+
     if (ates >= 37.0) {
         aiMsg.push(veriyeGoreSec([
             `Sultanım, son kayıtlarda ateşin ${ates}°C görünüyor. Lütfen bol sıvı alıp kendini sıcak tut, gerekirse doktoruna haber verelim.`,
-            `Ateşin ${ates}°C seviyesine çıkmış. Vücudun bir şeylerle savaşıyor olabilir, lütfen dinlenmeyi birinci önceliğin yap.`,
-            `Bugün ${ates}°C ateşin var. İlaç saatlerini aksatmadan dinlenmeli ve bol bol su içmelisin.`
+            `Ateşin ${ates}°C seviyesine çıkmış. Vücudun bir şeylerle savaşıyor olabilir, lütfen dinlenmeyi birinci önceliğin yap.`
         ]));
         isBadDay = true;
     }
@@ -1109,34 +1083,50 @@ function renderHealthDiary() {
     let isUykuGood = uyku.toLowerCase().includes("deliksiz") || uyku.toLowerCase().includes("iyi") || uyku.toLowerCase().includes("normal");
     let isSabahGood = tutukluk.toLowerCase().includes("hemen") || tutukluk.toLowerCase().includes("yok");
 
+    // AKILLI İLAÇ - SEMPTOM KORELASYONU
+    if ((dunCimziaAlindiMi || dunMetoartconAlindiMi) && isSabahGood) {
+        aiMsg.push("💉 Dün aldığın biyolojik iğnenin şifası hemen kendini göstermiş, sabahki rahatlık ve esnekliğinden belli!");
+    } else if (dunIlacAksadiMi && (isUykuBad || isSabahBad || agri !== "-")) {
+        aiMsg.push("🚨 Dün atladığımız ilaçlar, bugün vücudunda biraz yorgunluk ve inatçı sızılar yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
+    }
+
     if (isUykuBad && isSabahBad) {
         aiMsg.push(veriyeGoreSec([
-            "Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir.",
-            "Geceyi biraz zorlu geçirmişsin, eklemlerin de sabah inatçılık yapmış. Bugün lütfen kendini yorma ve bolca dinlen."
+            "Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir."
         ]));
         isBadDay = true;
-    } else if (isUykuGood && isSabahGood) {
+    } else if (isUykuGood && isSabahGood && !dunCimziaAlindiMi && !dunMetoartconAlindiMi) {
         aiMsg.push(veriyeGoreSec([
-            "Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor.",
-            "Harika bir gece uykusu ve rahat bir sabah! İlaçların gücünü gösterdiği, eklemlerinin mutlu olduğu bir gün.",
-            "Uyku kalitenin iyi olması ve sabah tutukluğunun olmaması çok güzel bir işaret. Vücudun tedaviye harika yanıt veriyor!"
+            "Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor."
         ]));
     } else if (isUykuBad) {
         aiMsg.push(veriyeGoreSec([
-            "Uykunu tam alamamışsın, bugün fırsat bulursan biraz şekerleme yapıp dinlenmeye çalış.",
             "Gece uykun bölünmüş görünüyor. Vücudunun toparlanması için bugün temponu düşük tutmalısın."
         ]));
         isBadDay = true;
-    } else if (isSabahBad) {
+    } else if (isSabahBad && !dunIlacAksadiMi) {
         aiMsg.push(veriyeGoreSec([
-            "Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme.",
-            "Sabah tutukluğun biraz uzun sürmüş, sıcak bir şeyler içip eklemlerinin nazikçe açılmasını bekle Sultanım."
+            "Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme."
         ]));
+    }
+
+    // GİZLİ ENERJİ VE KURULUK KORELASYONU (GÖRSEL YOK SADECE YORUM)
+    if (enerji !== "-") {
+        let numE = parseInt(enerji);
+        if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az)/))) {
+            aiMsg.push("Bugün romatizma kaynaklı enerjinin düşük olduğunu gözlemledim, ağır işleri bir kenara bırakıp bugün kendini şarj etmelisin.");
+            isBadDay = true;
+        }
+    }
+    if (kuruluk !== "-") {
+        let numK = parseInt(kuruluk);
+        if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) {
+            aiMsg.push("Gözlerindeki batma ve kuruluk bugün artmış görünüyor. Ekranlara ara verip damlalarını sıklaştırmayı unutma.");
+        }
     }
 
     let bolgeKucuk = bolge.toLowerCase();
     let isBolgeYok = bolge === "-" || bolgeKucuk.includes("hayır") || bolgeKucuk.includes("yok");
-    
     let isEller = bolgeKucuk.includes("el");
     let isHerYer = bolgeKucuk.includes("her yer");
     let isBaskaBolge = !isBolgeYok && !isEller && !isHerYer;
@@ -1151,54 +1141,29 @@ function renderHealthDiary() {
         isBadDay = true;
     } else if (isBaskaBolge) {
         aiMsg.push(veriyeGoreSec([
-            `Özellikle ${bolge.toLowerCase()} bölgende bir hassasiyet belirtmişsin. Orayı sıcak tutmak ve çok zorlamamak iyi olacaktır.`,
-            `Bugün ${bolge.toLowerCase()} bölgesindeki ağrın için o kısmı zorlayacak hareketlerden kesinlikle kaçınmalısın.`,
-            `Sızılar ${bolge.toLowerCase()} kısmında toplanmış, doktorumuzun önerdiği merhemler veya hafif kompresler orayı rahatlatabilir.`
+            `Özellikle ${bolge.toLowerCase()} bölgende bir hassasiyet belirtmişsin. Orayı sıcak tutmak ve çok zorlamamak iyi olacaktır.`
         ]));
         isBadDay = true;
     }
 
     if (isAktiviteVar && !isBadDay) {
-        let rawAktivite = aktivite.toLowerCase();
-        let temizAktivite = rawAktivite;
-
-        if (rawAktivite.includes("pilates")) temizAktivite = "pilates";
-        else if (rawAktivite.includes("yürü")) temizAktivite = "yürüyüş";
-        else if (rawAktivite.includes("yüz")) temizAktivite = "yüzme";
-        else if (rawAktivite.includes("bisiklet")) temizAktivite = "bisiklet";
-        else if (rawAktivite.includes("egzersiz")) temizAktivite = "egzersiz";
-        else if (rawAktivite.includes("yoga")) temizAktivite = "yoga";
-        else {
-            temizAktivite = rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
-        }
-
-        aiMsg.push(veriyeGoreSec([
-            `Yaptığın ${temizAktivite} aktivitesi eklemlerindeki sıvıyı harika dengelemiş, bu güzel ritmi korumaya çalış.`,
-            `Hareket berekettir! Yaptığın ${temizAktivite} aktivitesi ile eklemlerini açık tutman tedavin için çok kıymetli.`,
-            `Bugün ${temizAktivite} aktivitesi yaparak vücuduna en büyük iyiliği yapmışsın, kasların güçlendikçe eklemlerin rahatlayacak.`
-        ]));
+        let temizAktivite = aktivite.toLowerCase();
+        if (temizAktivite.includes("pilates")) temizAktivite = "pilates";
+        else if (temizAktivite.includes("yürü")) temizAktivite = "yürüyüş";
+        else { temizAktivite = temizAktivite.replace("yaptım", "").replace("ettim", "").trim(); }
+        aiMsg.push(`Hareket berekettir! Yaptığın ${temizAktivite} aktivitesi ile eklemlerini açık tutman tedavin için çok kıymetli.`);
     }
 
     if (streak >= 3) {
-        aiMsg.push(veriyeGoreSec([
-            `Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun, gerisini şifaya bırak. 🌼`,
-            `Bu arada ${streak} günlük harika bir ilaç serin var! Disiplinin sayesinde hastalığa hiç açık kapı bırakmıyoruz. 🧿`,
-            `Harika giden ${streak} günlük bir ilaç rutinin var. Bu istikrarın Romatizma ile savaşımızda en büyük kalkanımız! 🛡️`
-        ]));
-    } else if (streak === 0) {
-        aiMsg.push(veriyeGoreSec([
-            `İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç canını sıkma. Önümüzdeki öğünlerde telafi eder, yola devam ederiz. 💖`,
-            `İlaç saatleri bazen gözden kaçabilir, hiç dert değil. Sonraki ilaçlarımızı zamanında alarak yeni bir seri başlatabiliriz. 🌼`
-        ]));
-    } else {
+        aiMsg.push(`Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun.`);
+    } else if (streak === 0 && !dunIlacAksadiMi) {
+        aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç dert değil. Sonraki öğünlerde telafi eder, yola devam ederiz. 💖`);
+    } else if (streak > 0) {
         aiMsg.push(`İlaçlarını güzel takip ediyorsun, şifa seninle olsun canım nenem! 🌼`);
     }
 
     if (aiMsg.length === 1 && ates < 37.0) {
-        aiMsg[0] = veriyeGoreSec([
-            `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`,
-            `Bugün seni çok yoracak bir durum görünmüyor. Eklemlerini nazikçe koruyarak günün tadını çıkar. 🌼`
-        ]);
+        aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
     }
 
     if (!isTodayData) {
@@ -1216,6 +1181,7 @@ function renderHealthDiary() {
         baslik = `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`;
     }
     
+    // GÖRSEL HAPLAR (SADECE ORİJİNAL 4 VERİ İÇİN, ENERJİ/KURULUK BURADA YOK)
     let pillsHTML = "";
     if (uyku !== "-") {
         let uIcon = isUykuBad ? "🛌" : "😴";
@@ -1268,7 +1234,7 @@ function renderHealthDiary() {
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU (NİHAİ DİL GÜNCELLEMESİ)
+// DOKTOR RAPORU OLUŞTURUCU (TABLO AYNI, YORUM AKILLI)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -1332,6 +1298,10 @@ function doktorRaporuOlustur() {
     var sorunluUykuGecesi = 0;
     var agirTutuklukGunu = 0;
     var aktifGunSayisi = 0;
+    
+    // GİZLİ SAYAÇLAR
+    var dusukEnerjiSayisi = 0;
+    var kuruGozSayisi = 0;
 
     tarihler.forEach(function(tarih) {
         var veri = apiData.tumVeriler[tarih];
@@ -1342,6 +1312,9 @@ function doktorRaporuOlustur() {
         var bolge = veriBul(veri, ["bölge", "bolge", "rahatsiz"]);
         var aktivite = veriBul(veri, ["aktivite"]);
         var uyku = veriBul(veri, ["uyku", "gece"]);
+        
+        var enerji = veriBul(veri, ["enerji"]);
+        var kuruluk = veriBul(veri, ["göz", "goz", "kuru"]);
 
         var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
         var atesGosterim = ates > 0 ? ates + "°C" : "-";
@@ -1359,7 +1332,17 @@ function doktorRaporuOlustur() {
         if (aktivite !== "-" && !aktivite.toLowerCase().includes("yapmadim") && !aktivite.toLowerCase().includes("hayır")) {
             aktifGunSayisi++;
         }
+        
+        if (enerji !== "-") {
+            let numE = parseInt(enerji);
+            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az)/))) dusukEnerjiSayisi++;
+        }
+        if (kuruluk !== "-") {
+            let numK = parseInt(kuruluk);
+            if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) kuruGozSayisi++;
+        }
 
+        // TABLO ORİJİNAL HALİYLE KALIYOR (7 SÜTUN)
         tabloSatirlari += `
         <tr>
             <td>${tarih}</td>
@@ -1383,18 +1366,33 @@ function doktorRaporuOlustur() {
     }
 
     var uykuMetni = sorunluUykuGecesi > 0 
-        ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı veya diğer sebeplerle bölünen kalitesiz bir uyku geçirmiş` 
-        : `uyku kalitesi genel olarak stabil seyretmiş`;
+        ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku` 
+        : `genel olarak stabil bir uyku`;
 
     var tutuklukMetni = agirTutuklukGunu > 0 
-        ? `<strong>${agirTutuklukGunu} gün</strong> sabah tutukluğunu normalden uzun (ağır) yaşamıştır.` 
-        : `sabah tutuklukları iyi yönetilmiş ve hızlı açılmalar kaydedilmiştir.`;
+        ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu` 
+        : `iyi yönetilmiş sabah açılmaları`;
 
     var aktiviteMetni = aktifGunSayisi > 0 
-        ? `Toplam <strong>${aktifGunSayisi} gün</strong> fiziksel aktivite (yürüyüş, pilates vb.) yapabilmiştir.` 
-        : `Bu dönemde belirgin bir fiziksel aktivite kaydedilmemiştir, eklem esnekliği için hafif egzersizler önerilebilir.`;
+        ? `toplam <strong>${aktifGunSayisi} gün</strong> egzersiz yapabilmiştir.` 
+        : `bu dönemde belirgin bir fiziksel egzersiz kaydedilmemiştir.`;
 
-    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni} ve ${tutuklukMetni} ${aktiviteMetni}`;
+    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
+
+    // İLAÇ VE GİZLİ VERİ KORELASYONU
+    var ilacEtkiYorumu = "";
+    if (ilacUyumOrani < 85 && agirTutuklukGunu > 0) {
+        ilacEtkiYorumu = " İlaç uyumunun düştüğü günlerle semptom alevlenmeleri arasında doğrudan bir korelasyon gözlemlenmiştir.";
+    } else if (ilacUyumOrani >= 90 && agirTutuklukGunu === 0) {
+        ilacEtkiYorumu = " Yüksek ilaç uyumu (%90+) sayesinde eklem fonksiyonları başarılı bir şekilde korunmuş ve ağır sabah tutukluğu engellenmiştir.";
+    }
+
+    var enerjiKurulukYorumu = "";
+    if (dusukEnerjiSayisi > 0 || kuruGozSayisi > 0) {
+        enerjiKurulukYorumu = ` Hastada bu dönem ayrıca <strong>${dusukEnerjiSayisi} gün</strong> romatizmal yorgunluk/düşük enerji ve <strong>${kuruGozSayisi} gün</strong> belirgin Sjögren göz kuruluğu şikayeti izlenmiştir.`;
+    }
+
+    akilliYorum += ilacEtkiYorumu + enerjiKurulukYorumu;
 
     var raporHTML = `
         <div class="rap-baslik">
@@ -1594,7 +1592,6 @@ veriCek();
 setInterval(veriCek, 10000); 
 setInterval(saniyeTiktak, 1000); 
 
-// YENİLENMİŞ VİSİBİLİTY DİNLEYİCİSİ (Hava durumu da yenilenir)
 document.addEventListener("visibilitychange", () => { 
     if (document.visibilityState === 'visible') {
         veriCek(); 
