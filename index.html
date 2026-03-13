@@ -1043,7 +1043,7 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
-    // --- ZAMAN YOLCULUĞU (1 Gün Öncesi) ---
+    // --- ZAMAN YOLCULUĞU (1 Gün Öncesi - AKTİVİTE ve İLAÇ İÇİN) ---
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
     
@@ -1052,7 +1052,7 @@ function renderHealthDiary() {
     let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
     let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
 
-    // ÖNCEKİ GÜN DEĞİŞKENLERİ
+    // ÖNCEKİ GÜN DEĞİŞKENLERİ (Sadece Aktivite ve İlaç)
     let oncekiGunCimziaAlindiMi = oncekiGunVeri && oncekiGunVeri['GECE_CIMZIA'] === "İçildi";
     let oncekiGunMetoartconAlindiMi = oncekiGunVeri && oncekiGunVeri['GECE_METOARTCON'] === "İçildi";
     let oncekiGunDeltaAlindiMi = oncekiGunVeri && oncekiGunVeri['SABAH_TOK_DELTA'] === "İçildi";
@@ -1066,7 +1066,7 @@ function renderHealthDiary() {
         });
     }
 
-    // BUGÜNKÜ DEĞİŞKENLER
+    // BUGÜNKÜ DEĞİŞKENLER (Sadece Uyku ve Semptomlar)
     let isUykuBad = String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("uyuyamad") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("vardı");
     let isSabahBad = String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü");
     let isUykuGood = String(uyku).toLowerCase().includes("deliksiz") || String(uyku).toLowerCase().includes("iyi") || String(uyku).toLowerCase().includes("normal");
@@ -1085,7 +1085,7 @@ function renderHealthDiary() {
         isBadDay = true;
     }
 
-    // 2. KORTİZON YANILGISI (Önceki vücut pili uyarısı yerine daha mantıklı olan düzeltildi)
+    // 2. KORTİZON YANILGISI VE DÜNÜN FATURASI
     if (oncekiGunDeltaAlindiMi && oncekiGunAktVarMi && (isSabahBad || isAgriVar || isUykuBad)) {
         aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun (Deltacortril) verdiği sahte enerjiyle kendini biraz yormuşsun. Bugün hissettiğin bu tutukluk veya ağrı dünün faturası, lütfen bugün eklemlerine yüklenme.`);
         isBadDay = true;
@@ -1361,16 +1361,18 @@ function doktorRaporuOlustur() {
         }
 
         // SEVİYE 4: KÖK NEDEN ANALİZİ (Flare-up Tespiti)
+        // BUGÜNÜN uyku kalitesi ve BUGÜNÜN tutukluğu/ağrısı doğrudan ilişkili
         if (isTutuklukKotu || isAgriSiddetli) {
             toplamAlevlenme++;
-            // Düne bak
+            
+            if (isUykuBad) alevlenmeNedeniUyku++;
+
+            // DÜNE bak (Aktivite ve İlaç için)
             if (index < tarihler.length - 1) {
                 let dunVeri = apiData.tumVeriler[tarihler[index+1]];
-                let dunUykuKotuMu = String(veriBul(dunVeri, ["uyku", "gece"])).toLowerCase().match(/(bölündü|ağrı|uyuyamadim|vardı)/);
                 let dunAktifMi = String(veriBul(dunVeri, ["aktivite"])).toLowerCase() !== "-" && !String(veriBul(dunVeri, ["aktivite"])).toLowerCase().match(/(yapmadim|hayır)/);
                 let dunIlacEksikMi = Object.values(dunVeri).includes("İçilmedi");
 
-                if (dunUykuKotuMu) alevlenmeNedeniUyku++;
                 if (dunAktifMi) alevlenmeNedeniAktivite++;
                 if (dunIlacEksikMi) alevlenmeNedeniIlac++;
             }
@@ -1398,7 +1400,7 @@ function doktorRaporuOlustur() {
         }
     }
 
-    // --- GENEL İZLEM YORUMU (GERİ GETİRİLDİ!) ---
+    // --- GENEL İZLEM YORUMU ---
     var uykuMetni = sorunluUykuGecesi > 0 ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` : `uyku sürecini genel olarak stabil geçirmiş`;
     var tutuklukMetni = agirTutuklukGunu > 0 ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` : `sabah açılmalarını iyi yönetmiş`;
     var aktiviteMetni = aktifGunSayisi > 0 ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
@@ -1415,9 +1417,9 @@ function doktorRaporuOlustur() {
             <strong>🔍 Alevlenme (Flare-up) Kök Neden Analizi:</strong><br>
             Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. Çapraz geçmiş analizine göre bu alevlenmelerin;
             <ul style="margin-top: 5px; margin-bottom: 5px;">
-                ${pUyku > 0 ? `<li><strong>%${pUyku}</strong>'si şiddetli uykusuzluk veya kalitesiz uyku geçirilen geceleri takip etmiştir. (Ağrı eşiği düşüklüğü / Sekonder fibromiyaljik reaksiyon)</li>` : ''}
-                ${pAktivite > 0 ? `<li><strong>%${pAktivite}</strong>'si fiziksel aşırı yüklenme veya zorlayıcı aktivite sonrası gerçekleşmiştir. (Mekanik Zorlanma)</li>` : ''}
-                ${pIlac > 0 ? `<li><strong>%${pIlac}</strong>'u eksik veya düzensiz ilaç kullanımına denk gelmektedir.</li>` : ''}
+                ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, alevlenmenin şiddetli uykusuzluk çekilen geceleri takip ettiği saptanmıştır. (Ağrı eşiği düşüklüğü / Sekonder reaksiyon)</li>` : ''}
+                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmının, bir önceki gün yapılan fiziksel aşırı yüklenme veya zorlayıcı ev işi aktivitesi sonrası tetiklendiği görülmüştür. (Mekanik Zorlanma)</li>` : ''}
+                ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında eksik veya düzensiz ilaç kullanımı sonrası (1 gün gecikmeli olarak) ortaya çıktığı tespit edilmiştir.</li>` : ''}
                 ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir yaşam tarzı tetikleyicisi bulunamamıştır. Temel hastalık aktivitesi değerlendirilmelidir.</li>` : ''}
             </ul>
         </div>`;
