@@ -641,7 +641,6 @@ function getDailyProgram(dateObj) {
     return p;
 }
 
-// GENEL KELİME ARAMA YARDIMCISI (İstatistikler için)
 function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
     if(!gunlukVeri) return "-";
     for (var kolonIsmi in gunlukVeri) {
@@ -655,70 +654,38 @@ function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
     return "-";
 }
 
-// AYLIK/YILLIK ASİSTAN CÜMLESİ OLUŞTURUCU (GİZLİ KORELASYONLU)
 function donemOzetiOlustur(hStats, pct, isYearly) {
     let text = "";
     let donem = isYearly ? "Bu yıl" : "Bu ay";
-    
-    // Rastgelelik veriye dayalı bir "seed" oluşturuyoruz
     let seed = pct + hStats.atesliGun + hStats.kotuUyku + hStats.kotuSabah + hStats.aktifGun + (hStats.dusukEnerji || 0);
     const sec = (arr) => arr[seed % arr.length];
 
-    // İLAÇ UYUMU VE KORELASYON
     if(pct >= 90) {
-        text += sec([
-            `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. Yüksek ilaç uyumun sayesinde romatizmayı harika baskıladın. `,
-            `${donem} tedavine <strong>%${pct}</strong> gibi harika bir oranla sadık kaldın, seninle gurur duyuyorum! Bu sadakatin bedenine esneklik olarak dönmüş. `
-        ]);
+        text += sec([`${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. Yüksek ilaç uyumun sayesinde romatizmayı harika baskıladın. `]);
     } else if (pct >= 70) {
-        text += sec([
-            `${donem} tedavine <strong>%${pct}</strong> oranında uyum sağladın. İlacın aksadığı günlerde bedeninin yorulması bize tedavinin ne kadar önemli olduğunu bir kez daha gösterdi. `
-        ]);
+        text += sec([`${donem} tedavine <strong>%${pct}</strong> oranında uyum sağladın. İlacın aksadığı günlerde bedeninin yorulması bize tedavinin ne kadar önemli olduğunu bir kez daha gösterdi. `]);
     } else {
-        text += sec([
-            `${donem} ilaç saatlerinde (<strong>%${pct}</strong>) aksamalarımız olmuş. Kayıtlara göre ilacın aksadığı günlerde ağrı ve yorgunluk doğrudan artış gösteriyor, şifan için buna çok dikkat etmeliyiz. `
-        ]);
+        text += sec([`${donem} ilaç saatlerinde (<strong>%${pct}</strong>) aksamalarımız olmuş. Kayıtlara göre ilacın aksadığı günlerde ağrı ve yorgunluk doğrudan artış gösteriyor, şifan için buna çok dikkat etmeliyiz. `]);
     }
 
-    // ATEŞ DURUMU
-    if(hStats.atesliGun > 0) {
-        text += sec([`Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `]);
+    if(hStats.atesliGun > 0) text += `Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `;
+    if (hStats.dusukEnerji > 0 || hStats.kuruGoz > 0) text += `Bu dönemde ayrıca biraz romatizmal yorgunluk (${hStats.dusukEnerji || 0} gün) ve Sjögren kuruluğu (${hStats.kuruGoz || 0} gün) da gözlemledik, bu tür günlerde kendini hiç zorlamamalısın. `;
+    
+    if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0) text += `Geceleri deliksiz uyuman ve sabahları kuş gibi uyanman en güzel haber! `;
+    else {
+        if(hStats.kotuUyku > 0) text += `Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `;
+        if(hStats.kotuSabah > 0) text += `<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `;
     }
 
-    // GİZLİ ENERJİ VE KURULUK KORELASYONU
-    if (hStats.dusukEnerji > 0 || hStats.kuruGoz > 0) {
-        text += `Bu dönemde ayrıca biraz romatizmal yorgunluk (${hStats.dusukEnerji || 0} gün) ve Sjögren kuruluğu (${hStats.kuruGoz || 0} gün) da gözlemledik, bu tür günlerde kendini hiç zorlamamalısın. `;
-    }
-
-    // UYKU VE SABAH TUTUKLUĞU
-    if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0) {
-        text += sec([`Geceleri deliksiz uyuman ve sabahları kuş gibi uyanman en güzel haber! `]);
-    } else {
-        if(hStats.kotuUyku > 0) text += sec([`Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `]);
-        if(hStats.kotuSabah > 0) text += sec([`<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `]);
-    }
-
-    // AKTİVİTE VE FİNAL MOTİVASYONU
-    if(hStats.aktifGun > 0) {
-        text += sec([
-            `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`
-        ]);
-    } else {
-        text += sec([
-            `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, hafif egzersizlerin eklemlerine şifa olacağını unutma. 💖`
-        ]);
-    }
+    if(hStats.aktifGun > 0) text += `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`;
+    else text += `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, hafif egzersizlerin eklemlerine şifa olacağını unutma. 💖`;
     
     return text;
 }
 
 function analyzeMonth(year, month) {
-    let totalMeds = 0;
-    let missedMedsCount = 0;
-    let breakdown = [];
-    
+    let totalMeds = 0; let missedMedsCount = 0; let breakdown = [];
     let hStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {}, dusukEnerji: 0, kuruGoz: 0 };
-
     const dNow = new Date();
     const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -728,29 +695,19 @@ function analyzeMonth(year, month) {
     for (let d = maxDay; d >= 1; d--) { 
         let currentDay = new Date(year, month, d);
         if (currentDay < START_DATE) continue; 
-
         let dateStr = String(d).padStart(2, '0') + '.' + String(month + 1).padStart(2, '0') + '.' + year;
         let prog = getDailyProgram(currentDay);
-
-        let dayTotal = 0;
-        let dayMissedCount = 0;
-        let dayMissedNames = [];
-
+        let dayTotal = 0; let dayMissedCount = 0; let dayMissedNames = [];
         let dayData = (apiData.tumVeriler && apiData.tumVeriler[dateStr]) ? apiData.tumVeriler[dateStr] : null;
 
         prog.forEach(s => {
             let cardMins = 0;
-            if (s.time) {
-                const timeParts = s.time.split(':');
-                cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
-            }
-
+            if (s.time) { const timeParts = s.time.split(':'); cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10); }
             s.meds.forEach(m => {
                 dayTotal++;
                 let isDone = dayData ? (dayData[m.key] === "İçildi") : false;
                 let isExplicitlyMissed = dayData ? (dayData[m.key] === "İçilmedi") : false;
                 let isMissed = false;
-
                 if (!isDone) {
                     if (isExplicitlyMissed) { isMissed = true; } 
                     else if (isCurrentMonth && d === dNow.getDate()) {
@@ -758,33 +715,22 @@ function analyzeMonth(year, month) {
                         if (nowMins > cardMins + 90) isMissed = true;
                     } else { isMissed = true; }
                 }
-
-                if (isMissed) {
-                    dayMissedCount++;
-                    dayMissedNames.push(m.name);
-                }
+                if (isMissed) { dayMissedCount++; dayMissedNames.push(m.name); }
             });
         });
 
-        totalMeds += dayTotal;
-        missedMedsCount += dayMissedCount;
+        totalMeds += dayTotal; missedMedsCount += dayMissedCount;
 
         if (dayTotal > 0) {
-             breakdown.push({
-                 dateStr: dateStr, dayNum: d, totalCount: dayTotal,
-                 missedCount: dayMissedCount, missedNames: dayMissedNames,
-                 isAllDone: (dayMissedCount === 0)
-             });
+             breakdown.push({ dateStr: dateStr, dayNum: d, totalCount: dayTotal, missedCount: dayMissedCount, missedNames: dayMissedNames, isAllDone: (dayMissedCount === 0) });
         }
 
-        // GÜNLÜK SAĞLIK VERİSİNİ BİRİKTİRME (Sadece istatistik için)
         if (dayData) {
             let atesHam = veriBulGlobal(dayData, ["ates", "ateş"]);
             let tutukluk = veriBulGlobal(dayData, ["tutuk", "sabah"]);
             let bolge = veriBulGlobal(dayData, ["bölge", "bolge", "rahatsiz"]);
             let aktivite = veriBulGlobal(dayData, ["aktivite"]);
             let uyku = veriBulGlobal(dayData, ["uyku", "gece"]);
-            
             let enerji = veriBulGlobal(dayData, ["enerji"]);
             let kuruluk = veriBulGlobal(dayData, ["göz", "goz", "kuru"]);
 
@@ -795,28 +741,13 @@ function analyzeMonth(year, month) {
             if (String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü")) hStats.kotuSabah++;
             if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad")) hStats.aktifGun++;
 
-            if (enerji !== "-") {
-                let numE = parseInt(enerji);
-                if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) hStats.dusukEnerji++;
-            }
-            if (kuruluk !== "-") {
-                let numK = parseInt(kuruluk);
-                if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) hStats.kuruGoz++;
-            }
+            let numE = parseInt(enerji); if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) hStats.dusukEnerji++;
+            let numK = parseInt(kuruluk); if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) hStats.kuruGoz++;
 
             let bKucuk = String(bolge).toLowerCase();
-            if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
-                hStats.bolgeler[bolge] = (hStats.bolgeler[bolge] || 0) + 1;
-            }
+            if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) hStats.bolgeler[bolge] = (hStats.bolgeler[bolge] || 0) + 1;
         }
     }
-
-    let maxT = 0; let enCok = "";
-    for (let b in hStats.bolgeler) {
-        if (hStats.bolgeler[b] > maxT) { maxT = hStats.bolgeler[b]; enCok = b; }
-    }
-    hStats.enCokBolge = enCok;
-
     let percentage = totalMeds > 0 ? Math.round(((totalMeds - missedMedsCount) / totalMeds) * 100) : 100;
     return { percentage, totalMeds, missedMedsCount, breakdown, healthStats: hStats };
 }
@@ -835,37 +766,16 @@ function renderMonthStat(prefix, data) {
     badgeEl.innerHTML = `%${data.percentage} <span class="exp-arrow">▲</span>`;
     badgeEl.className = `badge ${getBadgeClass(data.percentage)}`;
 
-    if (data.breakdown.length === 0) {
-        detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
-        return;
-    }
+    if (data.breakdown.length === 0) { detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`; return; }
 
     let aiText = donemOzetiOlustur(data.healthStats, data.percentage, false);
-    let html = `
-    <div class="stat-ai-summary">
-        <strong>✨ Dönem Özeti</strong>
-        ${aiText}
-    </div>`;
+    let html = `<div class="stat-ai-summary"><strong>✨ Dönem Özeti</strong>${aiText}</div>`;
 
     data.breakdown.forEach(day => {
         if (day.isAllDone) {
-            html += `
-            <div class="stat-row">
-                <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
-                <div class="stat-info" style="flex-direction: row; align-items: center; gap: 6px;">
-                    <div class="check-icon done">${svgCheck}</div>
-                    <span class="stat-status" style="color: var(--text); margin:0;">Tüm ilaçlar alındı</span>
-                </div>
-            </div>`;
+            html += `<div class="stat-row"><span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span><div class="stat-info" style="flex-direction: row; align-items: center; gap: 6px;"><div class="check-icon done">${svgCheck}</div><span class="stat-status" style="color: var(--text); margin:0;">Tüm ilaçlar alındı</span></div></div>`;
         } else {
-            html += `
-            <div class="stat-row">
-                <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
-                <div class="stat-info">
-                    <span class="stat-status" style="color: var(--text);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span>
-                    <span class="stat-missed-list" style="color: var(--muted);">Eksik: ${day.missedNames.join(', ')}</span>
-                </div>
-            </div>`;
+            html += `<div class="stat-row"><span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span><div class="stat-info"><span class="stat-status" style="color: var(--text);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span><span class="stat-missed-list" style="color: var(--muted);">Eksik: ${day.missedNames.join(', ')}</span></div></div>`;
         }
     });
     detailsEl.innerHTML = html;
@@ -883,89 +793,44 @@ function renderYearStat(year) {
 
     for (let m = maxMonth; m >= 0; m--) {
         let mData = analyzeMonth(year, m);
-        totalMeds += mData.totalMeds;
-        totalMissed += mData.missedMedsCount;
-
-        yStats.atesliGun += mData.healthStats.atesliGun;
-        yStats.kotuUyku += mData.healthStats.kotuUyku;
-        yStats.kotuSabah += mData.healthStats.kotuSabah;
-        yStats.aktifGun += mData.healthStats.aktifGun;
-        yStats.dusukEnerji += mData.healthStats.dusukEnerji;
-        yStats.kuruGoz += mData.healthStats.kuruGoz;
-        
-        for (let b in mData.healthStats.bolgeler) {
-            yStats.bolgeler[b] = (yStats.bolgeler[b] || 0) + mData.healthStats.bolgeler[b];
-        }
-
-        if (mData.totalMeds > 0) {
-            monthRowsHTML += `
-            <div class="stat-row">
-                <span class="stat-date" style="font-size:15px;">${aylar[m]}</span>
-                <div class="stat-info" style="align-items: flex-end;">
-                    <span class="badge ${getBadgeClass(mData.percentage)}">%${mData.percentage}</span>
-                </div>
-            </div>`;
-        }
+        totalMeds += mData.totalMeds; totalMissed += mData.missedMedsCount;
+        yStats.atesliGun += mData.healthStats.atesliGun; yStats.kotuUyku += mData.healthStats.kotuUyku;
+        yStats.kotuSabah += mData.healthStats.kotuSabah; yStats.aktifGun += mData.healthStats.aktifGun;
+        yStats.dusukEnerji += mData.healthStats.dusukEnerji; yStats.kuruGoz += mData.healthStats.kuruGoz;
+        for (let b in mData.healthStats.bolgeler) yStats.bolgeler[b] = (yStats.bolgeler[b] || 0) + mData.healthStats.bolgeler[b];
+        if (mData.totalMeds > 0) monthRowsHTML += `<div class="stat-row"><span class="stat-date" style="font-size:15px;">${aylar[m]}</span><div class="stat-info" style="align-items: flex-end;"><span class="badge ${getBadgeClass(mData.percentage)}">%${mData.percentage}</span></div></div>`;
     }
-
-    let maxT = 0; let enCok = "";
-    for (let b in yStats.bolgeler) {
-        if (yStats.bolgeler[b] > maxT) { maxT = yStats.bolgeler[b]; enCok = b; }
-    }
-    yStats.enCokBolge = enCok;
 
     let yearPercentage = totalMeds > 0 ? Math.round(((totalMeds - totalMissed) / totalMeds) * 100) : 100;
     badgeEl.innerHTML = `%${yearPercentage} <span class="exp-arrow">▲</span>`;
     badgeEl.className = `badge ${getBadgeClass(yearPercentage)}`;
 
-    if(totalMeds === 0) {
-        detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
-    } else {
-        let aiText = donemOzetiOlustur(yStats, yearPercentage, true);
-        let finalHTML = `
-        <div class="stat-ai-summary">
-            <strong>🏆 ${year} Yılı Özeti</strong>
-            ${aiText}
-        </div>
-        ${monthRowsHTML}`;
-        
-        detailsEl.innerHTML = finalHTML;
-    }
+    if(totalMeds === 0) detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+    else detailsEl.innerHTML = `<div class="stat-ai-summary"><strong>🏆 ${year} Yılı Özeti</strong>${donemOzetiOlustur(yStats, yearPercentage, true)}</div>${monthRowsHTML}`;
 }
 
 function istatistikleriCiz() {
     if (!apiData || !apiData.tumVeriler) return;
-
     const dNow = new Date();
-    const currentYear = dNow.getFullYear();
-    const currentMonth = dNow.getMonth();
-
-    const thisMonthData = analyzeMonth(currentYear, currentMonth);
-    renderMonthStat('thisMonth', thisMonthData);
-
-    let lastMonth = currentMonth - 1;
-    let lastMonthYear = currentYear;
-    if (lastMonth < 0) { lastMonth = 11; lastMonthYear--; }
-    const lastMonthData = analyzeMonth(lastMonthYear, lastMonth);
-    renderMonthStat('lastMonth', lastMonthData);
-
-    renderYearStat(currentYear);
+    renderMonthStat('thisMonth', analyzeMonth(dNow.getFullYear(), dNow.getMonth()));
+    let lM = dNow.getMonth() - 1; let lY = dNow.getFullYear(); if (lM < 0) { lM = 11; lY--; }
+    renderMonthStat('lastMonth', analyzeMonth(lY, lM));
+    renderYearStat(dNow.getFullYear());
 }
 
-// =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (KORELASYONLU)
-// =======================================================
+// =====================================================================
+// BÜYÜK KORELASYON MOTORU (THE GRAND CORRELATION ENGINE) - SAĞLIK GÜNLÜĞÜ
+// =====================================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
 
     let asistanKapaliMi = true; 
     const mevcutKart = document.querySelector('#healthDiaryArea .diary-card');
-    if (mevcutKart) {
-        asistanKapaliMi = mevcutKart.classList.contains('collapsed');
-    }
+    if (mevcutKart) asistanKapaliMi = mevcutKart.classList.contains('collapsed');
     const collapseClass = asistanKapaliMi ? "collapsed" : "";
 
     function veriBul(gunlukVeri, aranacakKelimeler) {
+        if(!gunlukVeri) return "-";
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
             if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
@@ -982,28 +847,15 @@ function renderHealthDiary() {
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
-    let sonGunVerisi = null;
-    let sonGunTarihi = "";
-    
+    let sonGunVerisi = null; let sonGunTarihi = "";
     for (let t of tarihler) {
         let veri = apiData.tumVeriler[t];
-        let vUyku = veriBul(veri, ["uyku", "gece"]);
-        let vSabah = veriBul(veri, ["tutuk", "sabah"]);
-        if (vUyku !== "-" || vSabah !== "-") {
-            sonGunVerisi = veri;
-            sonGunTarihi = t;
-            break;
-        }
+        if (veriBul(veri, ["uyku", "gece"]) !== "-" || veriBul(veri, ["tutuk", "sabah"]) !== "-") { sonGunVerisi = veri; sonGunTarihi = t; break; }
     }
-
     if (!sonGunVerisi) return; 
 
-    let bugun = new Date();
-    let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
-    let dun = new Date();
-    dun.setDate(dun.getDate() - 1);
-    let dunTarihStr = String(dun.getDate()).padStart(2, '0') + '.' + String(dun.getMonth() + 1).padStart(2, '0') + '.' + dun.getFullYear();
-
+    let bugun = new Date(); let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
+    let dun = new Date(); dun.setDate(dun.getDate() - 1); let dunTarihStr = String(dun.getDate()).padStart(2, '0') + '.' + String(dun.getMonth() + 1).padStart(2, '0') + '.' + dun.getFullYear();
     let isTodayData = (sonGunTarihi === bugunTarihStr);
 
     let atesHam = veriBul(sonGunVerisi, ["ates", "ateş"]);
@@ -1012,409 +864,265 @@ function renderHealthDiary() {
     let bolge = veriBul(sonGunVerisi, ["bölge", "bolge", "rahatsiz"]);
     let aktivite = veriBul(sonGunVerisi, ["aktivite"]);
     let uyku = veriBul(sonGunVerisi, ["uyku", "gece"]);
-    
-    // GİZLİ VERİLER (Sadece Asistan Metni İçin)
     let enerji = veriBul(sonGunVerisi, ["enerji"]);
     let kuruluk = veriBul(sonGunVerisi, ["göz", "goz", "kuru"]);
 
     let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
     
+    // --- STREAK HESAPLAMA ---
     let streak = 0;
     for (let t of tarihler) {
         if (t === bugunTarihStr) continue; 
-        
-        let p = t.split('.');
-        let dObj = new Date(p[2], p[1]-1, p[0]);
-        let gunlukProgram = getDailyProgram(dObj);
-        let veri = apiData.tumVeriler[t] || {};
-        
-        let gunTumuIcildi = true;
-        let oGunIlacVarMi = false;
+        let p = t.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
+        let gunlukProgram = getDailyProgram(dObj); let veri = apiData.tumVeriler[t] || {};
+        let gunTumuIcildi = true; let oGunIlacVarMi = false;
         
         gunlukProgram.forEach(ogun => {
-            ogun.meds.forEach(ilac => {
-                oGunIlacVarMi = true;
-                if (veri[ilac.key] !== "İçildi") { gunTumuIcildi = false; }
-            });
+            ogun.meds.forEach(ilac => { oGunIlacVarMi = true; if (veri[ilac.key] !== "İçildi") gunTumuIcildi = false; });
         });
-        
-        if (oGunIlacVarMi && gunTumuIcildi) {
-            streak++;
-        } else if (oGunIlacVarMi && !gunTumuIcildi) {
-            break; 
-        }
+        if (oGunIlacVarMi && gunTumuIcildi) streak++; else if (oGunIlacVarMi && !gunTumuIcildi) break; 
     }
 
-    let seedStr = sonGunTarihi + ates + uyku + tutukluk + aktivite + bolge;
-    let seedNum = 0;
-    for (let i = 0; i < seedStr.length; i++) { seedNum += seedStr.charCodeAt(i); }
-    const veriyeGoreSec = (arr) => arr[seedNum % arr.length];
-
-    let aiMsg = [];
-    let isBadDay = false;
-
-    // --- GÜNCELLENMİŞ: ZAMAN YOLCULUĞUNU DÜZELTEN MOTOR ---
-    // Gösterilen verinin tarihinden bir gün öncesini buluyoruz
+    // --- DESTEKLİ ZAMAN MAKİNESİ (GEÇMİŞ 7 GÜN TARAMASI) ---
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
     
-    let oncekiGunObj = new Date(gosterilenTarihObj);
-    oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
-    
-    let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + 
-                       String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + 
-                       oncekiGunObj.getFullYear();
+    let uykusuzGeceSayisi = 0;
+    let son3GunAktiviteYok = true;
+    let dunCimzia = false, dunMetoartcon = false, dunDelta = false, dunGozGece = false, dunIlacAksadi = false, dunAktivite = "-";
 
-    let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
-    let oncekiGunProgram = getDailyProgram(oncekiGunObj);
-    
-    let oncekiGunCimziaAlindiMi = false;
-    let oncekiGunMetoartconAlindiMi = false;
-    let oncekiGunIlacAksadiMi = false;
+    for (let i = 1; i <= 7; i++) {
+        let gecmisTarihObj = new Date(gosterilenTarihObj);
+        gecmisTarihObj.setDate(gecmisTarihObj.getDate() - i);
+        let gStr = String(gecmisTarihObj.getDate()).padStart(2, '0') + '.' + String(gecmisTarihObj.getMonth() + 1).padStart(2, '0') + '.' + gecmisTarihObj.getFullYear();
+        let gVeri = apiData.tumVeriler[gStr];
+        
+        if (gVeri) {
+            let gUyku = String(veriBul(gVeri, ["uyku", "gece"])).toLowerCase();
+            let gAkt = String(veriBul(gVeri, ["aktivite"])).toLowerCase();
+            if (gUyku.includes("bölündü") || gUyku.includes("ağrı") || gUyku.includes("uyuyamad")) uykusuzGeceSayisi++;
+            if (i <= 3 && !gAkt.includes("hayır") && !gAkt.includes("yapmad")) son3GunAktiviteYok = false;
 
-    if (oncekiGunVeri) {
-        oncekiGunProgram.forEach(ogun => {
-            ogun.meds.forEach(ilac => {
-                if (ilac.key === 'GECE_CIMZIA' && oncekiGunVeri[ilac.key] === "İçildi") oncekiGunCimziaAlindiMi = true;
-                if (ilac.key === 'GECE_METOARTCON' && oncekiGunVeri[ilac.key] === "İçildi") oncekiGunMetoartconAlindiMi = true;
-                if (oncekiGunVeri[ilac.key] === "İçilmedi") oncekiGunIlacAksadiMi = true;
-            });
-        });
+            // Sadece bir önceki günün (i=1) net ilaç verilerini al
+            if (i === 1) {
+                dunAktivite = gAkt;
+                let oncekiGunProgram = getDailyProgram(gecmisTarihObj);
+                oncekiGunProgram.forEach(ogun => {
+                    ogun.meds.forEach(ilac => {
+                        if (ilac.key === 'GECE_CIMZIA' && gVeri[ilac.key] === "İçildi") dunCimzia = true;
+                        if (ilac.key === 'GECE_METOARTCON' && gVeri[ilac.key] === "İçildi") dunMetoartcon = true;
+                        if (ilac.key === 'SABAH_TOK_DELTA' && gVeri[ilac.key] === "İçildi") dunDelta = true;
+                        if (ilac.key === 'GECE_GOZ' && gVeri[ilac.key] === "İçildi") dunGozGece = true;
+                        if (gVeri[ilac.key] === "İçilmedi") dunIlacAksadi = true;
+                    });
+                });
+            }
+        }
     }
 
-    if (!isNaN(ates) && ates >= 37.0) {
-        aiMsg.push(veriyeGoreSec([
-            `Sultanım, son kayıtlarda ateşin ${ates}°C görünüyor. Lütfen bol sıvı alıp kendini sıcak tut, gerekirse doktoruna haber verelim.`,
-            `Ateşin ${ates}°C seviyesine çıkmış. Vücudun bir şeylerle savaşıyor olabilir, lütfen dinlenmeyi birinci önceliğin yap.`
-        ]));
-        isBadDay = true;
-    }
-
+    // --- MEVCUT GÜN ANALİZİ DEĞİŞKENLERİ ---
     let isUykuBad = String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("uyuyamad") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("vardı");
     let isSabahBad = String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü");
     let isUykuGood = String(uyku).toLowerCase().includes("deliksiz") || String(uyku).toLowerCase().includes("iyi") || String(uyku).toLowerCase().includes("normal");
     let isSabahGood = String(tutukluk).toLowerCase().includes("hemen") || String(tutukluk).toLowerCase().includes("yok");
+    
+    let numEnerji = (enerji !== "-") ? parseInt(enerji) : 5;
+    let isEnerjiDusuk = (!isNaN(numEnerji) && numEnerji <= 4) || (isNaN(numEnerji) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/));
+    let numKuruluk = (kuruluk !== "-") ? parseInt(kuruluk) : 5;
+    let isKurulukKotu = (!isNaN(numKuruluk) && numKuruluk >= 7) || (isNaN(numKuruluk) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/));
 
-    // AKILLI İLAÇ - SEMPTOM KORELASYONU (Zamanlaması düzeltildi)
-    if ((oncekiGunCimziaAlindiMi || oncekiGunMetoartconAlindiMi) && isSabahGood) {
-        aiMsg.push("💉 Bir önceki gece aldığın biyolojik iğnenin şifası hemen kendini göstermiş, sabahki rahatlık ve esnekliğinden belli!");
-    } else if (oncekiGunIlacAksadiMi && (isUykuBad || isSabahBad || agri !== "-")) {
-        aiMsg.push("🚨 Bir önceki gün atladığımız ilaçlar, vücudunda biraz yorgunluk ve inatçı sızılar yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
+    let aiMsg = []; let isBadDay = false;
+
+    // --- YAPAY ZEKA TIP KORELASYONLARI ---
+    
+    // 1. ATEŞ & ENFEKSİYON
+    if (!isNaN(ates) && ates >= 37.1) {
+        aiMsg.push(`🚨 Sultanım, ateşin ${ates}°C görünüyor. Bağışıklık baskılayıcı ilaçlar kullandığın için ateşi çok ciddiye almalıyız, lütfen doktorunla iletişime geç.`);
+        isBadDay = true;
     }
 
-    if (isUykuBad && isSabahBad) {
-        aiMsg.push(veriyeGoreSec([
-            "Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da eklemlerine biraz zor gelmiş. Sıcak bir duş ve eklemlerini sıcak tutmak bugün sana çok iyi gelebilir."
-        ]));
+    // 2. METOTREKSAT (METOARTCON) YORGUNLUĞU (Ertesi Gün Sendromu)
+    if (dunMetoartcon && isEnerjiDusuk) {
+        aiMsg.push(`💉 Dün gece vurulduğun Metoartcon iğnesi bugün klasik bir "ilaç yorgunluğu" yapmış. Bu enerjisizlik hastalığın değil, ilacın vücudunda çalıştığının bir göstergesi, bugün bol bol dinlen. 😊`);
         isBadDay = true;
-    } else if (isUykuGood && isSabahGood && !oncekiGunCimziaAlindiMi && !oncekiGunMetoartconAlindiMi) {
-        aiMsg.push(veriyeGoreSec([
-            "Geceyi deliksiz geçirmen ve sabah kuş gibi uyanman harika bir haber! Tedavimiz tıkır tıkır çalışıyor."
-        ]));
-    } else if (isUykuBad) {
-        aiMsg.push(veriyeGoreSec([
-            "Gece uykun bölünmüş görünüyor. Vücudunun toparlanması için bugün temponu düşük tutmalısın."
-        ]));
+    } 
+    // 3. KORTİZON (DELTACORTRIL) YANILGISI
+    else if (dunDelta && dunAktivite !== "-" && !String(dunAktivite).toLowerCase().includes("hayır") && (isSabahBad || agri !== "-" || isUykuBad)) {
+        aiMsg.push(`⚠️ Dün aldığın kortizon (Deltacortril) iltihabı baskılayıp sana sahte bir enerji vermiş. O enerjiyle kendini biraz fazla yorduğun için vücudun bugün dünün faturasını kesiyor, lütfen bugün eklemlerine yüklenme.`);
         isBadDay = true;
-    } else if (isSabahBad && !oncekiGunIlacAksadiMi) {
-        aiMsg.push(veriyeGoreSec([
-            "Eklemlerin sabah inatçılık yapmış, kendini yavaş yavaş açmaya çalış, lütfen acele etme."
-        ]));
     }
 
-    // GİZLİ ENERJİ VE KURULUK KORELASYONU (GÖRSEL YOK SADECE YORUM)
-    if (enerji !== "-") {
-        let numE = parseInt(enerji);
-        if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) {
-            aiMsg.push("Bugün romatizma kaynaklı enerjinin düşük olduğunu gözlemledim, ağır işleri bir kenara bırakıp bugün kendini şarj etmelisin.");
+    // 4. AKTİVİTE VE AĞRI/ŞİFA (Boom & Bust Döngüsü)
+    let isDunAktif = dunAktivite !== "-" && !String(dunAktivite).toLowerCase().includes("hayır") && !String(dunAktivite).toLowerCase().includes("yapmad");
+    if (isDunAktif && !dunDelta) {
+        let temizDunkuAktivite = String(dunAktivite).toLowerCase().replace("yaptım", "").replace("ettim", "").trim();
+        if (isSabahBad || (agri !== "-" && !String(agri).toLowerCase().includes("yok")) || isUykuBad) {
+            aiMsg.push(`🚨 Dün yaptığın ${temizDunkuAktivite} bugün eklemlerine biraz fazla gelmiş, kasların yorulmuş olabilir. Bugün tam bir dinlenme günü yapıyoruz.`);
             isBadDay = true;
+        } else if (isSabahGood && isUykuGood) {
+            aiMsg.push(`✨ Dünkü ${temizDunkuAktivite} eklemlerine şifa olmuş! Bugün ağrısız ve tutuksuz uyanmanın en büyük sebebi dünkü hareketliliğin.`);
         }
     }
-    if (kuruluk !== "-") {
-        let numK = parseInt(kuruluk);
-        if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) {
-            aiMsg.push("Gözlerindeki batma ve kuruluk bugün artmış görünüyor. Ekranlara ara verip damlalarını sıklaştırmayı unutma.");
-        }
+
+    // 5. GECE GÖZ DAMLASI İHMALİ VE SJÖGREN KURULUĞU
+    if (dunGozGece === false && isKurulukKotu) {
+        aiMsg.push(`👁️ Dün gece yatmadan önce göz damlamızı atladığımız için bugün gözlerinde ekstra kuruluk ve batma var. Gece uykuda gözyaşı üretilmediği için gece damlası Sjögren'in en büyük kalkanıdır.`);
+    }
+
+    // 6. 7 GÜNLÜK UYKU - AĞRI SARMALI
+    if (uykusuzGeceSayisi >= 3 && (agri !== "-" && !String(agri).toLowerCase().includes("yok"))) {
+        aiMsg.push(`🌙 Son haftada ağrılar veya başka sebeplerle uykun çok bölünmüş. Kalitesiz uyku beyindeki ağrı eşiğini düşürür, aslında hastalığın değil yorgunluğun sızısını çekiyorsun.`);
+        isBadDay = true;
+    }
+
+    // 7. 3 GÜNLÜK HAREKETSİZLİK (PASLANMA)
+    if (son3GunAktiviteYok && isSabahBad) {
+        aiMsg.push(`🦴 Birkaç gündür hareketsiz kalman eklemlerde "paslanma" yapmış. İltihaplı sıvının dağılması için en azından hafif esneme hareketleri sabah tutukluğunu hızla çözecektir.`);
+    }
+
+    // 8. MEKANİK AĞRI AYRIMI
+    if (isSabahGood && agri !== "-" && !String(agri).toLowerCase().includes("yok")) {
+        aiMsg.push(`💡 Güzel haber: Şu an sabah tutukluğun yok, yani aktif bir iltihap alevlenmesi yaşamıyorsun. Hissettiğin ağrı tamamen fiziksel zorlanma kaynaklı.`);
+    }
+
+    if (dunIlacAksadi && aiMsg.length === 0) {
+        aiMsg.push("🚨 Dün atladığımız ilaçlar, bugün vücudunda biraz yorgunluk yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
     }
 
     let bolgeKucuk = String(bolge).toLowerCase();
-    let isBolgeYok = bolge === "-" || bolgeKucuk.includes("hayır") || bolgeKucuk.includes("yok");
-    let isEller = bolgeKucuk.includes("el");
-    let isHerYer = bolgeKucuk.includes("her yer");
-    let isBaskaBolge = !isBolgeYok && !isEller && !isHerYer;
+    if (bolgeKucuk.includes("el") && !aiMsg.join(" ").includes("fatura")) { aiMsg.push(`Semptomların en çok ellerinde toplanmış. Bugün yorucu ev veya el işlerine kesinlikle mola veriyoruz.`); isBadDay = true; } 
+    else if (bolgeKucuk.includes("her yer") && !aiMsg.join(" ").includes("fatura")) { aiMsg.push(`Vücudunun genelinde bir sızı var, bu günlerde kendini şımartma ve bolca dinlenme vaktidir.`); isBadDay = true; }
 
-    let isAktiviteVar = aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad");
+    if (streak >= 3) aiMsg.push(`Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam!`);
+    else if (streak === 0 && !dunIlacAksadi) aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, sonraki öğünlerde telafi ederiz. 💖`);
 
-    if (isEller) {
-        aiMsg.push(`Semptomların en çok ellerinde toplanmış. Bugün yorucu ev veya el işlerine kesinlikle mola veriyoruz.`);
-        isBadDay = true;
-    } else if (isHerYer) {
-        aiMsg.push(`Vücudunun genelinde bir sızı var, bu günlerde kendini şımartma ve bolca dinlenme vaktidir.`);
-        isBadDay = true;
-    } else if (isBaskaBolge) {
-        aiMsg.push(veriyeGoreSec([
-            `Özellikle ${String(bolge).toLowerCase()} bölgende bir hassasiyet belirtmişsin. Orayı sıcak tutmak ve çok zorlamamak iyi olacaktır.`
-        ]));
-        isBadDay = true;
-    }
-
-    if (isAktiviteVar && !isBadDay) {
-        let temizAktivite = String(aktivite).toLowerCase();
-        if (temizAktivite.includes("pilates")) temizAktivite = "pilates";
-        else if (temizAktivite.includes("yürü")) temizAktivite = "yürüyüş";
-        else { temizAktivite = temizAktivite.replace("yaptım", "").replace("ettim", "").trim(); }
-        aiMsg.push(`Hareket berekettir! Yaptığın ${temizAktivite} aktivitesi ile eklemlerini açık tutman tedavin için çok kıymetli.`);
-    }
-
-    if (streak >= 3) {
-        aiMsg.push(`Ayrıca tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun.`);
-    } else if (streak === 0 && !oncekiGunIlacAksadiMi) {
-        aiMsg.push(`İlaç rutinimizde ufak aksamalar olmuş olabilir, hiç dert değil. Sonraki öğünlerde telafi eder, yola devam ederiz. 💖`);
-    } else if (streak > 0) {
-        aiMsg.push(`İlaçlarını güzel takip ediyorsun, şifa seninle olsun canım nenem! 🌼`);
-    }
-
-    if (aiMsg.length === 1 && ates < 37.0) {
-        aiMsg[0] = `Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`;
-    }
-
-    if (!isTodayData) {
-        aiMsg.push(`<div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); color: #0284c7; font-weight: 800; font-size: 14px; text-align: center;">⏳ Bugünün analizi için akşam saat 21:00'i bekliyorum!</div>`);
-    }
+    if (aiMsg.length === 0) aiMsg.push(`Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`);
+    if (!isTodayData) aiMsg.push(`<div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); color: #0284c7; font-weight: 800; font-size: 14px; text-align: center;">⏳ Bugünün analizi için akşam saat 21:00'i bekliyorum!</div>`);
 
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
+    let baslik = isTodayData ? (isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼") : (sonGunTarihi === dunTarihStr ? "⏪ Dünün Özeti" : `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`);
     
-    let baslik = "";
-    if (isTodayData) {
-        baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
-    } else if (sonGunTarihi === dunTarihStr) {
-        baslik = "⏪ Dünün Özeti";
-    } else {
-        baslik = `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`;
-    }
-    
-    // GÖRSEL HAPLAR (SADECE ORİJİNAL 4 VERİ İÇİN, ENERJİ/KURULUK BURADA YOK)
+    // UI HAPLARI
     let pillsHTML = "";
-    if (uyku !== "-") {
-        let uIcon = isUykuBad ? "🛌" : "😴";
-        pillsHTML += `<div class="diary-pill">${uIcon} ${uyku}</div>`;
-    }
-    if (tutukluk !== "-") {
-        let tIcon = isSabahBad ? "🦴" : "✨";
-        pillsHTML += `<div class="diary-pill">${tIcon} ${tutukluk}</div>`;
-    }
-    if (!isNaN(ates) && ates >= 37.0) {
-        pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
-    } else if (aktivite !== "-" && isAktiviteVar) {
-        let rawAktivite = String(aktivite).toLowerCase();
-        let pillAkt = rawAktivite.includes("pilates") ? "Pilates" : 
-                      rawAktivite.includes("yürü") ? "Yürüyüş" : 
-                      rawAktivite.includes("yüz") ? "Yüzme" : 
-                      rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
-        pillAkt = pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1);
-        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt}</div>`;
+    if (uyku !== "-") pillsHTML += `<div class="diary-pill">${isUykuBad ? "🛌" : "😴"} ${uyku}</div>`;
+    if (tutukluk !== "-") pillsHTML += `<div class="diary-pill">${isSabahBad ? "🦴" : "✨"} ${tutukluk}</div>`;
+    if (!isNaN(ates) && ates >= 37.0) pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
+    else if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad")) {
+        let pillAkt = String(aktivite).toLowerCase().replace("yaptım", "").replace("ettim", "").trim();
+        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1)}</div>`;
     } 
-    else if (agri !== "-" && !isBolgeYok) {
-        pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
-    }
+    else if (agri !== "-" && !bolgeKucuk.includes("yok") && !bolgeKucuk.includes("hayır")) pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
 
-    let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
-
-    let finalHTML = `
+    document.getElementById('healthDiaryArea').innerHTML = `
         <div class="diary-card ${moodClass} ${collapseClass}" onclick="this.classList.toggle('collapsed')">
-            <div class="diary-header">
-                <h3 class="diary-title">${baslik}</h3>
-                ${streakHTML}
-            </div>
-            
-            <div class="diary-pills">
-                ${pillsHTML}
-            </div>
-            
-            <div class="diary-toggle-bar">
-                <span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:10px;">▼</span></span>
-                <span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span>
-            </div>
-
-            <div class="diary-ai-box">
-                ${aiMsg.join(" ")}
-            </div>
+            <div class="diary-header"><h3 class="diary-title">${baslik}</h3>${streak > 0 ? `<div class="diary-streak">🔥 ${streak} Gün</div>` : ""}</div>
+            <div class="diary-pills">${pillsHTML}</div>
+            <div class="diary-toggle-bar"><span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
+            <div class="diary-ai-box">${aiMsg.join(" ")}</div>
         </div>
     `;
-
-    document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
 
 // =======================================================
-// DOKTOR RAPORU OLUŞTURUCU (TABLO AYNI, YORUM AKILLI)
+// DOKTOR RAPORU OLUŞTURUCU (GELİŞMİŞ ÇAPRAZ KORELASYON)
 // =======================================================
 function doktorRaporuOlustur() {
-    if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
-        alert("Henüz veri yüklenmedi veya veri bulunamadı. Lütfen birkaç saniye bekleyip tekrar deneyin.");
-        return;
-    }
+    if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) { alert("Henüz veri yüklenmedi veya veri bulunamadı."); return; }
 
     function veriBul(gunlukVeri, aranacakKelimeler) {
+        if(!gunlukVeri) return "-";
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
             if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
             var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
-            for (var i = 0; i < aranacakKelimeler.length; i++) {
-                if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
-            }
+            for (var i = 0; i < aranacakKelimeler.length; i++) { if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap; }
         }
         return "-";
     }
 
-    var tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
-        var pA = a.split('.'); var pB = b.split('.');
-        return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
-    });
-
-    var toplamBeklenenIlac = 0;
-    var toplamIcilenIlac = 0;
-    
-    var anlikTarih = new Date();
-    var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
+    var tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) { var pA = a.split('.'); var pB = b.split('.'); return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); });
+    var toplamBeklenenIlac = 0, toplamIcilenIlac = 0;
+    var anlikTarih = new Date(); var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
     var anlikDakika = (anlikTarih.getHours() * 60) + anlikTarih.getMinutes();
 
     tarihler.forEach(function(tarih) {
-        var p = tarih.split('.');
-        var dObj = new Date(p[2], p[1]-1, p[0]);
-        var gunlukProgram = getDailyProgram(dObj); 
-        var veri = apiData.tumVeriler[tarih] || {};
+        var p = tarih.split('.'); var dObj = new Date(p[2], p[1]-1, p[0]);
+        var gunlukProgram = getDailyProgram(dObj); var veri = apiData.tumVeriler[tarih] || {};
         var bugunMu = (tarih === bugunTarihStr);
-
         gunlukProgram.forEach(function(ogun) {
-            var ogunDakika = 0;
-            if (ogun.time) {
-                var timeParts = ogun.time.split(':');
-                ogunDakika = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
-            }
+            var ogunDakika = 0; if (ogun.time) { var tP = ogun.time.split(':'); ogunDakika = (parseInt(tP[0], 10) * 60) + parseInt(tP[1], 10); }
             if (bugunMu && anlikDakika < ogunDakika) return; 
-
-            ogun.meds.forEach(function(ilac) {
-                toplamBeklenenIlac++;
-                if (veri[ilac.key] === "İçildi") {
-                    toplamIcilenIlac++;
-                }
-            });
+            ogun.meds.forEach(function(ilac) { toplamBeklenenIlac++; if (veri[ilac.key] === "İçildi") toplamIcilenIlac++; });
         });
     });
 
     var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
+    var tabloSatirlari = "", atesliGunSayisi = 0, bolgeFrekans = {};
+    var sorunluUykuGecesi = 0, agirTutuklukGunu = 0, aktifGunSayisi = 0, dusukEnerjiSayisi = 0, kuruGozSayisi = 0;
+    var uykuSonrasiAgri = 0, aktiviteSonrasiAgri = 0, metoartconSonrasiYorgunluk = 0, metoartconGunSayisi = 0;
 
-    var tabloSatirlari = "";
-    var atesliGunSayisi = 0;
-    var bolgeFrekans = {};
-    var sorunluUykuGecesi = 0;
-    var agirTutuklukGunu = 0;
-    var aktifGunSayisi = 0;
-    
-    // GİZLİ SAYAÇLAR
-    var dusukEnerjiSayisi = 0;
-    var kuruGozSayisi = 0;
-
-    tarihler.forEach(function(tarih) {
+    tarihler.forEach(function(tarih, i) {
         var veri = apiData.tumVeriler[tarih];
+        var ates = parseFloat(String(veriBul(veri, ["ates", "ateş"])).replace(',', '.'));
+        var tutukluk = String(veriBul(veri, ["tutuk", "sabah"])).toLowerCase();
+        var agri = String(veriBul(veri, ["agri", "ağrı", "şiş", "sis"])).toLowerCase();
+        var bolge = String(veriBul(veri, ["bölge", "bolge", "rahatsiz"]));
+        var aktivite = String(veriBul(veri, ["aktivite"])).toLowerCase();
+        var uyku = String(veriBul(veri, ["uyku", "gece"])).toLowerCase();
+        var enerji = String(veriBul(veri, ["enerji"])).toLowerCase();
+        var kuruluk = String(veriBul(veri, ["göz", "goz", "kuru"])).toLowerCase();
+
+        if (!isNaN(ates) && ates >= 37.0) atesliGunSayisi++;
+        if (bolge !== "-" && !bolge.toLowerCase().includes("hayır") && !bolge.toLowerCase().includes("yok")) bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
+        if (uyku.includes("bölündü") || uyku.includes("ağrı") || uyku.includes("uyuyamadim") || uyku.includes("vardı")) sorunluUykuGecesi++;
+        if (tutukluk.includes("öğlene") || tutukluk.includes("saat") || tutukluk.includes("surdu")) agirTutuklukGunu++;
+        if (aktivite !== "-" && !aktivite.includes("yapmadim") && !aktivite.includes("hayır")) aktifGunSayisi++;
         
-        var atesHam = veriBul(veri, ["ates", "ateş"]);
-        var tutukluk = veriBul(veri, ["tutuk", "sabah"]);
-        var agri = veriBul(veri, ["agri", "ağrı", "şiş", "sis"]);
-        var bolge = veriBul(veri, ["bölge", "bolge", "rahatsiz"]);
-        var aktivite = veriBul(veri, ["aktivite"]);
-        var uyku = veriBul(veri, ["uyku", "gece"]);
-        
-        var enerji = veriBul(veri, ["enerji"]);
-        var kuruluk = veriBul(veri, ["göz", "goz", "kuru"]);
+        let numE = parseInt(enerji); if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.match(/(düşük|kötü|yorgun|az)/))) dusukEnerjiSayisi++;
+        let numK = parseInt(kuruluk); if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.match(/(fazla|çok|kötü|şiddetli|batma)/))) kuruGozSayisi++;
 
-        var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
-        var atesGosterim = (!isNaN(ates) && ates > 0) ? ates + "°C" : "-";
-        if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
-
-        var bKucuk = String(bolge).toLowerCase();
-        if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
-            bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
-        }
-
-        if (String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("uyuyamadim") || String(uyku).toLowerCase().includes("vardı")) {
-            sorunluUykuGecesi++;
-        }
-        if (String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("1-2 saat") || String(tutukluk).toLowerCase().includes("surdu")) {
-            agirTutuklukGunu++;
-        }
-        if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("yapmadim") && !String(aktivite).toLowerCase().includes("hayır")) {
-            aktifGunSayisi++;
-        }
-        
-        if (enerji !== "-") {
-            let numE = parseInt(enerji);
-            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) dusukEnerjiSayisi++;
-        }
-        if (kuruluk !== "-") {
-            let numK = parseInt(kuruluk);
-            if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) kuruGozSayisi++;
+        // DOKTOR RAPORU ÇAPRAZ KORELASYON TARAMASI (1 Gün Öncesine Bakış)
+        if (i < tarihler.length - 1) { 
+            let dunVeri = apiData.tumVeriler[tarihler[i+1]];
+            let dunUyku = String(veriBul(dunVeri, ["uyku", "gece"])).toLowerCase();
+            let dunAktivite = String(veriBul(dunVeri, ["aktivite"])).toLowerCase();
+            
+            if (dunUyku.includes("bölündü") || dunUyku.includes("uyuyamadim") || dunUyku.includes("ağrı")) {
+                if (agri !== "-" && !agri.includes("yok")) uykuSonrasiAgri++;
+            }
+            if (dunAktivite !== "-" && !dunAktivite.includes("hayır") && !dunAktivite.includes("yapmadim")) {
+                if ((agri !== "-" && !agri.includes("yok")) || tutukluk.includes("saat")) aktiviteSonrasiAgri++;
+            }
+            if (dunVeri['GECE_METOARTCON'] === "İçildi") {
+                metoartconGunSayisi++;
+                if (enerji.match(/(düşük|kötü|yorgun|az)/) || numE <= 4) metoartconSonrasiYorgunluk++;
+            }
         }
 
-        // TABLO ORİJİNAL HALİYLE KALIYOR (7 SÜTUN)
-        tabloSatirlari += `
-        <tr>
-            <td>${tarih}</td>
-            <td>${atesGosterim}</td>
-            <td>${tutukluk}</td>
-            <td>${agri}</td>
-            <td>${bolge}</td>
-            <td>${aktivite}</td>
-            <td>${uyku}</td>
-        </tr>
-        `;
+        tabloSatirlari += `<tr><td>${tarih}</td><td>${(!isNaN(ates) && ates>=37.0) ? `<span class="rap-alert">${ates}°C ⚠️</span>` : ((!isNaN(ates) && ates>0) ? ates+"°C" : "-")}</td><td>${veriBul(veri, ["tutuk", "sabah"])}</td><td>${veriBul(veri, ["agri", "ağrı", "şiş", "sis"])}</td><td>${bolge}</td><td>${veriBul(veri, ["aktivite"])}</td><td>${veriBul(veri, ["uyku", "gece"])}</td></tr>`;
     });
 
-    var enCokAgriyanBolge = "Belirgin bir bölge yok";
-    var maxTekrar = 0;
-    for (var b in bolgeFrekans) {
-        if (bolgeFrekans[b] > maxTekrar) {
-            maxTekrar = bolgeFrekans[b];
-            enCokAgriyanBolge = b;
-        }
-    }
+    var enCokAgriyanBolge = "Belirgin bir bölge yok", maxTekrar = 0;
+    for (var b in bolgeFrekans) { if (bolgeFrekans[b] > maxTekrar) { maxTekrar = bolgeFrekans[b]; enCokAgriyanBolge = b; } }
 
-    var uykuMetni = sorunluUykuGecesi > 0 
-        ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` 
-        : `uyku sürecini genel olarak stabil geçirmiş`;
+    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${sorunluUykuGecesi > 0 ? `<strong>${sorunluUykuGecesi} gece</strong> kalitesiz uyku deneyimlemiş` : `uyku sürecini stabil geçirmiş`}, ${agirTutuklukGunu > 0 ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` : `sabah açılmalarını iyi yönetmiş`} ve ${aktifGunSayisi > 0 ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` : `fiziksel aktivite açısından hareketsiz kalmıştır.`}`;
 
-    var tutuklukMetni = agirTutuklukGunu > 0 
-        ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` 
-        : `sabah açılmalarını iyi yönetmiş`;
+    var medikalKorelasyonlar = "<br><br><strong>🔍 Sistem Tarafından Tespit Edilen Çapraz Medikal Korelasyonlar:</strong><ul style='margin-top:5px; margin-bottom:0;'>";
+    if (ilacUyumOrani < 85 && agirTutuklukGunu > 0) medikalKorelasyonlar += `<li><strong>İlaç Uyumu:</strong> İlaç uyumunun düştüğü günlerle semptom alevlenmeleri arasında doğrudan bir korelasyon gözlemlenmiştir.</li>`;
+    else if (ilacUyumOrani >= 90 && agirTutuklukGunu === 0) medikalKorelasyonlar += `<li><strong>Tedavi Başarısı:</strong> Yüksek ilaç uyumu (%90+) sayesinde eklem fonksiyonları korunmuş, sabah tutukluğu engellenmiştir.</li>`;
+    if (uykuSonrasiAgri > 1) medikalKorelasyonlar += `<li><strong>Uyku-Ağrı Döngüsü:</strong> Kalitesiz veya bölünmüş uyku geçirilen gecelerin ertesi günü, hastanın ağrı toleransının düştüğü ve şikayetlerinin arttığı tespit edilmiştir.</li>`;
+    if (aktiviteSonrasiAgri > 1) medikalKorelasyonlar += `<li><strong>Egzersiz İntoleransı:</strong> Fiziksel aktivite yapılan günlerin ertesi sabahı eklem ağrısı ve tutukluk saptanmıştır (Aşırı yüklenme / Boom and Bust döngüsü).</li>`;
+    if (metoartconGunSayisi > 0 && (metoartconSonrasiYorgunluk / metoartconGunSayisi >= 0.5)) medikalKorelasyonlar += `<li><strong>İlaç Yan Etkisi (Metoartcon):</strong> Metotreksat (Metoartcon) enjeksiyonunu takip eden 24 saat içinde hastada belirgin 'ilaç yorgunluğu' (düşük enerji) saptanmıştır.</li>`;
+    medikalKorelasyonlar += "</ul>";
 
-    var aktiviteMetni = aktifGunSayisi > 0 
-        ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` 
-        : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
+    if (dusukEnerjiSayisi > 0 || kuruGozSayisi > 0) akilliYorum += ` Hastada bu dönem ayrıca <strong>${dusukEnerjiSayisi} gün</strong> düşük enerji ve <strong>${kuruGozSayisi} gün</strong> belirgin Sjögren göz kuruluğu şikayeti izlenmiştir.`;
 
-    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
-
-    // İLAÇ VE GİZLİ VERİ KORELASYONU
-    var ilacEtkiYorumu = "";
-    if (ilacUyumOrani < 85 && agirTutuklukGunu > 0) {
-        ilacEtkiYorumu = " İlaç uyumunun düştüğü günlerle semptom alevlenmeleri arasında doğrudan bir korelasyon gözlemlenmiştir.";
-    } else if (ilacUyumOrani >= 90 && agirTutuklukGunu === 0) {
-        ilacEtkiYorumu = " Yüksek ilaç uyumu (%90+) sayesinde eklem fonksiyonları başarılı bir şekilde korunmuş ve ağır sabah tutukluğu engellenmiştir.";
-    }
-
-    var enerjiKurulukYorumu = "";
-    if (dusukEnerjiSayisi > 0 || kuruGozSayisi > 0) {
-        enerjiKurulukYorumu = ` Hastada bu dönem ayrıca <strong>${dusukEnerjiSayisi} gün</strong> romatizmal yorgunluk/düşük enerji ve <strong>${kuruGozSayisi} gün</strong> belirgin Sjögren göz kuruluğu şikayeti izlenmiştir.`;
-    }
-
-    akilliYorum += ilacEtkiYorumu + enerjiKurulukYorumu;
+    akilliYorum += medikalKorelasyonlar;
 
     var raporHTML = `
-        <div class="rap-baslik">
-            Nurten BATUR - Romatoloji & Sjögren İzlem Raporu
-        </div>
-        
+        <div class="rap-baslik">Nurten BATUR - Romatoloji & Sjögren İzlem Raporu</div>
         <div class="rap-bolum">
-            <h3>📋 Hasta Özeti ve Akıllı Korelasyon</h3>
+            <h3>📋 Hasta Özeti ve Romatolojik Veri Analizi</h3>
             <ul>
                 <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün</li>
                 <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
@@ -1425,58 +1133,24 @@ function doktorRaporuOlustur() {
                 <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
             </div>
         </div>
-
         <div class="rap-bolum">
             <h3>💊 Aktif Tedavi ve İlaç Şeması</h3>
             <table class="rap-tablo">
-                <thead>
-                    <tr>
-                        <th style="width: 20%;">Zaman</th>
-                        <th>Kullanılan İlaçlar ve Rutinleri</th>
-                    </tr>
-                </thead>
+                <thead><tr><th style="width: 20%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
                 <tbody>
-                    <tr>
-                        <td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td>
-                        <td style="text-align: left;">INH <em>(Her gün)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td>
-                        <td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td>
-                        <td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td>
-                        <td style="text-align: left;">Plaquenil <em>(Her gün)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td>
-                        <td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td>
-                    </tr>
+                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
                 </tbody>
             </table>
         </div>
-
         <div class="rap-bolum">
             <h3>📅 Günlük Detay Çizelgesi</h3>
             <table class="rap-tablo">
-                <thead>
-                    <tr>
-                        <th>Tarih</th>
-                        <th>Ateş</th>
-                        <th>Sabah Tutukluğu</th>
-                        <th>Eklem Ağrısı</th>
-                        <th>Alevlenme Bölgesi</th>
-                        <th>Aktivite</th>
-                        <th>Uyku</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${tabloSatirlari}
-                </tbody>
+                <thead><tr><th>Tarih</th><th>Ateş</th><th>Sabah Tutukluğu</th><th>Eklem Ağrısı</th><th>Alevlenme Bölgesi</th><th>Aktivite</th><th>Uyku</th></tr></thead>
+                <tbody>${tabloSatirlari}</tbody>
             </table>
         </div>
     `;
@@ -1489,16 +1163,13 @@ function doktorRaporuOlustur() {
 async function veriCek() {
     if (fetchDevamEdiyor) return;
     fetchDevamEdiyor = true;
-    
     const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
     try {
         const res = await fetch(`${API_URL}?tarih=${todayStr}`);
         if (!res.ok) throw new Error("Ağ Hatası");
         apiData = await res.json();
         sonBasariZamani = Date.now();
-        ekraniCiz(); 
-        istatistikleriCiz(); 
-        renderHealthDiary(); 
+        ekraniCiz(); istatistikleriCiz(); renderHealthDiary(); 
     } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
 }
 
@@ -1528,74 +1199,37 @@ function ekraniCiz() {
     ['card-stat-this-month', 'card-stat-last-month', 'card-stat-yearly'].forEach(id => {
         const el = document.getElementById(id);
         if (el && stateMap[id] !== undefined) {
-             if (stateMap[id]) el.classList.add('collapsed');
-             else el.classList.remove('collapsed');
+             if (stateMap[id]) el.classList.add('collapsed'); else el.classList.remove('collapsed');
         }
     });
 
     let timelineHTML = "";
     todayProg.forEach((s) => {
-        let sTC = 0; 
-        let medsHTML = "";
-        
+        let sTC = 0; let medsHTML = "";
         s.meds.forEach(m => { 
             const isDone = (apiData && apiData[m.key] === "İçildi");
-            if(isDone) { sTC++; }
-            
+            if(isDone) sTC++;
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
-            
-            medsHTML += `
-                <div class="history-item">
-                    ${iconHTML}
-                    <div class="med-info">
-                        <span class="drug-title">${m.name}</span>
-                        <span class="drug-purpose">${m.purpose}</span>
-                    </div>
-                </div>`; 
+            medsHTML += `<div class="history-item">${iconHTML}<div class="med-info"><span class="drug-title">${m.name}</span><span class="drug-purpose">${m.purpose}</span></div></div>`; 
         });
         
         const isAllDone = (sTC === s.meds.length);
-        
         let isLate = false;
         if (!isAllDone && s.time) {
-            const timeParts = s.time.split(':');
-            const cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
+            const timeParts = s.time.split(':'); const cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
             const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
-            if (nowMins > cardMins + 90) { isLate = true; }
+            if (nowMins > cardMins + 90) isLate = true;
         }
 
-        let badgeClass = "badge-wait";
-        let badgeText = "BEKLİYOR";
-        let cardClass = "";
-
-        if (isAllDone) {
-            badgeClass = "badge-safe";
-            badgeText = `TAMAMLANDI <span class="exp-arrow">▲</span>`;
-            cardClass = "done-card";
-        } else if (isLate) {
-            badgeClass = "badge-danger";
-            badgeText = "🚨 İÇİLMEYEN İLAÇ VAR";
-            cardClass = "late-card";
-        }
+        let badgeClass = "badge-wait", badgeText = "BEKLİYOR", cardClass = "";
+        if (isAllDone) { badgeClass = "badge-safe"; badgeText = `TAMAMLANDI <span class="exp-arrow">▲</span>`; cardClass = "done-card"; } 
+        else if (isLate) { badgeClass = "badge-danger"; badgeText = "🚨 İÇİLMEYEN İLAÇ VAR"; cardClass = "late-card"; }
         
-        let isCollapsed = isAllDone; 
-        if (stateMap[s.id] !== undefined) {
-            isCollapsed = stateMap[s.id]; 
-        }
-
+        let isCollapsed = isAllDone; if (stateMap[s.id] !== undefined) isCollapsed = stateMap[s.id]; 
         const collapseClass = isCollapsed ? "collapsed" : "";
         const iconStr = s.icon ? s.icon + " " : ""; 
 
-        timelineHTML += `
-            <div class="premium-card card ${cardClass} ${collapseClass}" data-id="${s.id}" onclick="this.classList.toggle('collapsed')">
-                <div class="card-header">
-                    <div class="drug-name">${iconStr}${s.title}</div>
-                    <div class="badge ${badgeClass}">${badgeText}</div>
-                </div>
-                <div class="meds-container">
-                    ${medsHTML}
-                </div>
-            </div>`;
+        timelineHTML += `<div class="premium-card card ${cardClass} ${collapseClass}" data-id="${s.id}" onclick="this.classList.toggle('collapsed')"><div class="card-header"><div class="drug-name">${iconStr}${s.title}</div><div class="badge ${badgeClass}">${badgeText}</div></div><div class="meds-container">${medsHTML}</div></div>`;
     });
     
     const timelineEl = document.getElementById('timelineArea');
@@ -1607,10 +1241,7 @@ setInterval(veriCek, 10000);
 setInterval(saniyeTiktak, 1000); 
 
 document.addEventListener("visibilitychange", () => { 
-    if (document.visibilityState === 'visible') {
-        veriCek(); 
-        fetchWeather(); 
-    }
+    if (document.visibilityState === 'visible') { veriCek(); fetchWeather(); }
 });
 </script>
 </body>
