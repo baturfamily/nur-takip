@@ -943,7 +943,7 @@ function istatistikleriCiz() {
 }
 
 // =======================================================
-// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (KÜMÜLATİF MODEL)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.tumVeriler) return;
@@ -956,6 +956,7 @@ function renderHealthDiary() {
     const collapseClass = asistanKapaliMi ? "collapsed" : "";
 
     function veriBul(gunlukVeri, aranacakKelimeler) {
+        if (!gunlukVeri) return "-";
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
             if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
@@ -1003,7 +1004,6 @@ function renderHealthDiary() {
     let aktivite = veriBul(sonGunVerisi, ["aktivite"]);
     let uyku = veriBul(sonGunVerisi, ["uyku", "gece"]);
     
-    // GİZLİ VERİLER
     let enerji = veriBul(sonGunVerisi, ["enerji"]);
     let kuruluk = veriBul(sonGunVerisi, ["göz", "goz", "kuru"]);
 
@@ -1043,55 +1043,68 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
-    // --- ZAMAN YOLCULUĞU (1 Gün Öncesi - AKTİVİTE ve İLAÇ İÇİN) ---
+    // --- ZAMAN YOLCULUĞU (SON 3 GÜN - KÜMÜLATİF YÜK) ---
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
     
-    let oncekiGunObj = new Date(gosterilenTarihObj);
-    oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
-    let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
-    let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
+    let oncekiGunObj = new Date(gosterilenTarihObj); oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
+    let ikiGunOnceObj = new Date(gosterilenTarihObj); ikiGunOnceObj.setDate(ikiGunOnceObj.getDate() - 2);
+    let ucGunOnceObj = new Date(gosterilenTarihObj); ucGunOnceObj.setDate(ucGunOnceObj.getDate() - 3);
 
-    // ÖNCEKİ GÜN DEĞİŞKENLERİ (Sadece Aktivite ve İlaç)
-    let oncekiGunCimziaAlindiMi = oncekiGunVeri && oncekiGunVeri['GECE_CIMZIA'] === "İçildi";
-    let oncekiGunMetoartconAlindiMi = oncekiGunVeri && oncekiGunVeri['GECE_METOARTCON'] === "İçildi";
-    let oncekiGunDeltaAlindiMi = oncekiGunVeri && oncekiGunVeri['SABAH_TOK_DELTA'] === "İçildi";
-    let oncekiGunAktVarMi = oncekiGunVeri && veriBul(oncekiGunVeri, ["aktivite"]) !== "-" && !String(veriBul(oncekiGunVeri, ["aktivite"])).toLowerCase().includes("hayır") && !String(veriBul(oncekiGunVeri, ["aktivite"])).toLowerCase().includes("yapmad");
-    let oncekiGunIlacAksadiMi = false;
+    let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
+    let ikiGunOnceStr = String(ikiGunOnceObj.getDate()).padStart(2, '0') + '.' + String(ikiGunOnceObj.getMonth() + 1).padStart(2, '0') + '.' + ikiGunOnceObj.getFullYear();
+    let ucGunOnceStr = String(ucGunOnceObj.getDate()).padStart(2, '0') + '.' + String(ucGunOnceObj.getMonth() + 1).padStart(2, '0') + '.' + ucGunOnceObj.getFullYear();
+
+    let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
+    let ikiGunOnceVeri = apiData.tumVeriler[ikiGunOnceStr];
+    let ucGunOnceVeri = apiData.tumVeriler[ucGunOnceStr];
+
+    // Önceki 1 Gün Özellikleri
+    let oncekiGunCimzia = oncekiGunVeri && oncekiGunVeri['GECE_CIMZIA'] === "İçildi";
+    let oncekiGunMetoartcon = oncekiGunVeri && oncekiGunVeri['GECE_METOARTCON'] === "İçildi";
+    let oncekiGunDelta = oncekiGunVeri && oncekiGunVeri['SABAH_TOK_DELTA'] === "İçildi";
+    let oncekiGunIlacAksadi = false;
     
     if(oncekiGunVeri) {
         let oncekiGunProgram = getDailyProgram(oncekiGunObj);
-        oncekiGunProgram.forEach(ogun => {
-            ogun.meds.forEach(ilac => { if (oncekiGunVeri[ilac.key] === "İçilmedi") oncekiGunIlacAksadiMi = true; });
-        });
+        oncekiGunProgram.forEach(ogun => { ogun.meds.forEach(ilac => { if (oncekiGunVeri[ilac.key] === "İçilmedi") oncekiGunIlacAksadi = true; }); });
     }
 
-    // BUGÜNKÜ DEĞİŞKENLER (Sadece Uyku ve Semptomlar)
-    let isUykuBad = String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("uyuyamad") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("vardı");
-    let isSabahBad = String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü");
-    let isUykuGood = String(uyku).toLowerCase().includes("deliksiz") || String(uyku).toLowerCase().includes("iyi") || String(uyku).toLowerCase().includes("normal");
-    let isSabahGood = String(tutukluk).toLowerCase().includes("hemen") || String(tutukluk).toLowerCase().includes("yok");
+    // Son 3 Gün Kümülatif Aktivite Hesabı (Eklemlere Yüklenme)
+    let son3GunAktifGunler = 0;
+    [oncekiGunVeri, ikiGunOnceVeri, ucGunOnceVeri].forEach(v => {
+        let a = String(veriBul(v, ["aktivite"])).toLowerCase();
+        if (v && a !== "-" && !a.match(/(hayır|yapmad)/)) son3GunAktifGunler++;
+    });
+
+    // BUGÜNKÜ SEMPTOMLAR
+    let isUykuBad = String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrı|vardı)/);
+    let isSabahBad = String(tutukluk).toLowerCase().match(/(öğlene|saat|sürdü)/);
+    let isUykuGood = String(uyku).toLowerCase().match(/(deliksiz|iyi|normal)/);
+    let isSabahGood = String(tutukluk).toLowerCase().match(/(hemen|yok)/);
     let isAgriVar = agri !== "-" && !String(agri).toLowerCase().includes("yok");
 
     // ==========================================
-    // SEVİYE 4 KORELASYONLAR
+    // SEVİYE 5 KORELASYONLAR (KÜMÜLATİF MODEL)
     // ==========================================
 
-    // 1. ATEŞ & ENFEKSİYON
+    // 1. ATEŞ
     if (!isNaN(ates) && ates >= 37.0) {
-        aiMsg.push(veriyeGoreSec([
-            `🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`,
-        ]));
+        aiMsg.push(`🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`);
         isBadDay = true;
     }
 
-    // 2. KORTİZON YANILGISI VE DÜNÜN FATURASI
-    if (oncekiGunDeltaAlindiMi && oncekiGunAktVarMi && (isSabahBad || isAgriVar || isUykuBad)) {
-        aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun (Deltacortril) verdiği sahte enerjiyle kendini biraz yormuşsun. Bugün hissettiğin bu tutukluk veya ağrı dünün faturası, lütfen bugün eklemlerine yüklenme.`);
+    // 2. KÜMÜLATİF YORGUNLUK VE KORTİZON
+    if (son3GunAktifGunler >= 2 && (isSabahBad || isAgriVar || isUykuBad)) {
+        let deltaUyari = oncekiGunDelta ? "Özellikle dünkü kortizonun (Deltacortril) sahte enerjisine aldanmış olabilirsin. " : "";
+        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk (Boom & Bust):</b> ${deltaUyari}Son 3 gündür eklemlerine oldukça yükleniyorsun. Bugün hissettiğin tutukluk/ağrı o birikmiş yorgunluğun faturası. Lütfen bugün motoru soğut ve sıfır aktivite yap.`);
+        isBadDay = true;
+    } else if (oncekiGunDelta && son3GunAktifGunler >= 1 && (isSabahBad || isAgriVar)) {
+        aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun (Deltacortril) verdiği geçici enerjiyle yorulmuşsun. Bugünkü tutukluğun sebebi bu, bugün eklemlerine dinlenme izni ver.`);
         isBadDay = true;
     }
 
-    // 3. CIMZIA WEAR-OFF (ETKİ AZALMASI) TAHMİNİ
+    // 3. CIMZIA WEAR-OFF
     let cimziaBaslangic = new Date(2026, 1, 12);
     let bugunGeceYarisi = new Date(bugun.getFullYear(), bugun.getMonth(), bugun.getDate());
     let cimziaFarkGun = Math.round((bugunGeceYarisi - cimziaBaslangic) / (1000 * 60 * 60 * 24));
@@ -1105,10 +1118,10 @@ function renderHealthDiary() {
     // STANDART KORELASYONLAR
     // ==========================================
 
-    if ((oncekiGunCimziaAlindiMi || oncekiGunMetoartconAlindiMi) && isSabahGood && !isBadDay) {
+    if ((oncekiGunCimzia || oncekiGunMetoartcon) && isSabahGood && !isBadDay) {
         aiMsg.push("💉 Bir önceki gece aldığın biyolojik iğnenin şifası hemen kendini göstermiş, sabahki rahatlık ve esnekliğinden belli!");
-    } else if (oncekiGunIlacAksadiMi && (isUykuBad || isSabahBad || isAgriVar)) {
-        aiMsg.push("🚨 Bir önceki gün atladığımız ilaçlar, vücudunda biraz yorgunluk ve inatçı sızılar yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
+    } else if (oncekiGunIlacAksadi && (isUykuBad || isSabahBad || isAgriVar)) {
+        aiMsg.push("🚨 Bir önceki gün atladığımız ilaçlar, kandaki korumayı düşürüp inatçı sızılar yapmış olabilir. Tedaviye sadakatimiz en büyük kalkanımız.");
     }
 
     if (isUykuBad && isSabahBad) {
@@ -1121,7 +1134,7 @@ function renderHealthDiary() {
     if (enerji !== "-") {
         let numE = parseInt(enerji);
         if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) {
-            aiMsg.push("Bugün romatizma kaynaklı enerjinin düşük olduğunu gözlemledim, ağır işleri bir kenara bırakıp bugün kendini şarj etmelisin.");
+            aiMsg.push("Romatizma veya ilaç kaynaklı enerjinin düşük olduğunu gözlemledim, ağır işleri bir kenara bırakıp bugün kendini şarj etmelisin.");
             isBadDay = true;
         }
     }
@@ -1132,21 +1145,7 @@ function renderHealthDiary() {
         }
     }
 
-    let bolgeKucuk = String(bolge).toLowerCase();
-    let isBolgeYok = bolge === "-" || bolgeKucuk.includes("hayır") || bolgeKucuk.includes("yok");
-    let isEller = bolgeKucuk.includes("el");
-    let isHerYer = bolgeKucuk.includes("her yer");
-
-    let isAktiviteVar = aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad");
-
-    if (isEller && !isBadDay) {
-        aiMsg.push(`Semptomların en çok ellerinde toplanmış. Bugün yorucu ev veya el işlerine kesinlikle mola veriyoruz.`);
-        isBadDay = true;
-    } else if (isHerYer && !isBadDay) {
-        aiMsg.push(`Vücudunun genelinde bir sızı var, bu günlerde kendini şımartma ve bolca dinlenme vaktidir.`);
-        isBadDay = true;
-    }
-
+    let isAktiviteVar = aktivite !== "-" && !String(aktivite).toLowerCase().match(/(hayır|yapmad)/);
     if (isAktiviteVar && !isBadDay && aiMsg.length < 3) {
         let temizAktivite = String(aktivite).toLowerCase();
         if (temizAktivite.includes("pilates")) temizAktivite = "pilates";
@@ -1155,7 +1154,7 @@ function renderHealthDiary() {
         aiMsg.push(`Hareket berekettir! Yaptığın ${temizAktivite} aktivitesi ile eklemlerini açık tutman tedavin için çok kıymetli.`);
     }
 
-    if (streak >= 3) {
+    if (streak >= 3 && aiMsg.length < 3) {
         aiMsg.push(`<i>Tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun.</i>`);
     }
 
@@ -1168,70 +1167,33 @@ function renderHealthDiary() {
     }
 
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
+    let baslik = isTodayData ? (isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼") : (sonGunTarihi === dunTarihStr ? "⏪ Dünün Özeti" : `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`);
     
-    let baslik = "";
-    if (isTodayData) {
-        baslik = isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼";
-    } else if (sonGunTarihi === dunTarihStr) {
-        baslik = "⏪ Dünün Özeti";
-    } else {
-        baslik = `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`;
-    }
-    
-    // GÖRSEL HAPLAR
     let pillsHTML = "";
-    if (uyku !== "-") {
-        let uIcon = isUykuBad ? "🛌" : "😴";
-        pillsHTML += `<div class="diary-pill">${uIcon} ${uyku}</div>`;
-    }
-    if (tutukluk !== "-") {
-        let tIcon = isSabahBad ? "🦴" : "✨";
-        pillsHTML += `<div class="diary-pill">${tIcon} ${tutukluk}</div>`;
-    }
-    if (!isNaN(ates) && ates >= 37.0) {
-        pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
-    } else if (aktivite !== "-" && isAktiviteVar) {
-        let rawAktivite = String(aktivite).toLowerCase();
-        let pillAkt = rawAktivite.includes("pilates") ? "Pilates" : 
-                      rawAktivite.includes("yürü") ? "Yürüyüş" : 
-                      rawAktivite.includes("yüz") ? "Yüzme" : 
-                      rawAktivite.replace("yaptım", "").replace("ettim", "").trim();
-        pillAkt = pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1);
-        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt}</div>`;
+    if (uyku !== "-") pillsHTML += `<div class="diary-pill">${isUykuBad ? "🛌" : "😴"} ${uyku}</div>`;
+    if (tutukluk !== "-") pillsHTML += `<div class="diary-pill">${isSabahBad ? "🦴" : "✨"} ${tutukluk}</div>`;
+    if (!isNaN(ates) && ates >= 37.0) pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
+    else if (isAktiviteVar) {
+        let rawAkt = String(aktivite).toLowerCase();
+        let pillAkt = rawAkt.includes("pilates") ? "Pilates" : rawAkt.includes("yürü") ? "Yürüyüş" : rawAkt.replace("yaptım", "").replace("ettim", "").trim();
+        pillsHTML += `<div class="diary-pill">🏃‍♀️ ${pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1)}</div>`;
     } 
-    else if (agri !== "-" && !isBolgeYok) {
-        pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
-    }
+    else if (agri !== "-" && !String(bolge).toLowerCase().match(/(hayır|yok)/)) pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
 
     let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
 
     let finalHTML = `
         <div class="diary-card ${moodClass} ${collapseClass}" onclick="this.classList.toggle('collapsed')">
-            <div class="diary-header">
-                <h3 class="diary-title">${baslik}</h3>
-                ${streakHTML}
-            </div>
-            
-            <div class="diary-pills">
-                ${pillsHTML}
-            </div>
-            
-            <div class="diary-toggle-bar">
-                <span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:10px;">▼</span></span>
-                <span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span>
-            </div>
-
-            <div class="diary-ai-box">
-                ${aiMsg.join("<br><br>")}
-            </div>
-        </div>
-    `;
-
+            <div class="diary-header"><h3 class="diary-title">${baslik}</h3>${streakHTML}</div>
+            <div class="diary-pills">${pillsHTML}</div>
+            <div class="diary-toggle-bar"><span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
+            <div class="diary-ai-box">${aiMsg.join("<br><br>")}</div>
+        </div>`;
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
 
 // =======================================================
-// DOKTOR RAPORU (GENEL İZLEM + KÖK NEDEN ANALİZİ & KORTİZON HARİTASI)
+// DOKTOR RAPORU (KÜMÜLATİF KÖK NEDEN ANALİZİ & HARİTALAR)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
@@ -1240,6 +1202,7 @@ function doktorRaporuOlustur() {
     }
 
     function veriBul(gunlukVeri, aranacakKelimeler) {
+        if (!gunlukVeri) return "-";
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
             if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
@@ -1256,9 +1219,7 @@ function doktorRaporuOlustur() {
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
-    var toplamBeklenenIlac = 0;
-    var toplamIcilenIlac = 0;
-    
+    var toplamBeklenenIlac = 0; var toplamIcilenIlac = 0;
     var anlikTarih = new Date();
     var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
     var anlikDakika = (anlikTarih.getHours() * 60) + anlikTarih.getMinutes();
@@ -1273,42 +1234,25 @@ function doktorRaporuOlustur() {
         gunlukProgram.forEach(function(ogun) {
             var ogunDakika = 0;
             if (ogun.time) {
-                var timeParts = ogun.time.split(':');
-                ogunDakika = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
+                var tP = ogun.time.split(':'); ogunDakika = (parseInt(tP[0], 10) * 60) + parseInt(tP[1], 10);
             }
             if (bugunMu && anlikDakika < ogunDakika) return; 
-
             ogun.meds.forEach(function(ilac) {
                 toplamBeklenenIlac++;
-                if (veri[ilac.key] === "İçildi") {
-                    toplamIcilenIlac++;
-                }
+                if (veri[ilac.key] === "İçildi") toplamIcilenIlac++;
             });
         });
     });
 
     var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
-
-    var tabloSatirlari = "";
-    var atesliGunSayisi = 0;
-    var bolgeFrekans = {};
-    var sorunluUykuGecesi = 0;
-    var agirTutuklukGunu = 0;
-    var aktifGunSayisi = 0;
+    var tabloSatirlari = ""; var atesliGunSayisi = 0; var bolgeFrekans = {};
+    var sorunluUykuGecesi = 0; var agirTutuklukGunu = 0; var aktifGunSayisi = 0;
     
-    // SEVİYE 4 DEĞİŞKENLERİ
     var toplamAlevlenme = 0;
-    var alevlenmeNedeniUyku = 0;
-    var alevlenmeNedeniAktivite = 0;
-    var alevlenmeNedeniIlac = 0;
-
-    var deltaAlinanGun = 0;
-    var deltaAlinanGunTutuklukVar = 0;
-    var deltaAlinmayanGun = 0;
-    var deltaAlinmayanGunTutuklukVar = 0;
-
-    var folbiolGunuYorgunluk = 0;
-    var folbiolGunuToplami = 0;
+    var alevlenmeNedeniUyku = 0; var alevlenmeNedeniAktivite = 0; var alevlenmeNedeniIlac = 0;
+    var deltaAlinanGun = 0; var deltaAlinanGunTutuklukVar = 0;
+    var deltaAlinmayanGun = 0; var deltaAlinmayanGunTutuklukVar = 0;
+    var folbiolGunuYorgunluk = 0; var folbiolGunuToplami = 0;
 
     tarihler.forEach(function(tarih, index) {
         var veri = apiData.tumVeriler[tarih];
@@ -1326,25 +1270,21 @@ function doktorRaporuOlustur() {
         if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
 
         var bKucuk = String(bolge).toLowerCase();
-        if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
-            bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
-        }
+        if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) { bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1; }
 
-        let isUykuBad = uyku.includes("bölündü") || uyku.includes("ağrı") || uyku.includes("uyuyamadim") || uyku.includes("vardı");
-        let isTutuklukKotu = tutukluk.includes("öğlene") || tutukluk.includes("1-2 saat") || tutukluk.includes("surdu");
-        let isAktif = aktivite !== "-" && !aktivite.includes("yapmadim") && !aktivite.includes("hayır");
-        let isAgriSiddetli = agri.includes("çok") || agri.includes("şiddetli");
+        let isUykuBad = uyku.match(/(bölündü|ağrı|uyuyamad|vardı)/);
+        let isTutuklukKotu = tutukluk.match(/(öğlene|saat|sürdü)/);
+        let isAktif = aktivite !== "-" && !aktivite.match(/(yapmad|hayır)/);
+        let isAgriSiddetli = agri.match(/(çok|şiddetli)/);
 
         if (isUykuBad) sorunluUykuGecesi++;
         if (isTutuklukKotu) agirTutuklukGunu++;
         if (isAktif) aktifGunSayisi++;
 
-        // SEVİYE 4: KORTİZON BAĞIMLILIK HARİTASI
+        // KORTİZON HARİTASI
         let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
-        let dS = new Date(2026, 1, 16);
-        let bugunDeltaGunuMu = Math.round((dObj - dS)/(1000*60*60*24)) % 2 === 0;
+        let bugunDeltaGunuMu = Math.round((dObj - new Date(2026, 1, 16))/(1000*60*60*24)) % 2 === 0;
 
-        // O gün delta günü değilse (kortizon alınmayan günse)
         if (!bugunDeltaGunuMu) {
             deltaAlinmayanGun++;
             if (isTutuklukKotu || (!agri.includes("yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
@@ -1353,60 +1293,55 @@ function doktorRaporuOlustur() {
             if (isTutuklukKotu || (!agri.includes("yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
         }
 
-        // SEVİYE 4: FOLBİOL / METOARTCON TOKSİSİTE ENDEKSİ (Sadece Salı Günleri Folbiol var)
+        // FOLBİOL TOKSİSİTE ENDEKSİ (Salı)
         if (dObj.getDay() === 2) {
             folbiolGunuToplami++;
             let numE = parseInt(enerji);
             if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.match(/(düşük|kötü|yorgun|az)/))) folbiolGunuYorgunluk++;
         }
 
-        // SEVİYE 4: KÖK NEDEN ANALİZİ (Flare-up Tespiti)
-        // BUGÜNÜN uyku kalitesi ve BUGÜNÜN tutukluğu/ağrısı doğrudan ilişkili
+        // KÖK NEDEN ANALİZİ (KÜMÜLATİF 3 GÜNLÜK PENCERE)
         if (isTutuklukKotu || isAgriSiddetli) {
             toplamAlevlenme++;
             
-            if (isUykuBad) alevlenmeNedeniUyku++;
+            let son3GunAktiflik = 0;
+            let son3GunKotuUyku = isUykuBad ? 1 : 0; 
+            let son5GunIlacAksadi = false;
 
-            // DÜNE bak (Aktivite ve İlaç için)
-            if (index < tarihler.length - 1) {
-                let dunVeri = apiData.tumVeriler[tarihler[index+1]];
-                let dunAktifMi = String(veriBul(dunVeri, ["aktivite"])).toLowerCase() !== "-" && !String(veriBul(dunVeri, ["aktivite"])).toLowerCase().match(/(yapmadim|hayır)/);
-                let dunIlacEksikMi = Object.values(dunVeri).includes("İçilmedi");
-
-                if (dunAktifMi) alevlenmeNedeniAktivite++;
-                if (dunIlacEksikMi) alevlenmeNedeniIlac++;
+            for (let i = 1; i <= 3; i++) {
+                if (index + i < tarihler.length) {
+                    let gV = apiData.tumVeriler[tarihler[index+i]];
+                    let gA = String(veriBul(gV, ["aktivite"])).toLowerCase();
+                    let gU = String(veriBul(gV, ["uyku", "gece"])).toLowerCase();
+                    if (gA !== "-" && !gA.match(/(yapmad|hayır)/)) son3GunAktiflik++;
+                    if (gU.match(/(bölündü|ağrı|uyuyamad|vardı)/)) son3GunKotuUyku++;
+                }
             }
+
+            for (let i = 1; i <= 5; i++) {
+                if (index + i < tarihler.length) {
+                    let gV = apiData.tumVeriler[tarihler[index+i]];
+                    if (gV && Object.values(gV).includes("İçilmedi")) son5GunIlacAksadi = true;
+                }
+            }
+
+            if (son3GunAktiflik >= 2) alevlenmeNedeniAktivite++;
+            if (son3GunKotuUyku >= 2) alevlenmeNedeniUyku++;
+            if (son5GunIlacAksadi) alevlenmeNedeniIlac++;
         }
 
-        tabloSatirlari += `
-        <tr>
-            <td>${tarih}</td>
-            <td>${atesGosterim}</td>
-            <td>${tutukluk}</td>
-            <td>${agri}</td>
-            <td>${bolge}</td>
-            <td>${aktivite}</td>
-            <td>${uyku}</td>
-        </tr>
-        `;
+        tabloSatirlari += `<tr><td>${tarih}</td><td>${atesGosterim}</td><td>${tutukluk}</td><td>${agri}</td><td>${bolge}</td><td>${aktivite}</td><td>${uyku}</td></tr>`;
     });
 
-    var enCokAgriyanBolge = "Belirgin bir bölge yok";
-    var maxTekrar = 0;
-    for (var b in bolgeFrekans) {
-        if (bolgeFrekans[b] > maxTekrar) {
-            maxTekrar = bolgeFrekans[b];
-            enCokAgriyanBolge = b;
-        }
-    }
+    var enCokAgriyanBolge = "Belirgin bir bölge yok"; var maxTekrar = 0;
+    for (var b in bolgeFrekans) { if (bolgeFrekans[b] > maxTekrar) { maxTekrar = bolgeFrekans[b]; enCokAgriyanBolge = b; } }
 
-    // --- GENEL İZLEM YORUMU ---
     var uykuMetni = sorunluUykuGecesi > 0 ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` : `uyku sürecini genel olarak stabil geçirmiş`;
     var tutuklukMetni = agirTutuklukGunu > 0 ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` : `sabah açılmalarını iyi yönetmiş`;
     var aktiviteMetni = aktifGunSayisi > 0 ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
     var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
 
-    // SEVİYE 4 DOKTOR KORELASYON METİNLERİ
+    // SEVİYE 5 KORELASYON METİNLERİ
     let kokNedenMetni = "";
     if (toplamAlevlenme > 0) {
         let pUyku = Math.round((alevlenmeNedeniUyku / toplamAlevlenme) * 100) || 0;
@@ -1415,12 +1350,12 @@ function doktorRaporuOlustur() {
         kokNedenMetni = `
         <div style="margin-top: 15px;">
             <strong>🔍 Alevlenme (Flare-up) Kök Neden Analizi:</strong><br>
-            Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. Çapraz geçmiş analizine göre bu alevlenmelerin;
+            Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. 3 ila 5 günlük geriye dönük çapraz analizlere göre;
             <ul style="margin-top: 5px; margin-bottom: 5px;">
-                ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, alevlenmenin şiddetli uykusuzluk çekilen geceleri takip ettiği saptanmıştır. (Ağrı eşiği düşüklüğü / Sekonder reaksiyon)</li>` : ''}
-                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmının, bir önceki gün yapılan fiziksel aşırı yüklenme veya zorlayıcı ev işi aktivitesi sonrası tetiklendiği görülmüştür. (Mekanik Zorlanma)</li>` : ''}
-                ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında eksik veya düzensiz ilaç kullanımı sonrası (1 gün gecikmeli olarak) ortaya çıktığı tespit edilmiştir.</li>` : ''}
-                ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir yaşam tarzı tetikleyicisi bulunamamıştır. Temel hastalık aktivitesi değerlendirilmelidir.</li>` : ''}
+                ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmına, kronik uyku borcu ve ardışık kalitesiz uyku örüntüsünün eşlik ettiği saptanmıştır. (Ağrı eşiği düşüklüğü / Sekonder reaksiyon)</li>` : ''}
+                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 3 günlük periyotta yaşanan kümülatif fiziksel yüklenmelerin (birikmiş yorgunluk) tetikleyici faktör olduğu görülmüştür. (Mekanik Zorlanma)</li>` : ''}
+                ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında, son 5 gün içerisinde eksik veya düzensiz kullanılan ilaç periyotlarını takip ettiği tespit edilmiştir.</li>` : ''}
+                ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir yaşam tarzı tetikleyicisi bulunamamıştır. Temel hastalık aktivitesinin değerlendirilmesi önerilir.</li>` : ''}
             </ul>
         </div>`;
     }
@@ -1449,10 +1384,7 @@ function doktorRaporuOlustur() {
     }
 
     var raporHTML = `
-        <div class="rap-baslik">
-            Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu
-        </div>
-        
+        <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
         <div class="rap-bolum">
             <h3>📋 Hasta Özeti ve Temel Veriler</h3>
             <ul>
@@ -1472,33 +1404,13 @@ function doktorRaporuOlustur() {
         <div class="rap-bolum">
             <h3>💊 Aktif Tedavi ve İlaç Şeması</h3>
             <table class="rap-tablo">
-                <thead>
-                    <tr>
-                        <th style="width: 20%;">Zaman</th>
-                        <th>Kullanılan İlaçlar ve Rutinleri</th>
-                    </tr>
-                </thead>
+                <thead><tr><th style="width: 20%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
                 <tbody>
-                    <tr>
-                        <td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td>
-                        <td style="text-align: left;">INH <em>(Her gün)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td>
-                        <td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td>
-                        <td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td>
-                        <td style="text-align: left;">Plaquenil <em>(Her gün)</em></td>
-                    </tr>
-                    <tr>
-                        <td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td>
-                        <td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td>
-                    </tr>
+                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
                 </tbody>
             </table>
         </div>
@@ -1506,23 +1418,10 @@ function doktorRaporuOlustur() {
         <div class="rap-bolum">
             <h3>📅 Günlük Detay Çizelgesi</h3>
             <table class="rap-tablo">
-                <thead>
-                    <tr>
-                        <th>Tarih</th>
-                        <th>Ateş</th>
-                        <th>Sabah Tutukluğu</th>
-                        <th>Eklem Ağrısı</th>
-                        <th>Alevlenme Bölgesi</th>
-                        <th>Aktivite</th>
-                        <th>Uyku</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${tabloSatirlari}
-                </tbody>
+                <thead><tr><th>Tarih</th><th>Ateş</th><th>Sabah Tutukluğu</th><th>Eklem Ağrısı</th><th>Alevlenme Bölgesi</th><th>Aktivite</th><th>Uyku</th></tr></thead>
+                <tbody>${tabloSatirlari}</tbody>
             </table>
-        </div>
-    `;
+        </div>`;
 
     document.getElementById("print-report-area").innerHTML = raporHTML;
     setTimeout(function() { window.print(); }, 250);
