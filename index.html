@@ -1082,17 +1082,17 @@ function renderHealthDiary() {
     let isEnerjiDusuk = (!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/));
     
     if ((gunHaftaninKacinciGunu === 2 || gunHaftaninKacinciGunu === 3) && isEnerjiDusuk) {
-        aiMsg.push(`🧬 <b>Metoartcon Yorgunluğu:</b> Pazartesi akşamı vurduğun Metoartcon iğnesinin "ilaç yorgunluğunu (hangover)" yaşıyorsun. Folbiol içmene rağmen bu halsizlik 24-48 saat sürebilir, panik yapma ve kendini dinlendir.`);
+        aiMsg.push(`🧬 <b>Metoartcon Yorgunluğu:</b> Pazartesi akşamı vurduğun Metoartcon iğnesinin "ilaç yorgunluğunu (hangover)" yaşıyorsun. Folbiol içmene rağmen bu halsizlik 24-48 saat sürebilir, panik yapma ve yarın da kendini dinlendirmeye özen göster.`);
         isBadDay = true;
     }
 
     // 3. KÜMÜLATİF YORGUNLUK VE KORTİZON REBOUND
     if (son3GunAktifGunler >= 2 && (isSabahBad || isAgriVar || isUykuBad)) {
         let deltaUyari = oncekiGunDelta ? "Özellikle dünkü kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
-        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk (Boom & Bust):</b> ${deltaUyari}Son 3 gündür eklemlerine yükleniyorsun. Bugün hissettiğin tutukluk o birikmiş yorgunluğun faturası. Bugün sıfır aktiviteyle motoru soğut.`);
+        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk (Boom & Bust):</b> ${deltaUyari}Son 3 gündür eklemlerine yükleniyorsun. Bugün hissettiğin tutukluk o birikmiş yorgunluğun faturası. Lütfen yarın sıfır aktiviteyle motoru tamamen soğut.`);
         isBadDay = true;
     } else if (oncekiGunDelta && son3GunAktifGunler >= 1 && (isSabahBad || isAgriVar)) {
-        aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun verdiği geçici enerjiyle yorulmuşsun. Bugünkü tutukluğun sebebi bu, eklemlerine dinlenme izni ver.`);
+        aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun verdiği geçici enerjiyle yorulmuşsun. Bugünkü tutukluğun sebebi bu, ağrının yarına sarkmaması için yarın eklemlerine kesinlikle dinlenme izni ver.`);
         isBadDay = true;
     }
 
@@ -1113,24 +1113,24 @@ function renderHealthDiary() {
     if ((oncekiGunCimzia || oncekiGunMetoartcon) && isSabahGood && !isBadDay) {
         aiMsg.push("💉 Bir önceki gece aldığın iğnenin şifası hemen kendini göstermiş, sabahki rahatlığından belli!");
     } else if (son7GunIlacAksadi && (isUykuBad || isSabahBad || isAgriVar)) {
-        aiMsg.push("🚨 Son 7 gün içinde atladığımız ilaçlar kandaki koruyucu seviyeyi düşürmüş olabilir. İnatsı sızıların kök nedeni ilacı aksatmamızdır.");
+        aiMsg.push("🚨 Son 7 gün içinde atladığımız ilaçlar kandaki koruyucu seviyeyi düşürmüş olabilir. İnatçı sızıların kök nedeni ilacı aksatmamızdır.");
     }
 
     if (isUykuBad && isSabahBad) {
-        if(!isBadDay) aiMsg.push("Son uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. Sıcak bir duş seni hafifletecektir.");
+        if(!isBadDay) aiMsg.push("Dün geceki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. Yarın sabah uyanınca alacağın sıcak bir duş seni hafifletecektir.");
         isBadDay = true;
     } else if (isUykuGood && isSabahGood && !isBadDay && aiMsg.length === 0) {
         aiMsg.push("Geceyi deliksiz geçirmen ve kuş gibi uyanman harika haber! Tedavimiz tıkır tıkır çalışıyor.");
     }
 
     if (isEnerjiDusuk && gunHaftaninKacinciGunu !== 2 && gunHaftaninKacinciGunu !== 3) {
-        aiMsg.push("Romatizma kaynaklı genel enerjin bugün düşük, ağır işleri bir kenara bırakıp kendini şarj etmelisin.");
+        aiMsg.push("Romatizma kaynaklı genel enerjin bugün oldukça düşüktü, yarın ağır işleri tamamen bir kenara bırakıp kendini şarj etmelisin.");
         isBadDay = true;
     }
     if (kuruluk !== "-") {
         let numK = parseInt(kuruluk);
         if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) {
-            aiMsg.push("Gözlerindeki kuruluk ve batma artmış görünüyor. Ekranlara ara verip damlalarını sıklaştır.");
+            aiMsg.push("Bugün gözlerindeki kuruluk ve batma artmış görünüyor. Yarın ekranlara daha fazla ara verip damlalarını sıklaştırmayı unutma.");
         }
     }
 
@@ -1148,7 +1148,7 @@ function renderHealthDiary() {
     }
 
     if (aiMsg.length === 0) {
-        aiMsg.push(`Sultanım, eklemlerini dinlediğin ve kendini yormadığın güzel bir gün olsun. İlaç saatlerini bekliyoruz. 💖`);
+        aiMsg.push(`Sultanım, yarın eklemlerini dinlediğin ve kendini hiç yormadığın harika bir gün olsun. Şifa uykusu seni bekliyor. 💖`);
     }
 
     if (!isTodayData) {
@@ -1156,7 +1156,7 @@ function renderHealthDiary() {
     }
 
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
-    let baslik = isTodayData ? (isBadDay ? "Bugün Dinlenme Vakti 💖" : "Harika Bir Gün! 🌼") : (sonGunTarihi === dunTarihStr ? "⏪ Dünün Özeti" : `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`);
+    let baslik = isTodayData ? (isBadDay ? "Yarın Dinlenme Vakti 💖" : "Harika Bir Gündü! 🌼") : (sonGunTarihi === dunTarihStr ? "⏪ Dünün Özeti" : `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`);
     
     let pillsHTML = "";
     if (uyku !== "-") pillsHTML += `<div class="diary-pill">${isUykuBad ? "🛌" : "😴"} ${uyku}</div>`;
@@ -1352,7 +1352,7 @@ function doktorRaporuOlustur() {
             Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. İlaç yarı ömürleri ve kümülatif yorgunluk süreleri baz alınarak yapılan geriye dönük (3-7 günlük pencereli) analizlere göre;
             <ul style="margin-top: 5px; margin-bottom: 5px;">
                 ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, son 5 gün içerisinde oluşan kronik uyku borcu ve ardışık kalitesiz uyku örüntüsünün eşlik ettiği saptanmıştır. (Sekonder Fibromiyaljik Ağrı Eşiği Düşüklüğü)</li>` : ''}
-                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 3 günlük DOMS periyodunda yaşanan ardışık fiziksel yüklenmelerin tetikleyici faktör olduğu görülmüştür. (Kümülatif Mekanik Zorlanma)</li>` : ''}
+                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 3 günlük DOMS (Gecikmiş Başlangıçlı Kas/Eklem Ağrısı) periyodunda yaşanan ardışık fiziksel yüklenmelerin tetikleyici faktör olduğu görülmüştür. (Kümülatif Mekanik Zorlanma)</li>` : ''}
                 ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında, kandaki DMARD/Biyolojik düzeyinin azalmasına bağlı olarak (son 7 gün içerisindeki eksik/düzensiz ilaç kullanımı) ortaya çıktığı tespit edilmiştir.</li>` : ''}
                 ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir çevresel veya davranışsal tetikleyici bulunamamıştır. Temel hastalık aktivitesinin (inflamasyonun) değerlendirilmesi önerilir.</li>` : ''}
             </ul>
