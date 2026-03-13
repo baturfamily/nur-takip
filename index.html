@@ -647,7 +647,7 @@ function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
     for (var kolonIsmi in gunlukVeri) {
         var cevap = gunlukVeri[kolonIsmi];
         if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
-        var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+        var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
         for (var i = 0; i < aranacakKelimeler.length; i++) {
             if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
         }
@@ -789,22 +789,22 @@ function analyzeMonth(year, month) {
             let kuruluk = veriBulGlobal(dayData, ["göz", "goz", "kuru"]);
 
             let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
-            if(ates >= 37.0) hStats.atesliGun++;
+            if(!isNaN(ates) && ates >= 37.0) hStats.atesliGun++;
 
-            if (uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("uyuyamad") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("vardı")) hStats.kotuUyku++;
-            if (tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("saat") || tutukluk.toLowerCase().includes("sürdü")) hStats.kotuSabah++;
-            if (aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad")) hStats.aktifGun++;
+            if (String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("uyuyamad") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("vardı")) hStats.kotuUyku++;
+            if (String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü")) hStats.kotuSabah++;
+            if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad")) hStats.aktifGun++;
 
             if (enerji !== "-") {
                 let numE = parseInt(enerji);
-                if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az)/))) hStats.dusukEnerji++;
+                if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) hStats.dusukEnerji++;
             }
             if (kuruluk !== "-") {
                 let numK = parseInt(kuruluk);
-                if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) hStats.kuruGoz++;
+                if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) hStats.kuruGoz++;
             }
 
-            let bKucuk = bolge.toLowerCase();
+            let bKucuk = String(bolge).toLowerCase();
             if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
                 hStats.bolgeler[bolge] = (hStats.bolgeler[bolge] || 0) + 1;
             }
@@ -969,7 +969,7 @@ function renderHealthDiary() {
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
             if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
-            var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+            var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
             for (var i = 0; i < aranacakKelimeler.length; i++) {
                 if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
             }
@@ -1082,7 +1082,7 @@ function renderHealthDiary() {
         });
     }
 
-    if (ates >= 37.0) {
+    if (!isNaN(ates) && ates >= 37.0) {
         aiMsg.push(veriyeGoreSec([
             `Sultanım, son kayıtlarda ateşin ${ates}°C görünüyor. Lütfen bol sıvı alıp kendini sıcak tut, gerekirse doktoruna haber verelim.`,
             `Ateşin ${ates}°C seviyesine çıkmış. Vücudun bir şeylerle savaşıyor olabilir, lütfen dinlenmeyi birinci önceliğin yap.`
@@ -1090,10 +1090,10 @@ function renderHealthDiary() {
         isBadDay = true;
     }
 
-    let isUykuBad = uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("uyuyamad") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("vardı");
-    let isSabahBad = tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("saat") || tutukluk.toLowerCase().includes("sürdü");
-    let isUykuGood = uyku.toLowerCase().includes("deliksiz") || uyku.toLowerCase().includes("iyi") || uyku.toLowerCase().includes("normal");
-    let isSabahGood = tutukluk.toLowerCase().includes("hemen") || tutukluk.toLowerCase().includes("yok");
+    let isUykuBad = String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("uyuyamad") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("vardı");
+    let isSabahBad = String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("saat") || String(tutukluk).toLowerCase().includes("sürdü");
+    let isUykuGood = String(uyku).toLowerCase().includes("deliksiz") || String(uyku).toLowerCase().includes("iyi") || String(uyku).toLowerCase().includes("normal");
+    let isSabahGood = String(tutukluk).toLowerCase().includes("hemen") || String(tutukluk).toLowerCase().includes("yok");
 
     // AKILLI İLAÇ - SEMPTOM KORELASYONU (Zamanlaması düzeltildi)
     if ((oncekiGunCimziaAlindiMi || oncekiGunMetoartconAlindiMi) && isSabahGood) {
@@ -1125,25 +1125,25 @@ function renderHealthDiary() {
     // GİZLİ ENERJİ VE KURULUK KORELASYONU (GÖRSEL YOK SADECE YORUM)
     if (enerji !== "-") {
         let numE = parseInt(enerji);
-        if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az)/))) {
+        if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) {
             aiMsg.push("Bugün romatizma kaynaklı enerjinin düşük olduğunu gözlemledim, ağır işleri bir kenara bırakıp bugün kendini şarj etmelisin.");
             isBadDay = true;
         }
     }
     if (kuruluk !== "-") {
         let numK = parseInt(kuruluk);
-        if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) {
+        if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) {
             aiMsg.push("Gözlerindeki batma ve kuruluk bugün artmış görünüyor. Ekranlara ara verip damlalarını sıklaştırmayı unutma.");
         }
     }
 
-    let bolgeKucuk = bolge.toLowerCase();
+    let bolgeKucuk = String(bolge).toLowerCase();
     let isBolgeYok = bolge === "-" || bolgeKucuk.includes("hayır") || bolgeKucuk.includes("yok");
     let isEller = bolgeKucuk.includes("el");
     let isHerYer = bolgeKucuk.includes("her yer");
     let isBaskaBolge = !isBolgeYok && !isEller && !isHerYer;
 
-    let isAktiviteVar = aktivite !== "-" && !aktivite.toLowerCase().includes("hayır") && !aktivite.toLowerCase().includes("yapmad");
+    let isAktiviteVar = aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad");
 
     if (isEller) {
         aiMsg.push(`Semptomların en çok ellerinde toplanmış. Bugün yorucu ev veya el işlerine kesinlikle mola veriyoruz.`);
@@ -1153,13 +1153,13 @@ function renderHealthDiary() {
         isBadDay = true;
     } else if (isBaskaBolge) {
         aiMsg.push(veriyeGoreSec([
-            `Özellikle ${bolge.toLowerCase()} bölgende bir hassasiyet belirtmişsin. Orayı sıcak tutmak ve çok zorlamamak iyi olacaktır.`
+            `Özellikle ${String(bolge).toLowerCase()} bölgende bir hassasiyet belirtmişsin. Orayı sıcak tutmak ve çok zorlamamak iyi olacaktır.`
         ]));
         isBadDay = true;
     }
 
     if (isAktiviteVar && !isBadDay) {
-        let temizAktivite = aktivite.toLowerCase();
+        let temizAktivite = String(aktivite).toLowerCase();
         if (temizAktivite.includes("pilates")) temizAktivite = "pilates";
         else if (temizAktivite.includes("yürü")) temizAktivite = "yürüyüş";
         else { temizAktivite = temizAktivite.replace("yaptım", "").replace("ettim", "").trim(); }
@@ -1203,10 +1203,10 @@ function renderHealthDiary() {
         let tIcon = isSabahBad ? "🦴" : "✨";
         pillsHTML += `<div class="diary-pill">${tIcon} ${tutukluk}</div>`;
     }
-    if (ates >= 37.0) {
+    if (!isNaN(ates) && ates >= 37.0) {
         pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
     } else if (aktivite !== "-" && isAktiviteVar) {
-        let rawAktivite = aktivite.toLowerCase();
+        let rawAktivite = String(aktivite).toLowerCase();
         let pillAkt = rawAktivite.includes("pilates") ? "Pilates" : 
                       rawAktivite.includes("yürü") ? "Yürüyüş" : 
                       rawAktivite.includes("yüz") ? "Yüzme" : 
@@ -1258,7 +1258,7 @@ function doktorRaporuOlustur() {
         for (var kolonIsmi in gunlukVeri) {
             var cevap = gunlukVeri[kolonIsmi];
             if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
-            var temizKolon = kolonIsmi.toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+            var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
             for (var i = 0; i < aranacakKelimeler.length; i++) {
                 if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
             }
@@ -1329,32 +1329,31 @@ function doktorRaporuOlustur() {
         var kuruluk = veriBul(veri, ["göz", "goz", "kuru"]);
 
         var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
-        var atesGosterim = ates > 0 ? ates + "°C" : "-";
-        if (ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
+        var atesGosterim = (!isNaN(ates) && ates > 0) ? ates + "°C" : "-";
+        if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
 
-        // DÜZELTİLEN KISIM: İçinde "yok" veya "hayır" geçenleri sayma!
-        var bKucuk = bolge.toLowerCase();
+        var bKucuk = String(bolge).toLowerCase();
         if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yok")) {
             bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1;
         }
 
-        if (uyku.toLowerCase().includes("bölündü") || uyku.toLowerCase().includes("ağrı") || uyku.toLowerCase().includes("uyuyamadim") || uyku.toLowerCase().includes("vardı")) {
+        if (String(uyku).toLowerCase().includes("bölündü") || String(uyku).toLowerCase().includes("ağrı") || String(uyku).toLowerCase().includes("uyuyamadim") || String(uyku).toLowerCase().includes("vardı")) {
             sorunluUykuGecesi++;
         }
-        if (tutukluk.toLowerCase().includes("öğlene") || tutukluk.toLowerCase().includes("1-2 saat") || tutukluk.toLowerCase().includes("surdu")) {
+        if (String(tutukluk).toLowerCase().includes("öğlene") || String(tutukluk).toLowerCase().includes("1-2 saat") || String(tutukluk).toLowerCase().includes("surdu")) {
             agirTutuklukGunu++;
         }
-        if (aktivite !== "-" && !aktivite.toLowerCase().includes("yapmadim") && !aktivite.toLowerCase().includes("hayır")) {
+        if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("yapmadim") && !String(aktivite).toLowerCase().includes("hayır")) {
             aktifGunSayisi++;
         }
         
         if (enerji !== "-") {
             let numE = parseInt(enerji);
-            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az)/))) dusukEnerjiSayisi++;
+            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az)/))) dusukEnerjiSayisi++;
         }
         if (kuruluk !== "-") {
             let numK = parseInt(kuruluk);
-            if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && kuruluk.toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) kuruGozSayisi++;
+            if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma)/))) kuruGozSayisi++;
         }
 
         // TABLO ORİJİNAL HALİYLE KALIYOR (7 SÜTUN)
@@ -1381,16 +1380,16 @@ function doktorRaporuOlustur() {
     }
 
     var uykuMetni = sorunluUykuGecesi > 0 
-        ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku` 
-        : `genel olarak stabil bir uyku`;
+        ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` 
+        : `uyku sürecini genel olarak stabil geçirmiş`;
 
     var tutuklukMetni = agirTutuklukGunu > 0 
-        ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu` 
-        : `iyi yönetilmiş sabah açılmaları`;
+        ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` 
+        : `sabah açılmalarını iyi yönetmiş`;
 
     var aktiviteMetni = aktifGunSayisi > 0 
-        ? `toplam <strong>${aktifGunSayisi} gün</strong> egzersiz yapabilmiştir.` 
-        : `bu dönemde belirgin bir fiziksel egzersiz kaydedilmemiştir.`;
+        ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` 
+        : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
 
     var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
 
