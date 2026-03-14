@@ -718,7 +718,6 @@ function analyzeMonth(year, month) {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
     
-    // YENİ BAŞLANGIÇ TARİHİ: 7 Mart 2026
     const START_DATE = new Date(2026, 2, 7);
 
     for (let d = maxDay; d >= 1; d--) { 
@@ -786,7 +785,6 @@ function analyzeMonth(year, month) {
             if(!isNaN(ates) && ates >= 37.0) hStats.atesliGun++;
 
             if (String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrım vardı)/)) hStats.kotuUyku++;
-            // DÜZELTME: Sadece ciddi tutuklukları "kötü sabah" olarak sayıyoruz
             if (String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|sürdü)/)) hStats.kotuSabah++;
             if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad")) hStats.aktifGun++;
 
@@ -973,7 +971,6 @@ function renderHealthDiary() {
         return "-";
     }
 
-    // YENİ BAŞLANGIÇ TARİHİ FİLTRESİ
     const tarihler = Object.keys(apiData.tumVeriler).filter(t => {
         let p = t.split('.');
         return new Date(p[2], p[1]-1, p[0]) >= new Date(2026, 2, 7);
@@ -1008,7 +1005,6 @@ function renderHealthDiary() {
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
 
-    // ZAMAN KELİMELERİ 
     let tBugun = isTodayData ? "Bugün" : "Dün";
     let tYarin = isTodayData ? "Yarın" : "Bugün";
     let tGece = isTodayData ? "Dün gece" : "Önceki gece"; 
@@ -1044,8 +1040,6 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
-    // --- ZAMAN YOLCULUĞU ---
-    
     let oncekiGunObj = new Date(gosterilenTarihObj); oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
     let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
     let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
@@ -1069,10 +1063,9 @@ function renderHealthDiary() {
         if (v && Object.values(v).includes("İçilmedi")) son7GunIlacAksadi = true;
     }
 
-    // DÜZELTİLMİŞ KONTROLLER (Alevlenme Alarmının Panik Yapmaması İçin)
     let isUykuBad = String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrım vardı)/);
     let isSabahHafifKotu = String(tutukluk).toLowerCase().match(/(yarım saat)/); 
-    let isSabahCiddiKotu = String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|saat|sürdü)/) && !isSabahHafifKotu; // Sadece ağır tutukluk
+    let isSabahCiddiKotu = String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|saat|sürdü)/) && !isSabahHafifKotu; 
     let isUykuGood = String(uyku).toLowerCase().match(/(deliksiz)/);
     let isSabahGood = String(tutukluk).toLowerCase().match(/(hemen)/);
     
@@ -1082,7 +1075,6 @@ function renderHealthDiary() {
     let isSinirVar = String(agri).toLowerCase().includes("sinir");
     let isTerleme = String(terleme).toLowerCase().includes("evet");
 
-    // KIRMIZI ALARM (Alevlenme) SADECE CİDDİ DURUMLARDA ÇALIŞACAK
     let isAlevlenme = isAgriSiddetli || isSabahCiddiKotu; 
 
     // ==========================================
@@ -1118,12 +1110,17 @@ function renderHealthDiary() {
         isBadDay = true;
     }
 
+    // --- BURADA DİNAMİK KELİME KULLANILIYOR ---
     if (son7GunAktifGunler >= 3 && (isSabahHafifKotu || isSabahCiddiKotu || isAgriVar || isUykuBad)) {
         let deltaUyari = oncekiGunDelta ? "Özellikle kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
-        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 7 gündür eklemlerine sık yüklendiğin (toplam ${son7GunAktifGunler} gün aktivite) görülüyor. ${tBugun} hissettiğin tutukluk o birikmiş yorgunluğun faturası. Lütfen ${tYarin.toLowerCase()} sıfır aktiviteyle motoru tamamen soğut.`);
+        let semptomKelimesi = (isSabahHafifKotu || isSabahCiddiKotu) ? "tutukluk" : (isAgriVar ? "eklem sızısı" : "yorgunluk");
+        
+        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 7 gündür eklemlerine sık yüklendiğin (toplam ${son7GunAktifGunler} gün aktivite) görülüyor. ${tBugun} hissettiğin bu ${semptomKelimesi} o birikmiş yorgunluğun faturası. Lütfen ${tYarin.toLowerCase()} sıfır aktiviteyle motoru tamamen soğut.`);
         isBadDay = true;
     } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahHafifKotu || isSabahCiddiKotu || isAgriVar)) {
-        aiMsg.push(`⚠️ <b>Temponun Faturası:</b> ${tOncekiGun} kortizonun verdiği geçici enerjiyle yorulmuşsun. Ağrının ${tYarin.toLowerCase()}a sarkmaması için ${tYarin.toLowerCase()} eklemlerine kesinlikle dinlenme izni ver.`);
+        let semptomKelimesi = (isSabahHafifKotu || isSabahCiddiKotu) ? "tutukluğun" : "sızılarının";
+        
+        aiMsg.push(`⚠️ <b>Temponun Faturası:</b> ${tOncekiGun} kortizonun verdiği geçici enerjiyle yorulmuşsun. Bu ${semptomKelimesi} ${tYarin.toLowerCase()}a sarkmaması için ${tYarin.toLowerCase()} eklemlerine kesinlikle dinlenme izni ver.`);
         isBadDay = true;
     }
 
@@ -1236,7 +1233,6 @@ function doktorRaporuOlustur() {
         return "-";
     }
 
-    // YENİ BAŞLANGIÇ TARİHİ FİLTRESİ
     var tarihler = Object.keys(apiData.tumVeriler).filter(t => {
         let p = t.split('.');
         return new Date(p[2], p[1]-1, p[0]) >= new Date(2026, 2, 7);
@@ -1245,7 +1241,6 @@ function doktorRaporuOlustur() {
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
-    // RAPOR DÖNEMİ İÇİN İLK VE SON TARİHLER 
     let ilkTarihGosterim = tarihler.length > 0 ? tarihler[tarihler.length - 1] : "-";
     let sonTarihGosterim = tarihler.length > 0 ? tarihler[0] : "-";
 
@@ -1311,7 +1306,6 @@ function doktorRaporuOlustur() {
 
         let isUykuBad = uyku.toLowerCase().match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
         let isTutuklukGenel = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
-        // DÜZELTME: Sadece ciddi tutuklukları "Ağır Tutukluk" olarak kabul ediyoruz
         let isTutuklukCiddi = tutukluk.toLowerCase().match(/(1-2 saat|öğlene|sürdü)/) && !tutukluk.toLowerCase().match(/(yarım saat)/);
         let isAktif = aktivite !== "-" && !aktivite.toLowerCase().match(/(yapmad|hayır)/);
         let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
@@ -1324,7 +1318,6 @@ function doktorRaporuOlustur() {
 
         let isAlevlenmeGunu = isTutuklukCiddi || isAgriSiddetli;
 
-        // KORTİZON HARİTASI
         let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
         let bugunDeltaGunuMu = Math.round((dObj - new Date(2026, 1, 16))/(1000*60*60*24)) % 2 === 0;
 
@@ -1343,7 +1336,6 @@ function doktorRaporuOlustur() {
             if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
         }
 
-        // KÖK NEDEN ANALİZİ 
         if (isAlevlenmeGunu) {
             toplamAlevlenme++;
             alevlenmeTarihleri.push(tarih.substring(0,5)); 
@@ -1421,7 +1413,6 @@ function doktorRaporuOlustur() {
 
     var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
 
-    // SEVİYE 5 KORELASYON METİNLERİ
     let kokNedenMetni = "";
     if (toplamAlevlenme > 0) {
         let pUyku = Math.round((alevlenmeNedeniUyku / toplamAlevlenme) * 100) || 0;
@@ -1522,7 +1513,6 @@ function doktorRaporuOlustur() {
     setTimeout(function() { window.print(); }, 250);
 }
 
-// API ÇAĞRISI
 async function veriCek() {
     if (fetchDevamEdiyor) return;
     fetchDevamEdiyor = true;
