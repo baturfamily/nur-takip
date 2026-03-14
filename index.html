@@ -1001,6 +1001,13 @@ function renderHealthDiary() {
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
 
+    // ZAMAN KELİMELERİ (Bakılan verinin dünün verisi mi bugünün verisi mi olduğuna göre)
+    let tBugun = isTodayData ? "Bugün" : "Dün";
+    let tYarin = isTodayData ? "Yarın" : "Bugün";
+    let tBuGece = isTodayData ? "Bu gece" : "Dün gece";
+    let tYasiyorsun = isTodayData ? "yaşıyorsun" : "yaşadın";
+    let tGorunuyor = isTodayData ? "görünüyor" : "görünüyordu";
+
     let atesHam = veriBul(sonGunVerisi, ["ates", "ateş"]);
     let tutukluk = veriBul(sonGunVerisi, ["tutuk", "sabah"]);
     let agri = veriBul(sonGunVerisi, ["agri", "ağrı", "şiş", "sis", "eklem"]);
@@ -1026,10 +1033,6 @@ function renderHealthDiary() {
         if (oGunIlacVarMi && gunTumuIcildi) { streak++; } else if (oGunIlacVarMi && !gunTumuIcildi) { break; }
     }
 
-    let seedStr = sonGunTarihi + ates + uyku + tutukluk + aktivite + bolge;
-    let seedNum = 0;
-    for (let i = 0; i < seedStr.length; i++) { seedNum += seedStr.charCodeAt(i); }
-
     let aiMsg = [];
     let isBadDay = false;
 
@@ -1043,13 +1046,13 @@ function renderHealthDiary() {
     let oncekiGunMetoartcon = oncekiGunVeri && oncekiGunVeri['GECE_METOARTCON'] === "İçildi";
     let oncekiGunDelta = oncekiGunVeri && oncekiGunVeri['SABAH_TOK_DELTA'] === "İçildi";
 
-    // SON 3 GÜN KÜMÜLATİF (Aktivite Yükü - DOMS Süresi)
-    let son3GunAktifGunler = 0;
-    for(let i=1; i<=3; i++) {
+    // SON 7 GÜN KÜMÜLATİF (Aktivite Yükü - Kümülatif Yorgunluk)
+    let son7GunAktifGunler = 0;
+    for(let i=1; i<=7; i++) {
         let d = new Date(gosterilenTarihObj); d.setDate(d.getDate() - i);
         let dStr = String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
         let v = apiData.tumVeriler[dStr];
-        if (v && String(veriBul(v, ["aktivite"])).toLowerCase() !== "-" && !String(veriBul(v, ["aktivite"])).toLowerCase().match(/(hayır|yapmad)/)) son3GunAktifGunler++;
+        if (v && String(veriBul(v, ["aktivite"])).toLowerCase() !== "-" && !String(veriBul(v, ["aktivite"])).toLowerCase().match(/(hayır|yapmad)/)) son7GunAktifGunler++;
     }
 
     // SON 7 GÜN KÜMÜLATİF (İlaç Eksikliği - DMARD Yarı Ömrü)
@@ -1071,24 +1074,24 @@ function renderHealthDiary() {
     let isTerleme = String(terleme).toLowerCase().includes("evet");
 
     // ==========================================
-    // SEVİYE 5 KORELASYONLAR (YENİ EKLENENLER)
+    // SEVİYE 5 KORELASYONLAR
     // ==========================================
 
-    // 1. GECE TERLEMESİ (EN KRİTİK UYARI)
+    // 1. GECE TERLEMESİ
     if (isTerleme) {
-        aiMsg.push(`🚨 <b>Gece Terlemesi:</b> Bu gece yaşadığın terleme vücudunda iltihabın (enflamasyon) aktif olduğunu veya ufak bir enfeksiyon atlattığını gösterebilir. Lütfen yarın sabah ateşini her zamankinden daha dikkatli ölçmelisin.`);
+        aiMsg.push(`🚨 <b>Gece Terlemesi:</b> ${tBuGece} yaşadığın terleme vücudunda iltihabın (enflamasyon) aktif olduğunu veya ufak bir enfeksiyon atlattığını gösterebilir. Lütfen ${tYarin.toLowerCase()} sabah ateşini her zamankinden daha dikkatli ölçmelisin.`);
         isBadDay = true;
     }
 
     // 2. SİNİR HASSASİYETİ (NÖROPATİ)
     if (isSinirVar) {
-        aiMsg.push(`🧬 <b>Sinir Hassasiyeti:</b> "Sinir uçlarım batıyor" hissi, Sjögren'e bağlı nöropatik bir sızıdır. Yarın eklemlerini zorlayacak işlerden tamamen uzak durmalısın; vücudun sinir kılıflarını dinlendirmek istiyor.`);
+        aiMsg.push(`🧬 <b>Sinir Hassasiyeti:</b> "Sinir uçlarım batıyor" hissi, Sjögren'e bağlı nöropatik bir sızıdır. ${tYarin} eklemlerini zorlayacak işlerden tamamen uzak durmalısın; vücudun sinir kılıflarını dinlendirmek istiyor.`);
         isBadDay = true;
     }
 
     // 3. ATEŞ
     if (!isNaN(ates) && ates >= 37.0) {
-        aiMsg.push(`🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`);
+        aiMsg.push(`🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ${tBugun.toLowerCase()} ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`);
         isBadDay = true;
     }
 
@@ -1098,17 +1101,17 @@ function renderHealthDiary() {
     let isEnerjiDusuk = (!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/));
     
     if ((gunHaftaninKacinciGunu === 2 || gunHaftaninKacinciGunu === 3) && isEnerjiDusuk) {
-        aiMsg.push(`🧬 <b>Metoartcon Yorgunluğu:</b> Pazartesi akşamı vurduğun Metoartcon iğnesinin "ilaç yorgunluğunu (hangover)" yaşıyorsun. Folbiol içmene rağmen bu halsizlik 24-48 saat sürebilir, yarın da kendini dinlendirmeye özen göster.`);
+        aiMsg.push(`🧬 <b>Metoartcon Yorgunluğu:</b> Pazartesi akşamı vurduğun Metoartcon iğnesinin "ilaç yorgunluğunu (hangover)" ${tYasiyorsun}. Folbiol içmene rağmen bu halsizlik 24-48 saat sürebilir, ${tYarin.toLowerCase()} da kendini dinlendirmeye özen göster.`);
         isBadDay = true;
     }
 
     // 5. KÜMÜLATİF YORGUNLUK VE KORTİZON REBOUND
-    if (son3GunAktifGunler >= 2 && (isSabahBad || isAgriVar || isUykuBad)) {
-        let deltaUyari = oncekiGunDelta ? "Özellikle dünkü kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
-        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 3 gündür eklemlerine yükleniyorsun. Bugün hissettiğin tutukluk o birikmiş yorgunluğun faturası. Lütfen yarın sıfır aktiviteyle motoru tamamen soğut.`);
+    if (son7GunAktifGunler >= 3 && (isSabahBad || isAgriVar || isUykuBad)) {
+        let deltaUyari = oncekiGunDelta ? "Özellikle kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
+        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 7 gündür eklemlerine sık yüklendiğin (toplam ${son7GunAktifGunler} gün aktivite) görülüyor. ${tBugun} hissettiğin tutukluk o birikmiş yorgunluğun faturası. Lütfen ${tYarin.toLowerCase()} sıfır aktiviteyle motoru tamamen soğut.`);
         isBadDay = true;
-    } else if (oncekiGunDelta && son3GunAktifGunler >= 1 && (isSabahBad || isAgriVar)) {
-        aiMsg.push(`⚠️ <b>Dünkü Temponun Faturası:</b> Dün kortizonun verdiği geçici enerjiyle yorulmuşsun. Ağrının yarına sarkmaması için yarın eklemlerine kesinlikle dinlenme izni ver.`);
+    } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahBad || isAgriVar)) {
+        aiMsg.push(`⚠️ <b>Temponun Faturası:</b> Bir önceki gün kortizonun verdiği geçici enerjiyle yorulmuşsun. Ağrının ${tYarin.toLowerCase()}a sarkmaması için ${tYarin.toLowerCase()} eklemlerine kesinlikle dinlenme izni ver.`);
         isBadDay = true;
     }
 
@@ -1123,21 +1126,21 @@ function renderHealthDiary() {
     }
 
     if (isUykuBad && isSabahBad) {
-        if(!isBadDay) aiMsg.push("Dün geceki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. Yarın sabah uyanınca alacağın sıcak bir duş seni hafifletecektir.");
+        if(!isBadDay) aiMsg.push(`${tBuGece}ki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. ${tYarin} sabah alacağın sıcak bir duş seni hafifletecektir.`);
         isBadDay = true;
     } else if (isUykuGood && isSabahGood && !isBadDay && aiMsg.length === 0) {
-        aiMsg.push("Geceyi deliksiz geçirmen ve kuş gibi uyanman harika haber! Tedavimiz tıkır tıkır çalışıyor.");
+        aiMsg.push(`${tBuGece}yi deliksiz geçirmen ve kuş gibi uyanman harika haber! Tedavimiz tıkır tıkır çalışıyor.`);
     }
 
     if (isEnerjiDusuk && gunHaftaninKacinciGunu !== 2 && gunHaftaninKacinciGunu !== 3) {
-        aiMsg.push("Romatizma kaynaklı genel enerjin bugün oldukça düşüktü, yarın ağır işleri tamamen bir kenara bırakıp kendini şarj etmelisin.");
+        aiMsg.push(`Romatizma kaynaklı genel enerjin ${tBugun.toLowerCase()} oldukça düşüktü, ${tYarin.toLowerCase()} ağır işleri tamamen bir kenara bırakıp kendini şarj etmelisin.`);
         isBadDay = true;
     }
     
     if (kuruluk !== "-") {
         let numK = parseInt(kuruluk);
         if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma|çok kurudu)/))) {
-            aiMsg.push("Bugün göz ve ağız kuruluğun artmış görünüyor. Yarın ekranlara daha fazla ara verip damlalarını sıklaştırmayı unutma.");
+            aiMsg.push(`${tBugun} göz ve ağız kuruluğun artmış ${tGorunuyor}. ${tYarin} ekranlara daha fazla ara verip damlalarını sıklaştırmayı unutma.`);
         }
     }
 
@@ -1156,7 +1159,7 @@ function renderHealthDiary() {
     }
 
     if (aiMsg.length === 0) {
-        aiMsg.push(`Sultanım, yarın eklemlerini dinlediğin ve kendini hiç yormadığın harika bir gün olsun. Şifa uykusu seni bekliyor. 💖`);
+        aiMsg.push(`Sultanım, ${tYarin.toLowerCase()} eklemlerini dinlediğin ve kendini hiç yormadığın harika bir gün olsun. Şifa uykusu seni bekliyor. 💖`);
     }
 
     if (!isTodayData) {
@@ -1313,19 +1316,19 @@ function doktorRaporuOlustur() {
             if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
         }
 
-        // KÖK NEDEN ANALİZİ (TIBBİ PENCERELER: Uyku 5 Gün, Aktivite 3 Gün, İlaç 7 Gün)
+        // KÖK NEDEN ANALİZİ (TIBBİ PENCERELER: Uyku 5 Gün, Aktivite 7 Gün, İlaç 7 Gün)
         if (isTutuklukKotu || isAgriSiddetli) {
             toplamAlevlenme++;
             
-            let son3GunAktiflik = 0;
+            let son7GunAktiflik = 0;
             let son5GunKotuUyku = isUykuBad ? 1 : 0; 
             let son7GunIlacAksadi = false;
 
-            // Son 3 Gün Aktivite Taraması
-            for (let i = 1; i <= 3; i++) {
+            // Son 7 Gün Aktivite Taraması
+            for (let i = 1; i <= 7; i++) {
                 if (index + i < tarihler.length) {
                     let gA = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["aktivite"])).toLowerCase();
-                    if (gA !== "-" && !gA.match(/(yapmad|hayır)/)) son3GunAktiflik++;
+                    if (gA !== "-" && !gA.match(/(yapmad|hayır)/)) son7GunAktiflik++;
                 }
             }
             
@@ -1345,7 +1348,7 @@ function doktorRaporuOlustur() {
                 }
             }
 
-            if (son3GunAktiflik >= 2) alevlenmeNedeniAktivite++;
+            if (son7GunAktiflik >= 4) alevlenmeNedeniAktivite++;
             if (son5GunKotuUyku >= 3) alevlenmeNedeniUyku++; 
             if (son7GunIlacAksadi) alevlenmeNedeniIlac++;
         }
@@ -1378,7 +1381,7 @@ function doktorRaporuOlustur() {
             Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. İlaç yarı ömürleri ve kümülatif yorgunluk süreleri baz alınarak yapılan geriye dönük (3-7 günlük pencereli) analizlere göre;
             <ul style="margin-top: 5px; margin-bottom: 5px;">
                 ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, son 5 gün içerisinde oluşan kronik uyku borcu ve ardışık kalitesiz uyku örüntüsünün eşlik ettiği saptanmıştır. (Sekonder Fibromiyaljik Ağrı Eşiği Düşüklüğü)</li>` : ''}
-                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 3 günlük DOMS (Gecikmiş Başlangıçlı Kas/Eklem Ağrısı) periyodunda yaşanan ardışık fiziksel yüklenmelerin tetikleyici faktör olduğu görülmüştür. (Kümülatif Mekanik Zorlanma)</li>` : ''}
+                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 7 günlük periyotta yaşanan yoğun fiziksel yüklenmelerin (Kümülatif Yorgunluk) tetikleyici faktör olduğu görülmüştür. (Mekanik Zorlanma)</li>` : ''}
                 ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında, kandaki DMARD/Biyolojik düzeyinin azalmasına bağlı olarak (son 7 gün içerisindeki eksik/düzensiz ilaç kullanımı) ortaya çıktığı tespit edilmiştir.</li>` : ''}
                 ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir çevresel veya davranışsal tetikleyici bulunamamıştır. Temel hastalık aktivitesinin (inflamasyonun) değerlendirilmesi önerilir.</li>` : ''}
             </ul>
