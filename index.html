@@ -1270,31 +1270,32 @@ function doktorRaporuOlustur() {
         var veri = apiData.tumVeriler[tarih];
         
         var atesHam = veriBul(veri, ["ates", "ateş"]);
-        var tutukluk = String(veriBul(veri, ["tutuk", "sabah"])).toLowerCase();
-        var agri = String(veriBul(veri, ["agri", "ağrı", "şiş", "sis", "eklem"])).toLowerCase();
+        var tutukluk = String(veriBul(veri, ["tutuk", "sabah"]));
+        var agri = String(veriBul(veri, ["agri", "ağrı", "şiş", "sis", "eklem"]));
         var bolge = String(veriBul(veri, ["bölge", "bolge", "rahatsiz"]));
-        var aktivite = String(veriBul(veri, ["aktivite"])).toLowerCase();
-        var uyku = String(veriBul(veri, ["uyku", "gece"])).toLowerCase();
-        var enerji = String(veriBul(veri, ["enerji"])).toLowerCase();
+        var aktivite = String(veriBul(veri, ["aktivite"]));
+        var uyku = String(veriBul(veri, ["uyku", "gece"]));
+        var enerji = String(veriBul(veri, ["enerji"]));
         var terleme = String(veriBul(veri, ["terleme"])).toLowerCase();
+        var kuruluk = String(veriBul(veri, ["göz", "goz", "kuru"]));
         
         var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
         var atesGosterim = (!isNaN(ates) && ates > 0) ? ates + "°C" : "-";
         if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
 
-        var bKucuk = String(bolge).toLowerCase();
+        var bKucuk = bolge.toLowerCase();
         if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yoktu")) { bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1; }
 
-        let isUykuBad = uyku.match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
-        let isTutuklukKotu = tutukluk.match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
-        let isAktif = aktivite !== "-" && !aktivite.match(/(yapmad|hayır)/);
-        let isAgriSiddetli = agri.match(/(şiş|ağrılı|şiddetli)/);
+        let isUykuBad = uyku.toLowerCase().match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
+        let isTutuklukKotu = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
+        let isAktif = aktivite !== "-" && !aktivite.toLowerCase().match(/(yapmad|hayır)/);
+        let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli)/);
 
         if (isUykuBad) sorunluUykuGecesi++;
         if (isTutuklukKotu) agirTutuklukGunu++;
         if (isAktif) aktifGunSayisi++;
         if (terleme.includes("evet")) terlemeGunSayisi++;
-        if (agri.includes("sinir")) sinirHassasiyetiGun++;
+        if (agri.toLowerCase().includes("sinir")) sinirHassasiyetiGun++;
 
         // KORTİZON HARİTASI
         let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
@@ -1302,10 +1303,10 @@ function doktorRaporuOlustur() {
 
         if (!bugunDeltaGunuMu) {
             deltaAlinmayanGun++;
-            if (isTutuklukKotu || (!agri.includes("ağrım yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
+            if (isTutuklukKotu || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
         } else {
             deltaAlinanGun++;
-            if (isTutuklukKotu || (!agri.includes("ağrım yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
+            if (isTutuklukKotu || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
         }
 
         // METOTREKSAT HANGOVER ENDEKSİ (Pzt İğne -> Salı/Çrş Yorgunluk)
@@ -1313,10 +1314,10 @@ function doktorRaporuOlustur() {
         if (gunNo === 2 || gunNo === 3) {
             mtxErtesiGunuToplami++;
             let numE = parseInt(enerji);
-            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
+            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
         }
 
-        // KÖK NEDEN ANALİZİ (TIBBİ PENCERELER: Uyku 5 Gün, Aktivite 7 Gün, İlaç 7 Gün)
+        // KÖK NEDEN ANALİZİ
         if (isTutuklukKotu || isAgriSiddetli) {
             toplamAlevlenme++;
             
@@ -1324,7 +1325,6 @@ function doktorRaporuOlustur() {
             let son5GunKotuUyku = isUykuBad ? 1 : 0; 
             let son7GunIlacAksadi = false;
 
-            // Son 7 Gün Aktivite Taraması
             for (let i = 1; i <= 7; i++) {
                 if (index + i < tarihler.length) {
                     let gA = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["aktivite"])).toLowerCase();
@@ -1332,7 +1332,6 @@ function doktorRaporuOlustur() {
                 }
             }
             
-            // Son 5 Gün Uyku Taraması
             for (let i = 1; i <= 5; i++) {
                 if (index + i < tarihler.length) {
                     let gU = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["uyku", "gece"])).toLowerCase();
@@ -1340,7 +1339,6 @@ function doktorRaporuOlustur() {
                 }
             }
 
-            // Son 7 Gün İlaç Taraması
             for (let i = 1; i <= 7; i++) {
                 if (index + i < tarihler.length) {
                     let gV = apiData.tumVeriler[tarihler[index+i]];
@@ -1353,8 +1351,32 @@ function doktorRaporuOlustur() {
             if (son7GunIlacAksadi) alevlenmeNedeniIlac++;
         }
 
-        let gosterimTerleme = terleme.includes("evet") ? "Evet 💦" : (terleme === "-" ? "-" : "Hayır");
-        tabloSatirlari += `<tr><td>${tarih}</td><td>${atesGosterim}</td><td>${tutukluk}</td><td>${agri}</td><td>${uyku}</td><td>${gosterimTerleme}</td></tr>`;
+        // ==========================================
+        // TABLO İÇİN KOMBİNE EDİLMİŞ ŞIK GÖSTERİMLER
+        // ==========================================
+        let gosterimSistemik = atesGosterim;
+        if(terleme.includes("evet")) gosterimSistemik += `<br><span style="font-size:12px; color:#d97706; font-weight:bold;">💦 Terleme</span>`;
+
+        let gosterimAgri = agri !== "-" ? agri : "-";
+        if(bolge !== "-" && !bKucuk.match(/(hayır|yoktu)/)) gosterimAgri += `<br><span style="font-size:12px; color:#475569;">📍 ${bolge}</span>`;
+
+        let gosterimSjogren = kuruluk !== "-" ? kuruluk : "-";
+        
+        let gosterimUyku = uyku !== "-" ? uyku : "-";
+        if(enerji !== "-") gosterimUyku += `<br><span style="font-size:12px; color:#475569;">⚡ Enerji: ${enerji}</span>`;
+
+        let gosterimAktivite = aktivite !== "-" ? aktivite : "-";
+
+        tabloSatirlari += `
+            <tr>
+                <td><strong>${tarih.substring(0,5)}</strong></td>
+                <td>${gosterimSistemik}</td>
+                <td>${tutukluk}</td>
+                <td>${gosterimAgri}</td>
+                <td>${gosterimSjogren}</td>
+                <td>${gosterimUyku}</td>
+                <td>${gosterimAktivite}</td>
+            </tr>`;
     });
 
     var enCokAgriyanBolge = "Belirgin bir bölge yok"; var maxTekrar = 0;
@@ -1448,7 +1470,17 @@ function doktorRaporuOlustur() {
         <div class="rap-bolum">
             <h3>📅 Günlük Detay Çizelgesi</h3>
             <table class="rap-tablo">
-                <thead><tr><th>Tarih</th><th>Ateş</th><th>Tutukluk</th><th>Eklem/Sinir</th><th>Uyku</th><th>Terleme</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th style="width:7%;">Tarih</th>
+                        <th style="width:13%;">Sistemik</th>
+                        <th style="width:15%;">Sabah Tutukluğu</th>
+                        <th style="width:20%;">Eklem Durumu</th>
+                        <th style="width:15%;">Sjögren (Kuruluk)</th>
+                        <th style="width:15%;">Uyku & Enerji</th>
+                        <th style="width:15%;">Aktivite</th>
+                    </tr>
+                </thead>
                 <tbody>${tabloSatirlari}</tbody>
             </table>
         </div>`;
