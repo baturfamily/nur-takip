@@ -13,65 +13,395 @@
 <meta name="theme-color" content="#0B0B0E" media="(prefers-color-scheme: dark)">
 
 <style>
-/* --- TÜM CSS TASARIMIN (DOKUNULMADI) --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
-  --bg: #F4F4F7; --card: #FFFFFF; --text: #2C2C2E; --muted: #8E8E93; --line: rgba(0,0,0,0.06);
-  --accent: #34C759; --warning: #FF9500; --danger: #FF3B30; --early: #007AFF; --purple: #AF52DE;
-  --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%); --vip-text: #FFFFFF;
-  --vip-muted: #A0AAB5; --vip-gold: #F1C40F; --vip-shadow: 0 12px 24px rgba(0,0,0,0.15);
-  --card-border: rgba(0,0,0,0.03); --card-shadow: 0 10px 30px rgba(0,0,0,0.06);
-  --done-bg: rgba(52, 199, 89, 0.04); --done-border: rgba(52, 199, 89, 0.3);
-  --wait-badge-bg: rgba(0,0,0,0.05); --wait-badge-text: #636366; 
+  --bg: #F4F4F7; 
+  --card: #FFFFFF; 
+  --text: #2C2C2E; 
+  --muted: #8E8E93; 
+  --line: rgba(0,0,0,0.06);
+  --accent: #34C759; 
+  --warning: #FF9500; 
+  --danger: #FF3B30; 
+  --early: #007AFF; 
+  --purple: #AF52DE; 
+  
+  --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
+  --vip-text: #FFFFFF;
+  --vip-muted: #A0AAB5;
+  --vip-gold: #F1C40F;
+  --vip-shadow: 0 12px 24px rgba(0,0,0,0.15);
+
+  --card-border: rgba(0,0,0,0.03);
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.06);
+
+  --done-bg: rgba(52, 199, 89, 0.04);
+  --done-border: rgba(52, 199, 89, 0.3);
+  --wait-badge-bg: rgba(0,0,0,0.05);
+  --wait-badge-text: #636366; 
 }
+
+/* --- KARANLIK (DARK) MOD RENKLERİ --- */
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #0B0B0E; --card: #1C1C1E; --text: #EAEBEE; --muted: #98989D; --line: rgba(255,255,255,0.08); --accent: #32D74B; --warning: #FF9D0A; --danger: #FF453A; --early: #0A84FF; --purple: #BF5AF2; --vip-shadow: 0 12px 30px rgba(0,0,0,0.5); --card-border: rgba(255,255,255,0.05); --card-shadow: 0 10px 30px rgba(0,0,0,0.4); --done-bg: rgba(50, 215, 75, 0.05); --done-border: rgba(50, 215, 75, 0.3); --wait-badge-bg: rgba(255,255,255,0.1); --wait-badge-text: #D1D1D6; }
+  :root { 
+    --bg: #0B0B0E; 
+    --card: #1C1C1E; 
+    --text: #EAEBEE; 
+    --muted: #98989D; 
+    --line: rgba(255,255,255,0.08);
+    --accent: #32D74B; 
+    --warning: #FF9D0A; 
+    --danger: #FF453A; 
+    --early: #0A84FF; 
+    --purple: #BF5AF2;
+    
+    --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%);
+    --vip-text: #FFFFFF;
+    --vip-muted: #98989D;
+    --vip-gold: #F1C40F;
+    --vip-shadow: 0 12px 30px rgba(0,0,0,0.5);
+
+    --card-border: rgba(255,255,255,0.05);
+    --card-shadow: 0 10px 30px rgba(0,0,0,0.4);
+
+    --done-bg: rgba(50, 215, 75, 0.05);
+    --done-border: rgba(50, 215, 75, 0.3);
+    --wait-badge-bg: rgba(255,255,255,0.1);
+    --wait-badge-text: #D1D1D6; 
+  }
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+body { 
+  margin: 0; 
+  background: var(--bg); 
+  color: var(--text); 
+  font-family: -apple-system, system-ui, sans-serif; 
+  padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; 
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100dvh; 
+  width: 100vw;
+  
+  display: flex; 
+  flex-direction: column; 
+  overflow: hidden; 
+  -webkit-font-smoothing: antialiased; 
+  transition: background 0.3s, color 0.3s; 
+}
+
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
 .safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; line-height: 1.3;}
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
 .shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
 .shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
 .shield-blue { background: linear-gradient(135deg, #0a84ff 0%, #0040dd 100%); animation: pulse-blue 2.5s ease-in-out infinite; }
+
 @keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
+
 .app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
 .app-title .greeting { font-size: 17px; font-weight: 700; color: var(--vip-muted); }
 .app-title .name-tag { font-size: 22px; white-space: nowrap; color: var(--vip-text); }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; z-index: 1;}
 .clock-text { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
 .sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); }
-.premium-card { background: var(--card); border-radius: 20px; padding: 12px 14px; border: 1px solid var(--card-border); margin-bottom: 8px; box-shadow: var(--card-shadow); transition: all 0.3s ease; overflow: hidden; flex-shrink: 0; }
-.ios-weather-card { padding: 16px; background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%); border: 1px solid #BADCFF; }
+
+.premium-card { 
+    background: var(--card); 
+    border-radius: 20px; 
+    padding: 12px 14px; 
+    border: 1px solid var(--card-border); 
+    margin-bottom: 8px; 
+    box-shadow: var(--card-shadow); 
+    transition: all 0.3s ease;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ios-weather-card { 
+    padding: 16px; 
+    background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%);
+    border: 1px solid #BADCFF;
+}
 .ios-w-top { display: flex; justify-content: space-between; align-items: center; }
 .ios-w-city { font-size: 13px; font-weight: 800; color: #5B7BA6; margin: 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
 .ios-w-right-group { display: flex; align-items: center; gap: 8px; }
+
 .ios-w-temp { font-size: 28px; font-weight: 600; letter-spacing: -1px; line-height: 1; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.05); color: var(--text); }
 .ios-w-icon { font-size: 26px; line-height: 1; margin: 0; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));}
+
 .ios-w-hum { font-size: 13px; font-weight: 800; background: rgba(255,255,255,0.6); padding: 4px 10px; border-radius: 12px; margin: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.03);}
+
 .ios-w-divider { height: 1px; background: rgba(91, 123, 166, 0.2); margin: 12px 0; }
 .ios-w-advice { display: flex; gap: 10px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 24px; margin-top: 2px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
 .ios-w-adv-text { font-size: 17px; font-weight: 700; color: #1E293B; line-height: 1.5; letter-spacing: -0.3px; display: block; }
+
+@media (prefers-color-scheme: dark) {
+    .ios-weather-card { background: linear-gradient(135deg, #1A2639 0%, #111827 100%); border-color: #2D3E5B; }
+    .ios-w-city { color: #8BA6C9; }
+    .ios-w-divider { background: rgba(139, 166, 201, 0.15); }
+    .ios-w-adv-text { color: #E2E8F0; }
+    .ios-w-hum { background: rgba(0,0,0,0.4); }
+}
+
 .diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; cursor: pointer; }
 .diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
 .diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
+
 .diary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
 .diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 4px;}
 .diary-streak { font-size: 12px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 10px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; flex-shrink: 0;}
-.diary-pills { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+
+.diary-pills { 
+    display: flex; 
+    gap: 6px; 
+    overflow-x: auto; 
+    padding-bottom: 2px; 
+    -webkit-overflow-scrolling: touch; 
+    scrollbar-width: none; 
+    -ms-overflow-style: none; 
+}
+.diary-pills::-webkit-scrollbar { display: none; }
+
 .diary-pill { background: rgba(255,255,255,0.9); padding: 4px 10px; border-radius: 10px; font-size: 13px; font-weight: 700; color: #334155; display: flex; align-items: center; gap: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); white-space: nowrap; flex-shrink: 0; }
 .diary-pill.alert { background: #FEE2E2; color: #EF4444; border: 1px solid #FCA5A5; }
-.diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.65); padding: 14px 16px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #475569; line-height: 1.5; border-left: 3px solid #3B82F6; }
-.stat-ai-summary { background: rgba(255,255,255,0.6); padding: 16px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.5; color: #334155; margin-bottom: 16px; border-left: 3px solid var(--purple); }
-.stat-ai-summary strong { color: var(--purple); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
-.vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.diary-pill.info { background: #E0F2FE; color: #0284C7; border: 1px solid #BAE6FD; }
+
+.diary-card.collapsed .diary-ai-box { display: none; }
+.diary-card.collapsed .dt-opened { display: none; }
+.diary-card:not(.collapsed) .dt-closed { display: none; }
+
+.diary-toggle-bar { 
+    text-align: center; 
+    font-size: 13px; 
+    font-weight: 700; 
+    margin: 12px auto 0 auto; 
+    transition: 0.2s;
+    background: rgba(255,255,255,0.5); 
+    display: block; 
+    width: max-content; 
+    padding: 6px 16px; 
+    border-radius: 20px; 
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03); 
+}
+.diary-mood-good .diary-toggle-bar { color: #047857; }
+.diary-mood-rest .diary-toggle-bar { color: #B45309; }
+
+.diary-ai-box { 
+    margin-top: 12px; 
+    background: rgba(255,255,255,0.65); 
+    padding: 14px 16px; 
+    border-radius: 12px; 
+    font-size: 17px; 
+    font-weight: 600; 
+    letter-spacing: -0.3px; 
+    color: #475569; 
+    line-height: 1.5; 
+    border-left: 3px solid #3B82F6; 
+}
+.diary-mood-good .diary-ai-box { border-left-color: #10B981; }
+.diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
+
+@media (prefers-color-scheme: dark) {
+    .diary-mood-good { background: var(--card); border-color: #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.12); }
+    .diary-mood-rest { background: var(--card); border-color: #D97706; box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); }
+    .diary-title { color: #F8FAFC; }
+    .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; }
+    .diary-pill { background: rgba(0,0,0,0.3); color: #E2E8F0; }
+    .diary-ai-box { background: rgba(255,255,255,0.06); color: #E2E8F0; font-weight: 500; }
+    .diary-pill.alert { background: rgba(239,68,68,0.2); color: #FCA5A5; border-color: #DC2626; }
+    .diary-pill.info { background: rgba(14,165,233,0.2); color: #7DD3FC; border-color: #0284C7; }
+    .diary-toggle-bar { background: rgba(0,0,0,0.3); }
+    .diary-mood-good .diary-toggle-bar { color: #34D399; }
+    .diary-mood-rest .diary-toggle-bar { color: #FBBF24; }
+}
+
+.stat-card .card-header { margin-bottom: 0; cursor: pointer; }
+.stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
+.stat-card { padding: 12px 16px; margin-bottom: 12px; }
+.stat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px dashed var(--line); gap: 12px; }
+.stat-row:last-child { border-bottom: none; }
+.stat-date { font-weight: 900; color: var(--text); min-width: 80px; font-size: 17px;}
+.stat-info { flex: 1; display: flex; flex-direction: column; gap: 6px;}
+.stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
+.stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
+
+.stat-ai-summary {
+    background: rgba(255,255,255,0.6);
+    padding: 16px;
+    border-radius: 12px;
+    font-size: 17px; 
+    font-weight: 600; 
+    letter-spacing: -0.3px; 
+    line-height: 1.5;
+    color: #334155;
+    margin-bottom: 16px;
+    border-left: 3px solid var(--purple);
+}
+.stat-ai-summary strong { 
+    color: var(--purple); 
+    font-weight: 800; 
+    font-size: 14px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    display: block; 
+    margin-bottom: 8px; 
+}
+
+@media (prefers-color-scheme: dark) {
+    .stat-ai-summary { background: rgba(0,0,0,0.2); color: #E2E8F0; border-left-color: #BF5AF2; }
+    .stat-ai-summary strong { color: #BF5AF2; }
+}
+
+.vertical-list { 
+  display: flex; 
+  flex-direction: column; 
+  gap: 12px; 
+  flex: 1; 
+  overflow-y: auto; 
+  padding-bottom: max(120px, env(safe-area-inset-bottom)); 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch; 
+}
+  
+.vertical-list::-webkit-scrollbar { display: none; }
+
 .card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;}
-.rapor-btn { background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); color: white; padding: 14px 20px; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 4px; margin-bottom: 24px; width: 100%; box-shadow: 0 4px 15px rgba(142, 84, 233, 0.25); flex-shrink:0; }
+.card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
+
+.card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; }
+.drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
+
+.badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
+.badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); }
+.badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); }
+.badge-warning { background: rgba(255, 149, 0, 0.15); color: var(--warning); } 
+
+.exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 10px; }
+.card.collapsed .exp-arrow { transform: rotate(180deg); } 
+
+.check-icon { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--line); flex-shrink: 0; transition: 0.2s; }
+.check-icon.done { background-color: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 2px 6px rgba(52, 199, 89, 0.3); }
+.check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+.meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
+.history-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); gap: 12px;}
+.history-item:last-child { border-bottom: none; }
+
+.med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
+.drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; }
+.drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
+
+.card.collapsed { cursor: pointer; }
+.card.collapsed .meds-container { display: none; }
+.card.collapsed .card-header { margin-bottom: 0; }
+
 .minik-button { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; }
-.gemini-badge { background: var(--purple); color: white; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 900; margin-bottom: 5px; display: inline-block; }
+.minik-button:active { transform: scale(0.9); }
+
+.minik-toast { 
+  position: fixed; 
+  bottom: calc(90px + env(safe-area-inset-bottom)); 
+  right: 20px; 
+  left: 20px;                 
+  background: var(--early); 
+  color: #fff; 
+  padding: 20px;              
+  border-radius: 24px; 
+  font-size: 18px;            
+  font-weight: 700; 
+  display: none; 
+  z-index: 1001; 
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4); 
+  line-height: 1.6;           
+  text-align: left; 
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.badge-danger { background: rgba(255, 59, 48, 0.15); color: var(--danger); font-weight: 900; }
+.late-card { border-color: var(--danger) !important; animation: latePulse 2s infinite; }
+
+@keyframes latePulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+  }
+
+.stat-card {
+    background: linear-gradient(135deg, #FFF7F0 0%, #FFEDE0 100%) !important;
+    border: 1px solid #F5E0CD !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    .stat-card {
+        background: linear-gradient(135deg, #2E2825 0%, #221D1A 100%) !important;
+        border: 1px solid #3D322C !important;
+    }
+}
+
+/* =======================================================
+   DOKTOR RAPORU VE YAZDIRMA (PRINT) STİLLERİ
+   ======================================================= */
+.rapor-btn { 
+    background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); 
+    color: white; 
+    padding: 14px 20px; 
+    border: none; 
+    border-radius: 18px; 
+    font-weight: 800; 
+    font-size: 16px; 
+    cursor: pointer; 
+    margin-top: 4px;
+    margin-bottom: 24px; 
+    width: 100%; 
+    box-shadow: 0 4px 15px rgba(142, 84, 233, 0.25); 
+    flex-shrink:0; 
+}
+#print-report-area { display: none; }
+  
+@media print {
+    html, body {
+        position: static !important;
+        overflow: visible !important;
+        height: auto !important;
+        width: auto !important;
+        display: block !important;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    body > :not(#print-report-area) { display: none !important; }
+    #print-report-area {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        padding: 20px !important;
+        font-family: Arial, sans-serif !important;
+        color: #000 !important;
+        font-size: 16px !important; 
+    }
+    .rap-baslik { font-size: 26px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 24px; color: #111; }
+    .rap-bolum { margin-bottom: 24px; break-inside: avoid; }
+    .rap-bolum h3 { font-size: 19px; border-bottom: 2px solid #ccc; padding-bottom: 6px; margin-bottom: 12px; color: #222; }
+    .rap-bolum ul { padding-left: 20px; margin-bottom: 10px; }
+    .rap-bolum ul li { margin-bottom: 8px; font-size: 16px; line-height: 1.5; }
+    .rap-tablo { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; }
+    .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 8px 6px; text-align: center; }
+    .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 15px; }
+    .rap-alert { color: red; font-weight: bold; }
+}
+
 </style>
 </head>
 <body onclick="document.getElementById('minikToast').style.display = 'none'">
@@ -79,155 +409,1236 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div id="alertsArea"></div>
 
 <div class="vip-header">
-  <div class="app-title">
-    <span class="greeting" id="greetingText">Günaydın,</span> 
-    <span class="name-tag">Nurten Sultan 🌼</span>
-  </div>
-  <div class="header-info">
-    <div id="clock" class="clock-text">--:--</div>
-    <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
-  </div>
+    <div class="app-title">
+        <span class="greeting" id="greetingText">Günaydın,</span> 
+        <span class="name-tag">Nurten Sultan 🌼</span>
+    </div>
+    <div class="header-info">
+        <div id="clock" class="clock-text">--:--</div>
+        <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
+    </div>
 </div>
 
 <div class="premium-card ios-weather-card">
-  <div class="ios-w-top">
-    <div class="ios-w-city">📍 Avrupark Hayat</div>
-    <div class="ios-w-right-group">
-      <div class="ios-w-temp" id="wTempText">--°</div>
-      <div class="ios-w-icon" id="wMainIcon">🌥️</div>
-      <div class="ios-w-hum" id="wHumText">%-- Nem</div>
+    <div class="ios-w-top">
+        <div class="ios-w-city">📍 Avrupark Hayat</div>
+        <div class="ios-w-right-group">
+            <div class="ios-w-temp" id="wTempText">--°</div>
+            <div class="ios-w-icon" id="wMainIcon">🌥️</div>
+            <div class="ios-w-hum" id="wHumText">%-- Nem</div>
+        </div>
     </div>
-  </div>
-  <div class="ios-w-divider"></div>
-  <div class="ios-w-advice">
-    <div class="ios-w-adv-icon" id="wAdvIcon">🩺</div>
-    <div class="ios-w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
-  </div>
+    <div class="ios-w-divider"></div>
+    <div class="ios-w-advice">
+        <div class="ios-w-adv-icon" id="wAdvIcon">🩺</div>
+        <div class="ios-w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
+    </div>
 </div>
 
 <div class="vertical-list">
-  <div id="healthDiaryArea"></div>
-  <div id="timelineArea"></div>
-  <div id="statsArea">
-    <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed')">
-      <div class="card-header">
-        <div class="drug-name">📊 <span>Bu Ayki Özet</span></div>
-        <div class="badge badge-wait" id="thisMonthBadge">%-- <span class="exp-arrow">▲</span></div>
-      </div>
-      <div class="meds-container stat-details" id="thisMonthDetails"></div>
+    
+    <div id="healthDiaryArea"></div>
+    <div id="timelineArea"></div>
+
+    <div id="statsArea">
+        
+        <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed')">
+            <div class="card-header">
+                <div class="drug-name">📊 <span>Bu Ayki Özet</span></div>
+                <div class="badge badge-wait" id="thisMonthBadge">%-- <span class="exp-arrow">▲</span></div>
+            </div>
+            <div class="meds-container stat-details" id="thisMonthDetails">
+                <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
+            </div>
+        </div>
+
+        <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed')">
+            <div class="card-header">
+                <div class="drug-name">⏪ <span>Geçen Ayın Özeti</span></div>
+                <div class="badge badge-wait" id="lastMonthBadge">%-- <span class="exp-arrow">▲</span></div>
+            </div>
+            <div class="meds-container stat-details" id="lastMonthDetails">
+                <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
+            </div>
+        </div>
+
+        <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed')">
+            <div class="card-header">
+                <div class="drug-name">🏆 <span>Yıllık Karne (<span id="currentYearText"></span>)</span></div>
+                <div class="badge badge-wait" id="yearlyBadge">%-- <span class="exp-arrow">▲</span></div>
+            </div>
+            <div class="meds-container stat-details" id="yearlyDetails">
+                <div class="stat-row"><span class="stat-info">Hesaplanıyor...</span></div>
+            </div>
+        </div>
+        
+        <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
+
     </div>
-    <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed')">
-      <div class="card-header">
-        <div class="drug-name">⏪ <span>Geçen Ayın Özeti</span></div>
-        <div class="badge badge-wait" id="lastMonthBadge">%-- <span class="exp-arrow">▲</span></div>
-      </div>
-      <div class="meds-container stat-details" id="lastMonthDetails"></div>
-    </div>
-    <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed')">
-      <div class="card-header">
-        <div class="drug-name">🏆 <span>Yıllık Karne (<span id="currentYearText"></span>)</span></div>
-        <div class="badge badge-wait" id="yearlyBadge">%-- <span class="exp-arrow">▲</span></div>
-      </div>
-      <div class="meds-container stat-details" id="yearlyDetails"></div>
-    </div>
-    <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
-  </div>
+
 </div>
 
 <div class="minik-button" onclick="event.stopPropagation(); mewMsg()">🐾</div>
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
-<div id="print-report-area"></div>
 
+<div id="print-report-area"></div>
 <script>
-// API URL (GÜNCEL)
+// API URL
 const API_URL = "https://script.google.com/macros/s/AKfycbwDHEhcXnN6rHLidscfGXxTgXxvYixPmUFUQJp_DO4mTjlw8x-sBsk_GRKw9qDJjs4Xkg/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
+
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
 
-// --- 🧠 GEMINI ENTEGRASYONU (GÜNLÜK ASİSTAN) ---
-function renderHealthDiary() {
-  if (!apiData || !apiData.tumVeriler) return;
+// GREETING
+const now = new Date();
+const hour = now.getHours();
+let gMsg = "";
+let vipBg = "";
 
-  // Senin orijinal asistan kodun (korelasyonlar, aiMsg listesi vb.)...
-  let aiMsg = []; 
-  
-  // Örn: aiMsg.push("Bugün romatizman biraz aktif..."); (Senin mevcut Level 5 mantığın burada çalışıyor)
-  
-  // GEMINI DOKUNUŞU: Backend'den gelen geminiYorumu'nu en başa, senin kutu tasarımına ekliyoruz.
-  if (apiData.geminiYorumu) {
-    aiMsg.unshift(`<div style="margin-bottom:15px; border-bottom:1px dashed var(--line); padding-bottom:8px;"><span class="gemini-badge">GEMINI ANALİZİ</span><br><i style="color:var(--text); opacity:0.85;">${apiData.geminiYorumu}</i></div>`);
-  }
-
-  // Senin orijinal HTML çizimin...
-  let finalHTML = `
-    <div class="diary-card diary-mood-good collapsed" onclick="this.classList.toggle('collapsed')">
-        <div class="diary-header"><h3 class="diary-title">✨ Akıllı Sağlık Analizi</h3></div>
-        <div class="diary-ai-box">${aiMsg.join("<br><br>")}</div>
-    </div>`;
-  document.getElementById('healthDiaryArea').innerHTML = finalHTML;
+if (hour >= 5 && hour < 12) {
+    gMsg = "Günaydın";
+    vipBg = "linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%)"; 
+} else if (hour >= 12 && hour < 17) {
+    gMsg = "Tünaydın";
+    vipBg = "linear-gradient(135deg, #32ADE6 0%, #007AFF 100%)"; 
+} else if (hour >= 17 && hour < 22) {
+    gMsg = "İyi Akşamlar";
+    vipBg = "linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%)"; 
+} else {
+    gMsg = "İyi Geceler";
+    vipBg = "linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%)"; 
 }
 
-// --- 📊 GEMINI ENTEGRASYONU (İSTATİSTİKLER) ---
+document.getElementById('greetingText').innerText = `${gMsg},`;
+
+const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+if(document.getElementById('currentYearText')) {
+    document.getElementById('currentYearText').innerText = now.getFullYear();
+}
+
+const vipHeader = document.querySelector('.vip-header');
+if (vipHeader) {
+    vipHeader.style.background = vipBg;
+    vipHeader.style.border = "none"; 
+}
+document.querySelectorAll('.app-title .greeting, .clock-text').forEach(el => {
+    el.style.color = "rgba(255, 255, 255, 0.85)";
+});
+
+// HAVA DURUMU
+async function fetchWeather() {
+    try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=uv_index_max&timezone=auto');
+        const data = await res.json();
+        
+        const t = Math.round(data.current.temperature_2m); 
+        const h = data.current.relative_humidity_2m;
+        const w = data.current.wind_speed_10m; 
+        const uv = data.daily.uv_index_max[0]; 
+
+        let icon = "🌥️", advIcon = "🩺", advColor = "var(--accent)", adviceList = [];
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+        if (uv > 5) {
+            advIcon = "🕶️"; advColor = "var(--warning)";
+            adviceList = ["Güneş (UV) bugün çok dik geliyor. İlaçların cildini hassas yapabilir, lütfen koruyucu sür ve gölgede kal.", "Yüksek UV uyarısı! Bugün cildini ve gözlerini güneşten korumalısın. En dik saatlerde çıkmamaya çalış.", "Güneş ışınları ilaçlarınla etkileşime girip ciltte kızarıklık yapabilir. Güneşten kaçmak şifadır."];
+        } 
+        else if (w > 20) {
+            icon = "🌬️"; advIcon = "💧"; advColor = "var(--early)";
+            adviceList = ["Dışarıda sert bir rüzgar var. Rüzgar Sjögren'in düşmanıdır ve gözlerini anında kurutur. Mutlaka damlanı damlat ve gözlerini koru.", "Esinti bugün fazla. Gözlerinin nem dengesini korumak için bugün her zamankinden daha dikkatli olmalısın Nurten Sultan.", "Sert rüzgar Sjögren'i tetikler. Gözlerinde batma hissetmeden önce önlemini almalı ve rüzgardan uzak durmalısın Sultanım."];
+        } 
+        else if (h > 70 && t < 15) {
+            icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)";
+            adviceList = [`Hava soğuk ve nemli (%${h}). Nem eklem sıvılarının basıncını değiştirip ağrı yapabilir. Lütfen dizlerini sıcak tutmaya özen göster.`, "Nem ve soğuk birleşince romatizman kendini hatırlatabilir. Ağrıların artmadan eklemlerini korumaya almalı ve bol su içmelisin.", "Serin ve nemli hava romatizmanın en sevmediği ikilidir. Kendini korumaya alıp vücut ısını sabit tutman çok önemli Sultanım."];
+        } 
+        else if (t < 12) {
+            icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)";
+            adviceList = ["Dışarısı oldukça soğuk. Soğuk hava eklemleri sertleştirir, lütfen kat kat giyinmeyi ve eklemlerini sıcak tutmayı ihmal etme.", "Sıcaklık çok düşük. Eklemlerin taş kesilmesin diye dizlerini ve ayaklarını her zamankinden daha sıcak tutmalısın Sultanım.", "Buz gibi bir hava seni bekliyor. Eklemlerini korumak için bugün kat kat giyinmenin gücünden yararlanmalısın Nurten Sultan."];
+        } 
+        else if (t > 28) {
+            icon = "☀️"; advIcon = "🥤"; advColor = "var(--warning)";
+            adviceList = ["Hava oldukça sıcak. Sıval kaybı ağız ve göz kuruluğunu artırır. Bol bol su içmeyi ve damlalarını kullanmayı unutma.", "Güneş yakıyor! Sıcaklık artışı Sjögren kuruluğunu tetikler. Lütfen susamayı beklemeden su içmeyi alışkanlık edin.", "Termometreler yükseliyor! Bu sıcakta en büyük şifan su ve serinliktir. Kendini güneşin etkisinden uzak tut Sultanım."];
+        } 
+        else {
+            adviceList = [`Hava bugün senin için gayet güzel (${t}°C). Romatizma ve Sjögren açısından en konforlu hissedeceğin gündesin. Keyfini çıkar!`, "Bugün tam senin havan Nurten Sultan! Sıcaklık ve nem tam istediğimiz seviyelerde. Eklemlerini yormadan hafif bir yürüyüş yapabilirsin.", "Harika bir gün seni bekliyor! Eklemlerin bugün esnek, gözlerin nemli kalacak. Bu güzel havanın tadını sonuna kadar çıkar."];
+            
+            let tempColor = "var(--text)";
+            if (t < 20) tempColor = "#34C759"; 
+            else if (t < 28) tempColor = "#FF9500"; 
+            document.getElementById('wTempText').style.color = tempColor;
+        }
+
+        let humColor = "var(--text)";
+        if (h < 40) humColor = "#FF9500"; 
+        else if (h <= 60) humColor = "#34C759"; 
+        else if (h <= 75) humColor = "#32ADE6"; 
+        else humColor = "#AF52DE"; 
+
+        document.getElementById('wMainIcon').innerText = icon;
+        document.getElementById('wTempText').innerText = t + "°";
+        document.getElementById('wHumText').innerText = "%" + h + " Nem";
+        document.getElementById('wHumText').style.color = humColor;
+        document.getElementById('wAdvIcon').innerText = advIcon;
+        document.getElementById('wAdvIcon').style.color = advColor; 
+        document.getElementById('wAdvice').innerText = pick(adviceList);
+
+    } catch(e) { console.error("Hava durumu çekilemedi:", e); }
+}
+fetchWeather();
+
+function mewMsg() {
+    const arrA = ["Nenesinin kuzusu,", "Benim bir tanecik nene sultanım,", "Dünyanın en güzel nenesine pati selamı,", "Evimizin gülü canım nenem,"];
+    const arrB = ["Keppra'mı uslu uslu içtim, uykumu aldım,", "Virbac mamamı afiyetle yedim, doyup gerindim,", "Kalp ilacımı hiç itiraz etmeden yuttum,"];
+    const arrC = ["şimdi sıra senin o şifalı ilaçlarını içmende,", "sen ilaçlarını içince benim bile tüylerim parlıyor,", "sen iyi ol ki ben de senin dizlerine kıvrılıp mırıldanayım,"];
+    const arrD = ["seni minik kalbimle çok seviyorum! ❤️", "ıslak burnumla yanaklarından öpüyorum! 🐾", "şifamız bol olsun, canım nenem! 🌼"];
+
+    const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+    const t = document.getElementById('minikToast');
+    t.innerHTML = `${pick(arrA)} ${pick(arrB)} ${pick(arrC)} ${pick(arrD)}`;
+    t.style.display = 'block';
+}
+
+function saniyeTiktak() {
+    const syncElement = document.getElementById('last-sync');
+    const clockElement = document.getElementById('clock');
+    const simdi = Date.now();
+    const dNow = new Date();
+    
+    clockElement.textContent = dNow.getDate() + " " + dNow.toLocaleDateString('tr-TR', {month:'short'}) + " • " + String(dNow.getHours()).padStart(2,'0') + ':' + String(dNow.getMinutes()).padStart(2,'0');
+
+    const farkSaniye = sonBasariZamani > 0 ? Math.floor((simdi - sonBasariZamani) / 1000) : 999;
+    
+    if (sonBasariZamani === 0) {
+        syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)";
+    } else if (farkSaniye < 20) {
+        const d = new Date(sonBasariZamani);
+        const sn = String(d.getSeconds()).padStart(2,'0');
+        syncElement.innerHTML = `🟢 Canlı (${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${sn})`;
+        syncElement.style.color = "#4ADE80"; 
+    } else if (farkSaniye < 60) {
+        syncElement.innerHTML = `🟡 Gecikme: ${farkSaniye} sn`; syncElement.style.color = "var(--vip-gold)";
+    } else {
+        syncElement.innerHTML = `🔴 Bağlantı Yok`; syncElement.style.color = "#FF453A";
+    }
+}
+
+function getDailyProgram(dateObj) {
+    let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
+    let p = [
+      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Bağışıklık baskılandığı için uykuda bekleyen mikropların uyanmasını engeller.' }] },
+      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Kalp ve damar sağlığını korur, eklemlere yapısal destek verir.' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren nedeniyle üretilemeyen gözyaşının yerini tutar, korneayı korur.' }] },
+      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'Vücudun sinir ağını güçlendiren koruyucu bir kalkandır; yorgunluğu alır ve uyuşmaları giderir.' }] },
+      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizmanın bağışıklık sistemine verdiği zararı kökten dengeler.' }] },
+      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: 'Kullanılan diğer ağır ilaçların karaciğeri yormasını engeller.' }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: 'Sjögren nedeniyle üretilemeyen gözyaşının yerini tutar, korneayı korur.' }] }
+    ];
+    
+    const dS = new Date(2026, 1, 16); 
+    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: 'Vücuttaki akut iltihabı ve şişliği en hızlı baskılayan kortizondur.' });
+    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: 'Kalsiyumun emilmesini sağlar, kemik erimesine karşı kaledir.' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: 'Romatizma ilaçlarının kan değerlerini düşürmesini engeller, vitamin dengeler.' }); }
+    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: 'Eklemlerdeki hasarı durduran haftalık temel tedavi ilacıdır.' });
+    const cS = new Date(2026, 1, 12);
+    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Doğrudan iltihaba sebep olan proteinleri bulan en gelişmiş biyolojik silahtır.' });
+    return p;
+}
+
+function veriBulGlobal(gunlukVeri, aranacakKelimeler) {
+    if(!gunlukVeri) return "-";
+    for (var kolonIsmi in gunlukVeri) {
+        var cevap = gunlukVeri[kolonIsmi];
+        if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
+        var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+        for (var i = 0; i < aranacakKelimeler.length; i++) {
+            if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
+        }
+    }
+    return "-";
+}
+
+function donemOzetiOlustur(hStats, pct, isYearly) {
+    let text = "";
+    let donem = isYearly ? "Bu yıl" : "Bu ay";
+    
+    let seed = pct + hStats.atesliGun + hStats.kotuUyku + hStats.kotuSabah + hStats.aktifGun + (hStats.dusukEnerji || 0);
+    const sec = (arr) => arr[seed % arr.length];
+
+    if(pct >= 90) {
+        text += sec([
+            `${donem} ilaç rutinine <strong>%${pct}</strong> oranında muazzam bir disiplinle uydun. Yüksek ilaç uyumun sayesinde romatizmayı harika baskıladın. `,
+            `${donem} tedavine <strong>%${pct}</strong> gibi harika bir oranla sadık kaldın, seninle gurur duyuyorum! Bu sadakatin bedenine esneklik olarak dönmüş. `
+        ]);
+    } else if (pct >= 70) {
+        text += sec([
+            `${donem} tedavine <strong>%${pct}</strong> oranında uyum sağladın. İlacın aksadığı günlerde bedeninin yorulması bize tedavinin ne kadar önemli olduğunu bir kez daha gösterdi. `
+        ]);
+    } else {
+        text += sec([
+            `${donem} ilaç saatlerinde (<strong>%${pct}</strong>) aksamalarımız olmuş. Kayıtlara göre ilacın aksadığı günlerde ağrı ve yorgunluk doğrudan artış gösteriyor, şifan için buna çok dikkat etmeliyiz. `
+        ]);
+    }
+
+    if(hStats.atesliGun > 0) {
+        text += sec([`Süreç içinde <strong>${hStats.atesliGun} gün</strong> vücut ısını yüksek ölçtük. `]);
+    }
+
+    if (hStats.dusukEnerji > 0 || hStats.kuruGoz > 0) {
+        text += `Bu dönemde ayrıca biraz romatizmal yorgunluk (${hStats.dusukEnerji || 0} gün) ve Sjögren kuruluğu (${hStats.kuruGoz || 0} gün) da gözlemledik, bu tür günlerde kendini hiç zorlamamalısın. `;
+    }
+
+    if(hStats.kotuUyku === 0 && hStats.kotuSabah === 0) {
+        text += sec([`Geceleri deliksiz uyuman ve sabahları kuş gibi uyanman en güzel haber! `]);
+    } else {
+        if(hStats.kotuUyku > 0) text += sec([`Toplam <strong>${hStats.kotuUyku} gece</strong> ağrılar uykunu biraz böldü. `]);
+        if(hStats.kotuSabah > 0) text += sec([`<strong>${hStats.kotuSabah} sabah</strong> ise eklemlerin uyanmakta inat etti. `]);
+    }
+
+    if(hStats.aktifGun > 0) {
+        text += sec([
+            `Ancak en güzeli, tam <strong>${hStats.aktifGun} gün</strong> boyunca fiziksel aktivite yaparak eklemlerine harika bir esneklik kazandırdın! 🌼`
+        ]);
+    } else {
+        text += sec([
+            `Bu dönem eklemlerini esnetecek aktivitelere pek fırsat bulamadık, hafif egzersizlerin eklemlerine şifa olacağını unutma. 💖`
+        ]);
+    }
+    
+    return text;
+}
+
+function analyzeMonth(year, month) {
+    let totalMeds = 0;
+    let missedMedsCount = 0;
+    let breakdown = [];
+    
+    let hStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {}, dusukEnerji: 0, kuruGoz: 0 };
+
+    const dNow = new Date();
+    const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
+    
+    const START_DATE = new Date(2026, 2, 7);
+
+    for (let d = maxDay; d >= 1; d--) { 
+        let currentDay = new Date(year, month, d);
+        if (currentDay < START_DATE) continue; 
+
+        let dateStr = String(d).padStart(2, '0') + '.' + String(month + 1).padStart(2, '0') + '.' + year;
+        let prog = getDailyProgram(currentDay);
+
+        let dayTotal = 0;
+        let dayMissedCount = 0;
+        let dayMissedNames = [];
+
+        let dayData = (apiData.tumVeriler && apiData.tumVeriler[dateStr]) ? apiData.tumVeriler[dateStr] : null;
+
+        prog.forEach(s => {
+            let cardMins = 0;
+            if (s.time) {
+                const timeParts = s.time.split(':');
+                cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
+            }
+
+            s.meds.forEach(m => {
+                dayTotal++;
+                let isDone = dayData ? (dayData[m.key] === "İçildi") : false;
+                let isExplicitlyMissed = dayData ? (dayData[m.key] === "İçilmedi") : false;
+                let isMissed = false;
+
+                if (!isDone) {
+                    if (isExplicitlyMissed) { isMissed = true; } 
+                    else if (isCurrentMonth && d === dNow.getDate()) {
+                        const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
+                        if (nowMins > cardMins + 90) isMissed = true;
+                    } else { isMissed = true; }
+                }
+
+                if (isMissed) {
+                    dayMissedCount++;
+                    dayMissedNames.push(m.name);
+                }
+            });
+        });
+
+        totalMeds += dayTotal;
+        missedMedsCount += dayMissedCount;
+
+        if (dayTotal > 0) {
+             breakdown.push({
+                 dateStr: dateStr, dayNum: d, totalCount: dayTotal,
+                 missedCount: dayMissedCount, missedNames: dayMissedNames,
+                 isAllDone: (dayMissedCount === 0)
+             });
+        }
+
+        if (dayData) {
+            let atesHam = veriBulGlobal(dayData, ["ates", "ateş"]);
+            let tutukluk = veriBulGlobal(dayData, ["tutuk", "sabah"]);
+            let bolge = veriBulGlobal(dayData, ["bölge", "bolge", "rahatsiz"]);
+            let aktivite = veriBulGlobal(dayData, ["aktivite"]);
+            let uyku = veriBulGlobal(dayData, ["uyku", "gece"]);
+            let enerji = veriBulGlobal(dayData, ["enerji"]);
+            let kuruluk = veriBulGlobal(dayData, ["göz", "goz", "kuru"]);
+
+            let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
+            if(!isNaN(ates) && ates >= 37.0) hStats.atesliGun++;
+
+            if (String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrım vardı)/)) hStats.kotuUyku++;
+            if (String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|sürdü)/)) hStats.kotuSabah++;
+            if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad")) hStats.aktifGun++;
+
+            if (enerji !== "-") {
+                let numE = parseInt(enerji);
+                if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) hStats.dusukEnerji++;
+            }
+            if (kuruluk !== "-") {
+                let numK = parseInt(kuruluk);
+                if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma|çok kurudu)/))) hStats.kuruGoz++;
+            }
+
+            let bKucuk = String(bolge).toLowerCase();
+            if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yoktu")) {
+                hStats.bolgeler[bolge] = (hStats.bolgeler[bolge] || 0) + 1;
+            }
+        }
+    }
+
+    let maxT = 0; let enCok = "";
+    for (let b in hStats.bolgeler) {
+        if (hStats.bolgeler[b] > maxT) { maxT = hStats.bolgeler[b]; enCok = b; }
+    }
+    hStats.enCokBolge = enCok;
+
+    let percentage = totalMeds > 0 ? Math.round(((totalMeds - missedMedsCount) / totalMeds) * 100) : 100;
+    return { percentage, totalMeds, missedMedsCount, breakdown, healthStats: hStats };
+}
+
+function getBadgeClass(percentage) {
+    if (percentage >= 90) return "badge-safe";
+    if (percentage >= 70) return "badge-warning";
+    return "badge-danger";
+}
+
 function renderMonthStat(prefix, data) {
-  const badgeEl = document.getElementById(prefix + 'Badge');
-  const detailsEl = document.getElementById(prefix + 'Details');
-  if(!badgeEl || !detailsEl) return;
+    const badgeEl = document.getElementById(prefix + 'Badge');
+    const detailsEl = document.getElementById(prefix + 'Details');
+    if(!badgeEl || !detailsEl) return;
 
-  // Gemini Dokunuşu: Dönem özetine AI yorumunu senin mor kenarlı kutunun içine ekliyoruz.
-  let geminiSection = apiData.geminiYorumu ? `<div style="margin-bottom:12px; font-size:14px; opacity:0.8; line-height:1.4;">🤖 <b>Yapay Zeka Özeti:</b> ${apiData.geminiYorumu}</div>` : "";
+    badgeEl.innerHTML = `%${data.percentage} <span class="exp-arrow">▲</span>`;
+    badgeEl.className = `badge ${getBadgeClass(data.percentage)}`;
 
-  let aiText = donemOzetiOlustur(data.healthStats, data.percentage, false);
-  let html = `
+    if (data.breakdown.length === 0) {
+        detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+        return;
+    }
+
+    let aiText = donemOzetiOlustur(data.healthStats, data.percentage, false);
+    let html = `
     <div class="stat-ai-summary">
         <strong>✨ Dönem Özeti</strong>
-        ${geminiSection}
         ${aiText}
     </div>`;
-  // ... senin geri kalan tablo çizim kodun ...
-  detailsEl.innerHTML = html; 
+
+    data.breakdown.forEach(day => {
+        if (day.isAllDone) {
+            html += `
+            <div class="stat-row">
+                <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
+                <div class="stat-info" style="flex-direction: row; align-items: center; gap: 6px;">
+                    <div class="check-icon done">${svgCheck}</div>
+                    <span class="stat-status" style="color: var(--text); margin:0;">Tüm ilaçlar alındı</span>
+                </div>
+            </div>`;
+        } else {
+            html += `
+            <div class="stat-row">
+                <span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span>
+                <div class="stat-info">
+                    <span class="stat-status" style="color: var(--text);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span>
+                    <span class="stat-missed-list" style="color: var(--muted);">Eksik: ${day.missedNames.join(', ')}</span>
+                </div>
+            </div>`;
+        }
+    });
+    detailsEl.innerHTML = html;
 }
 
-// --- 🩺 GEMINI ENTEGRASYONU (DOKTOR RAPORU) ---
+function renderYearStat(year) {
+    const badgeEl = document.getElementById('yearlyBadge');
+    const detailsEl = document.getElementById('yearlyDetails');
+    if(!badgeEl || !detailsEl) return;
+
+    let totalMeds = 0; let totalMissed = 0;
+    let yStats = { atesliGun: 0, kotuUyku: 0, kotuSabah: 0, aktifGun: 0, bolgeler: {}, dusukEnerji: 0, kuruGoz: 0 };
+    let monthRowsHTML = "";
+    const maxMonth = year === now.getFullYear() ? now.getMonth() : 11;
+
+    for (let m = maxMonth; m >= 0; m--) {
+        let mData = analyzeMonth(year, m);
+        totalMeds += mData.totalMeds;
+        totalMissed += mData.missedMedsCount;
+
+        yStats.atesliGun += mData.healthStats.atesliGun;
+        yStats.kotuUyku += mData.healthStats.kotuUyku;
+        yStats.kotuSabah += mData.healthStats.kotuSabah;
+        yStats.aktifGun += mData.healthStats.aktifGun;
+        yStats.dusukEnerji += mData.healthStats.dusukEnerji;
+        yStats.kuruGoz += mData.healthStats.kuruGoz;
+        
+        for (let b in mData.healthStats.bolgeler) {
+            yStats.bolgeler[b] = (yStats.bolgeler[b] || 0) + mData.healthStats.bolgeler[b];
+        }
+
+        if (mData.totalMeds > 0) {
+            monthRowsHTML += `
+            <div class="stat-row">
+                <span class="stat-date" style="font-size:15px;">${aylar[m]}</span>
+                <div class="stat-info" style="align-items: flex-end;">
+                    <span class="badge ${getBadgeClass(mData.percentage)}">%${mData.percentage}</span>
+                </div>
+            </div>`;
+        }
+    }
+
+    let maxT = 0; let enCok = "";
+    for (let b in yStats.bolgeler) {
+        if (yStats.bolgeler[b] > maxT) { maxT = yStats.bolgeler[b]; enCok = b; }
+    }
+    yStats.enCokBolge = enCok;
+
+    let yearPercentage = totalMeds > 0 ? Math.round(((totalMeds - totalMissed) / totalMeds) * 100) : 100;
+    badgeEl.innerHTML = `%${yearPercentage} <span class="exp-arrow">▲</span>`;
+    badgeEl.className = `badge ${getBadgeClass(yearPercentage)}`;
+
+    if(totalMeds === 0) {
+        detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
+    } else {
+        let aiText = donemOzetiOlustur(yStats, yearPercentage, true);
+        let finalHTML = `
+        <div class="stat-ai-summary">
+            <strong>🏆 ${year} Yılı Özeti</strong>
+            ${aiText}
+        </div>
+        ${monthRowsHTML}`;
+        
+        detailsEl.innerHTML = finalHTML;
+    }
+}
+
+function istatistikleriCiz() {
+    if (!apiData || !apiData.tumVeriler) return;
+
+    const dNow = new Date();
+    const currentYear = dNow.getFullYear();
+    const currentMonth = dNow.getMonth();
+
+    const thisMonthData = analyzeMonth(currentYear, currentMonth);
+    renderMonthStat('thisMonth', thisMonthData);
+
+    let lastMonth = currentMonth - 1;
+    let lastMonthYear = currentYear;
+    if (lastMonth < 0) { lastMonth = 11; lastMonthYear--; }
+    const lastMonthData = analyzeMonth(lastMonthYear, lastMonth);
+    renderMonthStat('lastMonth', lastMonthData);
+
+    renderYearStat(currentYear);
+}
+
+// =======================================================
+// SAĞLIK GÜNLÜĞÜ (YAPAY ZEKA ASİSTANI) MOTORU (KÜMÜLATİF MODEL)
+// =======================================================
+function renderHealthDiary() {
+    if (!apiData || !apiData.tumVeriler) return;
+
+    let asistanKapaliMi = true; 
+    const mevcutKart = document.querySelector('#healthDiaryArea .diary-card');
+    if (mevcutKart) {
+        asistanKapaliMi = mevcutKart.classList.contains('collapsed');
+    }
+    const collapseClass = asistanKapaliMi ? "collapsed" : "";
+
+    function veriBul(gunlukVeri, aranacakKelimeler) {
+        if (!gunlukVeri) return "-";
+        for (var kolonIsmi in gunlukVeri) {
+            var cevap = gunlukVeri[kolonIsmi];
+            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
+            var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+            for (var i = 0; i < aranacakKelimeler.length; i++) {
+                if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
+            }
+        }
+        return "-";
+    }
+
+    const tarihler = Object.keys(apiData.tumVeriler).filter(t => {
+        let p = t.split('.');
+        return new Date(p[2], p[1]-1, p[0]) >= new Date(2026, 2, 7);
+    }).sort(function(a, b) {
+        var pA = a.split('.'); var pB = b.split('.');
+        return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
+    });
+
+    let sonGunVerisi = null;
+    let sonGunTarihi = "";
+    
+    for (let t of tarihler) {
+        let veri = apiData.tumVeriler[t];
+        let vUyku = veriBul(veri, ["uyku", "gece"]);
+        let vSabah = veriBul(veri, ["tutuk", "sabah"]);
+        if (vUyku !== "-" || vSabah !== "-") {
+            sonGunVerisi = veri;
+            sonGunTarihi = t;
+            break;
+        }
+    }
+
+    if (!sonGunVerisi) return; 
+
+    let bugun = new Date();
+    let bugunTarihStr = String(bugun.getDate()).padStart(2, '0') + '.' + String(bugun.getMonth() + 1).padStart(2, '0') + '.' + bugun.getFullYear();
+    let dun = new Date();
+    dun.setDate(dun.getDate() - 1);
+    let dunTarihStr = String(dun.getDate()).padStart(2, '0') + '.' + String(dun.getMonth() + 1).padStart(2, '0') + '.' + dun.getFullYear();
+
+    let isTodayData = (sonGunTarihi === bugunTarihStr);
+    let pGosterilen = sonGunTarihi.split('.');
+    let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
+
+    let tBugun = isTodayData ? "Bugün" : "Dün";
+    let tYarin = isTodayData ? "Yarın" : "Bugün";
+    let tGece = isTodayData ? "Dün gece" : "Önceki gece"; 
+    let tOncekiGun = isTodayData ? "Dün" : "Önceki gün";
+    let tYasiyorsun = isTodayData ? "yaşıyorsun" : "yaşadın";
+    let tGorunuyor = isTodayData ? "görünüyor" : "görünüyordu";
+
+    let atesHam = veriBul(sonGunVerisi, ["ates", "ateş"]);
+    let tutukluk = veriBul(sonGunVerisi, ["tutuk", "sabah"]);
+    let agri = veriBul(sonGunVerisi, ["agri", "ağrı", "şiş", "sis", "eklem"]);
+    let bolge = veriBul(sonGunVerisi, ["bölge", "bolge", "rahatsiz"]);
+    let aktivite = veriBul(sonGunVerisi, ["aktivite"]);
+    let uyku = veriBul(sonGunVerisi, ["uyku", "gece"]);
+    let terleme = veriBul(sonGunVerisi, ["terleme"]);
+    let enerji = veriBul(sonGunVerisi, ["enerji"]);
+    let kuruluk = veriBul(sonGunVerisi, ["göz", "goz", "kuru"]);
+
+    let ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
+    
+    let streak = 0;
+    for (let t of tarihler) {
+        if (t === bugunTarihStr) continue; 
+        let p = t.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
+        let gunlukProgram = getDailyProgram(dObj);
+        let veri = apiData.tumVeriler[t] || {};
+        let gunTumuIcildi = true; let oGunIlacVarMi = false;
+        gunlukProgram.forEach(ogun => {
+            ogun.meds.forEach(ilac => { oGunIlacVarMi = true; if (veri[ilac.key] !== "İçildi") { gunTumuIcildi = false; } });
+        });
+        if (oGunIlacVarMi && gunTumuIcildi) { streak++; } else if (oGunIlacVarMi && !gunTumuIcildi) { break; }
+    }
+
+    let aiMsg = [];
+    let isBadDay = false;
+
+    let oncekiGunObj = new Date(gosterilenTarihObj); oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
+    let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
+    let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
+    let oncekiGunCimzia = oncekiGunVeri && oncekiGunVeri['GECE_CIMZIA'] === "İçildi";
+    let oncekiGunMetoartcon = oncekiGunVeri && oncekiGunVeri['GECE_METOARTCON'] === "İçildi";
+    let oncekiGunDelta = oncekiGunVeri && oncekiGunVeri['SABAH_TOK_DELTA'] === "İçildi";
+
+    let son7GunAktifGunler = 0;
+    for(let i=1; i<=7; i++) {
+        let d = new Date(gosterilenTarihObj); d.setDate(d.getDate() - i);
+        let dStr = String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+        let v = apiData.tumVeriler[dStr];
+        if (v && String(veriBul(v, ["aktivite"])).toLowerCase() !== "-" && !String(veriBul(v, ["aktivite"])).toLowerCase().match(/(hayır|yapmad)/)) son7GunAktifGunler++;
+    }
+
+    let son7GunIlacAksadi = false;
+    for(let i=1; i<=7; i++) {
+        let d = new Date(gosterilenTarihObj); d.setDate(d.getDate() - i);
+        let dStr = String(d.getDate()).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0') + '.' + d.getFullYear();
+        let v = apiData.tumVeriler[dStr];
+        if (v && Object.values(v).includes("İçilmedi")) son7GunIlacAksadi = true;
+    }
+
+    let isUykuBad = String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrım vardı)/);
+    let isSabahHafifKotu = String(tutukluk).toLowerCase().match(/(yarım saat)/); 
+    let isSabahCiddiKotu = String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|saat|sürdü)/) && !isSabahHafifKotu; 
+    let isUykuGood = String(uyku).toLowerCase().match(/(deliksiz)/);
+    let isSabahGood = String(tutukluk).toLowerCase().match(/(hemen)/);
+    
+    let isAgriVar = agri !== "-" && !String(agri).toLowerCase().includes("ağrım yok");
+    let isAgriSiddetli = agri !== "-" && String(agri).toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
+    
+    let isSinirVar = String(agri).toLowerCase().includes("sinir");
+    let isTerleme = String(terleme).toLowerCase().includes("evet");
+
+    let isAlevlenme = isAgriSiddetli || isSabahCiddiKotu; 
+
+    // ==========================================
+    // SEVİYE 5 KORELASYONLAR
+    // ==========================================
+
+    if (isAlevlenme) {
+        aiMsg.push(`<div style="padding: 12px; border-radius: 8px; border-left: 4px solid #EF4444; font-size: 15px; background: rgba(239, 68, 68, 0.15); margin-bottom: 8px;">🚨 <b style="color: #EF4444;">Alevlenme (Flare-up) Dönemi:</b><br>Sultanım, eklemlerindeki hassasiyet ve ciddi tutukluğun romatizmal bir alevlenmeden geçtiğini gösteriyor. Lütfen bu geçici fırtınada motoru tamamen soğut, ağır işlerden kesinlikle kaçın ve sadece dinlenmeye odaklan. 💖</div>`);
+        isBadDay = true;
+    }
+
+    if (isTerleme) {
+        aiMsg.push(`🚨 <b>Gece Terlemesi:</b> ${tGece} yaşadığın terleme vücudunda iltihabın (enflamasyon) aktif olduğunu veya ufak bir enfeksiyon atlattığını gösterebilir. Lütfen ${tYarin.toLowerCase()} sabah ateşini her zamankinden daha dikkatli ölçmelisin.`);
+        isBadDay = true;
+    }
+
+    if (isSinirVar) {
+        aiMsg.push(`🧬 <b>Sinir Hassasiyeti:</b> "Sinir uçlarım batıyor" hissi, Sjögren'e bağlı nöropatik bir sızıdır. ${tYarin} eklemlerini zorlayacak işlerden tamamen uzak durmalısın; vücudun sinir kılıflarını dinlendirmek istiyor.`);
+        isBadDay = true;
+    }
+
+    if (!isNaN(ates) && ates >= 37.0) {
+        aiMsg.push(`🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ${tBugun.toLowerCase()} ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`);
+        isBadDay = true;
+    }
+
+    let gunHaftaninKacinciGunu = gosterilenTarihObj.getDay(); 
+    let numE = parseInt(enerji);
+    let isEnerjiDusuk = (!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/));
+    
+    if ((gunHaftaninKacinciGunu === 2 || gunHaftaninKacinciGunu === 3) && isEnerjiDusuk) {
+        aiMsg.push(`🧬 <b>Metoartcon Yorgunluğu:</b> Pazartesi akşamı vurduğun Metoartcon iğnesinin "ilaç yorgunluğunu (hangover)" ${tYasiyorsun}. Folbiol içmene rağmen bu halsizlik 24-48 saat sürebilir, ${tYarin.toLowerCase()} da kendini dinlendirmeye özen göster.`);
+        isBadDay = true;
+    }
+
+    // --- BURADA DİNAMİK KELİME KULLANILIYOR ---
+    if (son7GunAktifGunler >= 3 && (isSabahHafifKotu || isSabahCiddiKotu || isAgriVar || isUykuBad)) {
+        let deltaUyari = oncekiGunDelta ? "Özellikle kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
+        let semptomKelimesi = (isSabahHafifKotu || isSabahCiddiKotu) ? "tutukluk" : (isAgriVar ? "eklem sızısı" : "yorgunluk");
+        
+        aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 7 gündür eklemlerine sık yüklendiğin (toplam ${son7GunAktifGunler} gün aktivite) görülüyor. ${tBugun} hissettiğin bu ${semptomKelimesi} o birikmiş yorgunluğun faturası. Lütfen ${tYarin.toLowerCase()} sıfır aktiviteyle motoru tamamen soğut.`);
+        isBadDay = true;
+    } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahHafifKotu || isSabahCiddiKotu || isAgriVar)) {
+        let semptomKelimesi = (isSabahHafifKotu || isSabahCiddiKotu) ? "tutukluğun" : "sızılarının";
+        
+        aiMsg.push(`⚠️ <b>Temponun Faturası:</b> ${tOncekiGun} kortizonun verdiği geçici enerjiyle yorulmuşsun. Bu ${semptomKelimesi} ${tYarin.toLowerCase()}a sarkmaması için ${tYarin.toLowerCase()} eklemlerine kesinlikle dinlenme izni ver.`);
+        isBadDay = true;
+    }
+
+    if ((oncekiGunCimzia || oncekiGunMetoartcon) && isSabahGood && !isBadDay) {
+        aiMsg.push(`💉 <b>İğne Şifası:</b> ${tGece} aldığın iğnenin şifası hemen kendini göstermiş, sabahki rahatlığından belli!`);
+    } else if (son7GunIlacAksadi && (isUykuBad || isSabahHafifKotu || isSabahCiddiKotu || isAgriVar)) {
+        aiMsg.push("🚨 Son 7 gün içinde atladığımız ilaçlar kandaki koruyucu seviyeyi düşürmüş olabilir. İnatçı sızıların kök nedeni ilacı aksatmamızdır.");
+    }
+
+    if (isUykuBad && (isSabahHafifKotu || isSabahCiddiKotu)) {
+        aiMsg.push(`${tGece}ki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. ${tYarin} sabah alacağın sıcak bir duş seni hafifletecektir.`);
+        isBadDay = true;
+    } else if (isUykuGood && isSabahGood && !isBadDay && aiMsg.length === 0) {
+        aiMsg.push(`${tGece}yi deliksiz geçirmen ve kuş gibi uyanman harika haber! Tedavimiz tıkır tıkır çalışıyor.`);
+    }
+
+    if (isEnerjiDusuk && gunHaftaninKacinciGunu !== 2 && gunHaftaninKacinciGunu !== 3) {
+        aiMsg.push(`Romatizma kaynaklı genel enerjin ${tBugun.toLowerCase()} oldukça düşüktü, ${tYarin.toLowerCase()} ağır işleri tamamen bir kenara bırakıp kendini şarj etmelisin.`);
+        isBadDay = true;
+    }
+    
+    if (kuruluk !== "-") {
+        let numK = parseInt(kuruluk);
+        if ((!isNaN(numK) && numK >= 7) || (isNaN(numK) && String(kuruluk).toLowerCase().match(/(fazla|çok|kötü|şiddetli|batma|çok kurudu)/))) {
+            aiMsg.push(`${tBugun} göz ve ağız kuruluğun artmış ${tGorunuyor}. ${tYarin} ekranlara daha fazla ara verip damlalarını sıklaştırmayı unutma.`);
+        }
+    }
+
+    let isAktiviteVar = aktivite !== "-" && !String(aktivite).toLowerCase().match(/(hayır|yapmad)/);
+    if (isAktiviteVar && aiMsg.length < 6) {
+        let temizAktivite = String(aktivite).toLowerCase();
+        if (temizAktivite.includes("pilates")) temizAktivite = "pilates";
+        else if (temizAktivite.includes("yürü")) temizAktivite = "yürüyüş";
+        else if (temizAktivite.includes("yüz")) temizAktivite = "yüzme";
+        else { temizAktivite = temizAktivite.replace("yaptım", "").replace("ettim", "").trim(); }
+        
+        if (isAlevlenme) {
+             aiMsg.push(`Yaptığın ${temizAktivite} normalde eklemlerini açık tutmak için çok kıymetli, ancak alevlenme geçene kadar lütfen kendini hiç zorlama.`);
+        } else {
+             aiMsg.push(`Hareket berekettir! Yaptığın ${temizAktivite} ile eklemlerini açık tutman tedavin için çok kıymetli.`);
+        }
+    }
+
+    if (streak >= 3 && aiMsg.length < 6) {
+        aiMsg.push(`<i>Tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun.</i>`);
+    }
+
+    if (aiMsg.length === 0) {
+        aiMsg.push(`Sultanım, ${tYarin.toLowerCase()} eklemlerini dinlediğin ve kendini hiç yormadığın harika bir gün olsun. Şifa uykusu seni bekliyor. 💖`);
+    }
+
+    if (!isTodayData) {
+        aiMsg.push(`<div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line); color: #0284c7; font-weight: 800; font-size: 14px; text-align: center;">⏳ Bugünün analizi için akşam saat 21:00'i bekliyorum!</div>`);
+    }
+
+    let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
+    let baslik = isTodayData ? (isBadDay ? "Yarın Dinlenme Vakti 💖" : "Harika Bir Gündü! 🌼") : (sonGunTarihi === dunTarihStr ? "⏪ Dünün Özeti" : `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`);
+    
+    let pillsHTML = "";
+    if (isTerleme) pillsHTML += `<div class="diary-pill alert">💦 Terleme</div>`;
+    if (uyku !== "-") {
+        let sleepText = String(uyku).toLowerCase().includes("fazla") ? "Az Uyku" : uyku;
+        pillsHTML += `<div class="diary-pill">${isUykuBad ? "🛌" : "😴"} ${sleepText}</div>`;
+    }
+    if (tutukluk !== "-") {
+        let tutuklukText = String(tutukluk).toLowerCase().includes("öğlene") ? "Öğlene Kadar" : tutukluk;
+        pillsHTML += `<div class="diary-pill">${(isSabahHafifKotu || isSabahCiddiKotu) ? "🦴" : "✨"} ${tutuklukText}</div>`;
+    }
+    if (!isNaN(ates) && ates >= 37.0) pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
+    else if (isAktiviteVar) {
+        let rawAkt = String(aktivite).toLowerCase();
+        let pillAkt = rawAkt.includes("pilates") ? "Pilates" : rawAkt.includes("yürü") ? "Yürüyüş" : rawAkt.includes("yüz") ? "Yüzme" : rawAkt.replace("yaptım", "").replace("ettim", "").trim();
+        pillsHTML += `<div class="diary-pill info">🏃‍♀️ ${pillAkt.charAt(0).toUpperCase() + pillAkt.slice(1)}</div>`;
+    } 
+    
+    if (isSinirVar) pillsHTML += `<div class="diary-pill">⚡ Sinir Sızısı</div>`;
+    else if (agri !== "-" && !String(bolge).toLowerCase().match(/(hayır|yoktu)/)) pillsHTML += `<div class="diary-pill">🎯 ${bolge}</div>`;
+
+    let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
+
+    let finalHTML = `
+        <div class="diary-card ${moodClass} ${collapseClass}" onclick="this.classList.toggle('collapsed')">
+            <div class="diary-header"><h3 class="diary-title">${baslik}</h3>${streakHTML}</div>
+            <div class="diary-pills">${pillsHTML}</div>
+            <div class="diary-toggle-bar"><span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
+            <div class="diary-ai-box">${aiMsg.join("<br><br>")}</div>
+        </div>`;
+    document.getElementById('healthDiaryArea').innerHTML = finalHTML;
+}
+
+// =======================================================
+// DOKTOR RAPORU (KÜMÜLATİF KÖK NEDEN ANALİZİ & HARİTALAR)
+// =======================================================
 function doktorRaporuOlustur() {
-  if (!apiData || !apiData.tumVeriler) return;
-  
-  // Gemini Dokunuşu: PDF çıktısında doktorun en başta göreceği klinik not.
-  let aiClinicalNote = apiData.geminiYorumu ? `
-    <div class="rap-bolum" style="background:#fdfaff; padding:15px; border-radius:10px; border:1px solid var(--purple);">
-      <h3>🧬 Akıllı Klinik Değerlendirme (Gemini)</h3>
-      <p style="font-style:italic; line-height:1.6;">${apiData.geminiYorumu}</p>
-    </div>` : "";
+    if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
+        alert("Henüz veri yüklenmedi veya veri bulunamadı. Lütfen birkaç saniye bekleyip tekrar deneyin.");
+        return;
+    }
 
-  var raporHTML = `
-    <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
-    ${aiClinicalNote}
-    <div class="rap-bolum"><h3>📋 Hasta Özeti ve Temel Veriler</h3>...</div>`;
-  
-  document.getElementById("print-report-area").innerHTML = raporHTML;
-  window.print();
+    function veriBul(gunlukVeri, aranacakKelimeler) {
+        if (!gunlukVeri) return "-";
+        for (var kolonIsmi in gunlukVeri) {
+            var cevap = gunlukVeri[kolonIsmi];
+            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
+            var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
+            for (var i = 0; i < aranacakKelimeler.length; i++) {
+                if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
+            }
+        }
+        return "-";
+    }
+
+    var tarihler = Object.keys(apiData.tumVeriler).filter(t => {
+        let p = t.split('.');
+        return new Date(p[2], p[1]-1, p[0]) >= new Date(2026, 2, 7);
+    }).sort(function(a, b) {
+        var pA = a.split('.'); var pB = b.split('.');
+        return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
+    });
+
+    let ilkTarihGosterim = tarihler.length > 0 ? tarihler[tarihler.length - 1] : "-";
+    let sonTarihGosterim = tarihler.length > 0 ? tarihler[0] : "-";
+
+    var toplamBeklenenIlac = 0; var toplamIcilenIlac = 0;
+    var anlikTarih = new Date();
+    var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
+    var anlikDakika = (anlikTarih.getHours() * 60) + anlikTarih.getMinutes();
+
+    tarihler.forEach(function(tarih) {
+        var p = tarih.split('.');
+        var dObj = new Date(p[2], p[1]-1, p[0]);
+        var gunlukProgram = getDailyProgram(dObj); 
+        var veri = apiData.tumVeriler[tarih] || {};
+        var bugunMu = (tarih === bugunTarihStr);
+
+        gunlukProgram.forEach(function(ogun) {
+            var ogunDakika = 0;
+            if (ogun.time) {
+                var tP = ogun.time.split(':'); ogunDakika = (parseInt(tP[0], 10) * 60) + parseInt(tP[1], 10);
+            }
+            if (bugunMu && anlikDakika < ogunDakika) return; 
+            ogun.meds.forEach(function(ilac) {
+                toplamBeklenenIlac++;
+                if (veri[ilac.key] === "İçildi") toplamIcilenIlac++;
+            });
+        });
+    });
+
+    var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
+    var tabloSatirlari = ""; var atesliGunSayisi = 0; var bolgeFrekans = {};
+    var sorunluUykuGecesi = 0; var agirTutuklukGunu = 0; var aktifGunSayisi = 0;
+    
+    var toplamAlevlenme = 0;
+    var alevlenmeNedeniUyku = 0; var alevlenmeNedeniAktivite = 0; var alevlenmeNedeniIlac = 0;
+    var alevlenmeTarihleri = []; 
+
+    var deltaAlinanGun = 0; var deltaAlinanGunTutuklukVar = 0;
+    var deltaAlinmayanGun = 0; var deltaAlinmayanGunTutuklukVar = 0;
+
+    var terlemeGunSayisi = 0;
+    var sinirHassasiyetiGun = 0;
+    var mtxErtesiGunuToplami = 0; var mtxErtesiGunuYorgunluk = 0;
+
+    tarihler.forEach(function(tarih, index) {
+        var veri = apiData.tumVeriler[tarih];
+        
+        var atesHam = veriBul(veri, ["ates", "ateş"]);
+        var tutukluk = String(veriBul(veri, ["tutuk", "sabah"]));
+        var agri = String(veriBul(veri, ["agri", "ağrı", "şiş", "sis", "eklem"]));
+        var bolge = String(veriBul(veri, ["bölge", "bolge", "rahatsiz"]));
+        var aktivite = String(veriBul(veri, ["aktivite"]));
+        var uyku = String(veriBul(veri, ["uyku", "gece"]));
+        var enerji = String(veriBul(veri, ["enerji"]));
+        var terleme = String(veriBul(veri, ["terleme"])).toLowerCase();
+        var kuruluk = String(veriBul(veri, ["göz", "goz", "kuru"]));
+        
+        var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
+        var atesGosterim = (!isNaN(ates) && ates > 0) ? ates + "°C" : "-";
+        if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
+
+        var bKucuk = bolge.toLowerCase();
+        if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yoktu")) { bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1; }
+
+        let isUykuBad = uyku.toLowerCase().match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
+        let isTutuklukGenel = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
+        let isTutuklukCiddi = tutukluk.toLowerCase().match(/(1-2 saat|öğlene|sürdü)/) && !tutukluk.toLowerCase().match(/(yarım saat)/);
+        let isAktif = aktivite !== "-" && !aktivite.toLowerCase().match(/(yapmad|hayır)/);
+        let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
+
+        if (isUykuBad) sorunluUykuGecesi++;
+        if (isTutuklukCiddi) agirTutuklukGunu++; 
+        if (isAktif) aktifGunSayisi++;
+        if (terleme.includes("evet")) terlemeGunSayisi++;
+        if (agri.toLowerCase().includes("sinir")) sinirHassasiyetiGun++;
+
+        let isAlevlenmeGunu = isTutuklukCiddi || isAgriSiddetli;
+
+        let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
+        let bugunDeltaGunuMu = Math.round((dObj - new Date(2026, 1, 16))/(1000*60*60*24)) % 2 === 0;
+
+        if (!bugunDeltaGunuMu) {
+            deltaAlinmayanGun++;
+            if (isTutuklukGenel || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
+        } else {
+            deltaAlinanGun++;
+            if (isTutuklukGenel || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
+        }
+
+        let gunNo = dObj.getDay();
+        if (gunNo === 2 || gunNo === 3) {
+            mtxErtesiGunuToplami++;
+            let numE = parseInt(enerji);
+            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
+        }
+
+        if (isAlevlenmeGunu) {
+            toplamAlevlenme++;
+            alevlenmeTarihleri.push(tarih.substring(0,5)); 
+            
+            let son7GunAktiflik = 0;
+            let son5GunKotuUyku = isUykuBad ? 1 : 0; 
+            let son7GunIlacAksadi = false;
+
+            for (let i = 1; i <= 7; i++) {
+                if (index + i < tarihler.length) {
+                    let gA = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["aktivite"])).toLowerCase();
+                    if (gA !== "-" && !gA.match(/(yapmad|hayır)/)) son7GunAktiflik++;
+                }
+            }
+            
+            for (let i = 1; i <= 5; i++) {
+                if (index + i < tarihler.length) {
+                    let gU = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["uyku", "gece"])).toLowerCase();
+                    if (gU.match(/(bölündü|ağrım vardı|uyuyamad|vardı)/)) son5GunKotuUyku++;
+                }
+            }
+
+            for (let i = 1; i <= 7; i++) {
+                if (index + i < tarihler.length) {
+                    let gV = apiData.tumVeriler[tarihler[index+i]];
+                    if (gV && Object.values(gV).includes("İçilmedi")) son7GunIlacAksadi = true;
+                }
+            }
+
+            if (son7GunAktiflik >= 4) alevlenmeNedeniAktivite++;
+            if (son5GunKotuUyku >= 3) alevlenmeNedeniUyku++; 
+            if (son7GunIlacAksadi) alevlenmeNedeniIlac++;
+        }
+
+        let gosterimSistemik = atesGosterim;
+        if(terleme.includes("evet")) gosterimSistemik += `<br><span style="font-size:12px; color:#d97706; font-weight:bold;">💦 Terleme</span>`;
+
+        let gosterimAgri = agri !== "-" ? agri : "-";
+        if(bolge !== "-" && !bKucuk.match(/(hayır|yoktu)/)) gosterimAgri += `<br><span style="font-size:12px; color:#475569;">📍 ${bolge}</span>`;
+
+        let gosterimSjogren = kuruluk !== "-" ? kuruluk : "-";
+        
+        let gosterimUyku = uyku !== "-" ? uyku : "-";
+        if(enerji !== "-") gosterimUyku += `<br><span style="font-size:12px; color:#475569;">⚡ Enerji: ${enerji}</span>`;
+
+        let gosterimAktivite = aktivite !== "-" ? aktivite : "-";
+
+        let satirStili = isAlevlenmeGunu ? `background-color: rgba(239, 68, 68, 0.05);` : ``;
+        let tarihSutunu = `<strong>${tarih.substring(0,5)}</strong>`;
+        if(isAlevlenmeGunu) {
+            tarihSutunu += `<br><span style="color:#ef4444; font-size:11px; font-weight:bold;">🚨 Alevlenme</span>`;
+        }
+
+        tabloSatirlari += `
+            <tr style="${satirStili}">
+                <td>${tarihSutunu}</td>
+                <td>${gosterimSistemik}</td>
+                <td>${tutukluk}</td>
+                <td>${gosterimAgri}</td>
+                <td>${gosterimSjogren}</td>
+                <td>${gosterimUyku}</td>
+                <td>${gosterimAktivite}</td>
+            </tr>`;
+    });
+
+    var enCokAgriyanBolge = "Belirgin bir bölge yok"; var maxTekrar = 0;
+    for (var b in bolgeFrekans) { if (bolgeFrekans[b] > maxTekrar) { maxTekrar = bolgeFrekans[b]; enCokAgriyanBolge = b; } }
+
+    var uykuMetni = sorunluUykuGecesi > 0 ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` : `uyku sürecini genel olarak stabil geçirmiş`;
+    var tutuklukMetni = agirTutuklukGunu > 0 ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` : `sabah açılmalarını iyi yönetmiş`;
+    var aktiviteMetni = aktifGunSayisi > 0 ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
+    
+    var terlemeMetni = terlemeGunSayisi > 0 ? `<li><strong>Enflamasyon Uyarısı:</strong> Toplam <strong>${terlemeGunSayisi} gece</strong> enflamasyon veya enfeksiyon belirteci olabilecek <u>gece terlemesi</u> raporlanmıştır. Hastalık aktivasyonu açısından takibi önerilir.</li>` : "";
+    var sinirMetni = sinirHassasiyetiGun > 0 ? `<li><strong>Nöropatik Tutulum:</strong> Hastamız <strong>${sinirHassasiyetiGun} gün</strong> "sinir uçlarında batma" tarifleyerek Sjögren Sendromu'na bağlı olası Small Fiber Neuropathy (Küçük Lif Nöropatisi) semptomu göstermiştir.</li>` : "";
+
+    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
+
+    let kokNedenMetni = "";
+    if (toplamAlevlenme > 0) {
+        let pUyku = Math.round((alevlenmeNedeniUyku / toplamAlevlenme) * 100) || 0;
+        let pAktivite = Math.round((alevlenmeNedeniAktivite / toplamAlevlenme) * 100) || 0;
+        let pIlac = Math.round((alevlenmeNedeniIlac / toplamAlevlenme) * 100) || 0;
+        
+        let alevlenmeTarihleriMetni = alevlenmeTarihleri.reverse().join(', ');
+
+        kokNedenMetni = `
+        <div style="margin-top: 15px;">
+            <strong>🔍 Alevlenme (Flare-up) Kök Neden Analizi:</strong><br>
+            Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir <em>(${alevlenmeTarihleriMetni})</em>. İlaç yarı ömürleri ve kümülatif yorgunluk süreleri baz alınarak yapılan geriye dönük (3-7 günlük pencereli) analizlere göre;
+            <ul style="margin-top: 5px; margin-bottom: 5px;">
+                ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, son 5 gün içerisinde oluşan kronik uyku borcu ve ardışık kalitesiz uyku örüntüsünün eşlik ettiği saptanmıştır. (Sekonder Fibromiyaljik Ağrı Eşiği Düşüklüğü)</li>` : ''}
+                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 7 günlük periyotta yaşanan yoğun fiziksel yüklenmelerin (Kümülatif Yorgunluk) tetikleyici faktör olduğu görülmüştür. (Mekanik Zorlanma)</li>` : ''}
+                ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında, kandaki DMARD/Biyolojik düzeyinin azalmasına bağlı olarak (son 7 gün içerisindeki eksik/düzensiz ilaç kullanımı) ortaya çıktığı tespit edilmiştir.</li>` : ''}
+                ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir çevresel veya davranışsal tetikleyici bulunamamıştır. Temel hastalık aktivitesinin (inflamasyonun) değerlendirilmesi önerilir.</li>` : ''}
+            </ul>
+        </div>`;
+    }
+
+    let deltaBagimlilikMetni = "";
+    if (deltaAlinmayanGun > 0 && deltaAlinanGun > 0) {
+        let pctAlinmayan = Math.round((deltaAlinmayanGunTutuklukVar / deltaAlinmayanGun) * 100);
+        let pctAlinan = Math.round((deltaAlinanGunTutuklukVar / deltaAlinanGun) * 100);
+        
+        if (pctAlinmayan > pctAlinan * 1.5) {
+            deltaBagimlilikMetni = `
+            <div style="margin-top: 10px;">
+                <strong>📉 Kortizon Bağımlılık Haritası:</strong><br>
+                Hastanın Deltacortril <u>almadığı</u> ("Off") günlerde sabah tutukluğu yaşama oranı <strong>%${pctAlinmayan}</strong> iken, kortizon aldığı günlerde bu oran <strong>%${pctAlinan}</strong>'a düşmektedir. Vücudun inflamasyon kontrolü henüz tamamen temel ilaçların (DMARD/Biyolojik) kontrolüne geçmemiştir, hasta steroid rebound etkisi yaşamaktadır.
+            </div>`;
+        }
+    }
+
+    let toksisiteMetni = "";
+    if (mtxErtesiGunuToplami > 0 && (mtxErtesiGunuYorgunluk / mtxErtesiGunuToplami > 0.6)) {
+        toksisiteMetni = `
+        <div style="margin-top: 10px;">
+            <strong>🧪 Metotreksat (MTX) Hangover Endeksi:</strong><br>
+            Hasta Pazartesi günleri aldığı Metoartcon iğnesi sonrasındaki 24-48 saatlik periyotta (Salı ve Çarşamba günleri) yüksek oranda "ilaç yorgunluğu ve düşük enerji" raporlamaktadır. Folbiol desteğine rağmen devam eden bu MTX sisi/halsizliği klinik olarak olağandır.
+        </div>`;
+    }
+
+    var raporHTML = `
+        <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
+        <div class="rap-bolum">
+            <h3>📋 Hasta Özeti ve Temel Veriler</h3>
+            <ul>
+                <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün <em>(${ilkTarihGosterim} - ${sonTarihGosterim})</em></li>
+                <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
+                <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
+                <li><strong>En Aktif Semptom Bölgesi:</strong> ${enCokAgriyanBolge}</li>
+                ${terlemeMetni}
+                ${sinirMetni}
+            </ul>
+            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 14px 18px; margin-top: 15px; font-size: 14px; line-height: 1.6; border-radius: 4px;">
+                <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
+                ${kokNedenMetni}
+                ${deltaBagimlilikMetni}
+                ${toksisiteMetni}
+            </div>
+        </div>
+
+        <div class="rap-bolum">
+            <h3>💊 Aktif Tedavi ve İlaç Şeması</h3>
+            <table class="rap-tablo">
+                <thead><tr><th style="width: 20%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pazartesi)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Perşembe)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="rap-bolum">
+            <h3>📅 Günlük Detay Çizelgesi</h3>
+            <table class="rap-tablo">
+                <thead>
+                    <tr>
+                        <th style="width:10%;">Tarih</th>
+                        <th style="width:13%;">Sistemik</th>
+                        <th style="width:15%;">Sabah Tutukluğu</th>
+                        <th style="width:20%;">Eklem Durumu</th>
+                        <th style="width:13%;">Sjögren (Kuruluk)</th>
+                        <th style="width:15%;">Uyku & Enerji</th>
+                        <th style="width:14%;">Aktivite</th>
+                    </tr>
+                </thead>
+                <tbody>${tabloSatirlari}</tbody>
+            </table>
+        </div>`;
+
+    document.getElementById("print-report-area").innerHTML = raporHTML;
+    setTimeout(function() { window.print(); }, 250);
 }
 
-// --- VERİ ÇEKME VE DİĞER FONKSİYONLAR (AYNEN KORUNDU) ---
 async function veriCek() {
-  if (fetchDevamEdiyor) return;
-  fetchDevamEdiyor = true;
-  const now = new Date();
-  const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
-  try {
-    const res = await fetch(`${API_URL}?tarih=${todayStr}`);
-    apiData = await res.json();
-    sonBasariZamani = Date.now();
-    ekraniCiz(); 
-    istatistikleriCiz(); 
-    renderHealthDiary(); 
-  } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
+    if (fetchDevamEdiyor) return;
+    fetchDevamEdiyor = true;
+    
+    const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
+    try {
+        const res = await fetch(`${API_URL}?tarih=${todayStr}`);
+        if (!res.ok) throw new Error("Ağ Hatası");
+        apiData = await res.json();
+        sonBasariZamani = Date.now();
+        ekraniCiz(); 
+        istatistikleriCiz(); 
+        renderHealthDiary(); 
+    } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
 }
 
-// Saat ve Hava Durumu gibi senin orijinal kodundaki tüm fonksiyonlar burada devam ediyor...
+function ekraniCiz() {
+    const dNow = new Date(); 
+    const todayProg = typeof getDailyProgram === 'function' ? getDailyProgram(dNow) : [];
+    
+    let alertsHTML = "";
+    todayProg.forEach(s => {
+        if(!s.meds) return;
+        s.meds.forEach(m => {
+            if(m.key === 'SABAH_TOK_DELTA') alertsHTML += `<div class="safety-shield shield-red" style="display:block;">🚨 Bugün Deltacortril Günü</div>`;
+            if(m.key === 'SABAH_TOK_COLEDAN' && !alertsHTML.includes('Vitamin')) alertsHTML += `<div class="safety-shield shield-yellow" style="display:block;">☀️ Bugün Vitamin ve Folbiol Günü</div>`;
+            if(m.key === 'GECE_METOARTCON') alertsHTML += `<div class="safety-shield shield-blue" style="display:block;">🧬 Bugün Metoartcon İğne Günü</div>`;
+            if(m.key === 'GECE_CIMZIA') alertsHTML += `<div class="safety-shield shield-purple" style="display:block;">💉 Bugün Cimzia İğne Günü! Şifa olsun.</div>`;
+        });
+    });
+    const alertsEl = document.getElementById('alertsArea');
+    if(alertsEl) alertsEl.innerHTML = alertsHTML;
+
+    const stateMap = {};
+    document.querySelectorAll('.card').forEach(c => {
+        const id = c.getAttribute('data-id') || c.id; 
+        if (id) { stateMap[id] = c.classList.contains('collapsed'); }
+    });
+
+    ['card-stat-this-month', 'card-stat-last-month', 'card-stat-yearly'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && stateMap[id] !== undefined) {
+             if (stateMap[id]) el.classList.add('collapsed');
+             else el.classList.remove('collapsed');
+        }
+    });
+
+    let timelineHTML = "";
+    todayProg.forEach((s) => {
+        let sTC = 0; 
+        let medsHTML = "";
+        
+        s.meds.forEach(m => { 
+            const isDone = (apiData && apiData[m.key] === "İçildi");
+            if(isDone) { sTC++; }
+            
+            const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
+            
+            medsHTML += `
+                <div class="history-item">
+                    ${iconHTML}
+                    <div class="med-info">
+                        <span class="drug-title">${m.name}</span>
+                        <span class="drug-purpose">${m.purpose}</span>
+                    </div>
+                </div>`; 
+        });
+        
+        const isAllDone = (sTC === s.meds.length);
+        
+        let isLate = false;
+        if (!isAllDone && s.time) {
+            const timeParts = s.time.split(':');
+            const cardMins = (parseInt(timeParts[0], 10) * 60) + parseInt(timeParts[1], 10);
+            const nowMins = (dNow.getHours() * 60) + dNow.getMinutes();
+            if (nowMins > cardMins + 90) { isLate = true; }
+        }
+
+        let badgeClass = "badge-wait";
+        let badgeText = "BEKLİYOR";
+        let cardClass = "";
+
+        if (isAllDone) {
+            badgeClass = "badge-safe";
+            badgeText = `TAMAMLANDI <span class="exp-arrow">▲</span>`;
+            cardClass = "done-card";
+        } else if (isLate) {
+            badgeClass = "badge-danger";
+            badgeText = "🚨 İÇİLMEYEN İLAÇ VAR";
+            cardClass = "late-card";
+        }
+        
+        let isCollapsed = isAllDone; 
+        if (stateMap[s.id] !== undefined) {
+            isCollapsed = stateMap[s.id]; 
+        }
+
+        const collapseClass = isCollapsed ? "collapsed" : "";
+        const iconStr = s.icon ? s.icon + " " : ""; 
+
+        timelineHTML += `
+            <div class="premium-card card ${cardClass} ${collapseClass}" data-id="${s.id}" onclick="this.classList.toggle('collapsed')">
+                <div class="card-header">
+                    <div class="drug-name">${iconStr}${s.title}</div>
+                    <div class="badge ${badgeClass}">${badgeText}</div>
+                </div>
+                <div class="meds-container">
+                    ${medsHTML}
+                </div>
+            </div>`;
+    });
+    
+    const timelineEl = document.getElementById('timelineArea');
+    if(timelineEl) timelineEl.innerHTML = timelineHTML;
+}
+
 veriCek();
-setInterval(veriCek, 10000);
+setInterval(veriCek, 10000); 
+setInterval(saniyeTiktak, 1000); 
+
+document.addEventListener("visibilitychange", () => { 
+    if (document.visibilityState === 'visible') {
+        veriCek(); 
+        fetchWeather(); 
+    }
+});
 </script>
 </body>
 </html>
