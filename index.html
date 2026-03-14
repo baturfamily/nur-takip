@@ -717,7 +717,9 @@ function analyzeMonth(year, month) {
     const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
-    const START_DATE = new Date(2026, 1, 28);
+    
+    // YENİ BAŞLANGIÇ TARİHİ: 7 Mart 2026
+    const START_DATE = new Date(2026, 2, 7);
 
     for (let d = maxDay; d >= 1; d--) { 
         let currentDay = new Date(year, month, d);
@@ -970,7 +972,11 @@ function renderHealthDiary() {
         return "-";
     }
 
-    const tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
+    // YENİ BAŞLANGIÇ TARİHİ FİLTRESİ
+    const tarihler = Object.keys(apiData.tumVeriler).filter(t => {
+        let p = t.split('.');
+        return new Date(p[2], p[1]-1, p[0]) >= new Date(2026, 2, 7);
+    }).sort(function(a, b) {
         var pA = a.split('.'); var pB = b.split('.');
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
@@ -1239,7 +1245,11 @@ function doktorRaporuOlustur() {
         return "-";
     }
 
-    var tarihler = Object.keys(apiData.tumVeriler).sort(function(a, b) {
+    // YENİ BAŞLANGIÇ TARİHİ FİLTRESİ
+    var tarihler = Object.keys(apiData.tumVeriler).filter(t => {
+        let p = t.split('.');
+        return new Date(p[2], p[1]-1, p[0]) >= new Date(2026, 2, 7);
+    }).sort(function(a, b) {
         var pA = a.split('.'); var pB = b.split('.');
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
