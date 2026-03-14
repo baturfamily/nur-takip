@@ -1254,6 +1254,10 @@ function doktorRaporuOlustur() {
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
+    // RAPOR DÖNEMİ İÇİN İLK VE SON TARİHLER (Parantez içi gösterim için)
+    let ilkTarihGosterim = tarihler.length > 0 ? tarihler[tarihler.length - 1] : "-";
+    let sonTarihGosterim = tarihler.length > 0 ? tarihler[0] : "-";
+
     var toplamBeklenenIlac = 0; var toplamIcilenIlac = 0;
     var anlikTarih = new Date();
     var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
@@ -1285,6 +1289,8 @@ function doktorRaporuOlustur() {
     
     var toplamAlevlenme = 0;
     var alevlenmeNedeniUyku = 0; var alevlenmeNedeniAktivite = 0; var alevlenmeNedeniIlac = 0;
+    var alevlenmeTarihleri = []; // Alevlenme yaşanan tarihleri hafızada tutmak için dizi
+
     var deltaAlinanGun = 0; var deltaAlinanGunTutuklukVar = 0;
     var deltaAlinmayanGun = 0; var deltaAlinmayanGunTutuklukVar = 0;
 
@@ -1315,13 +1321,15 @@ function doktorRaporuOlustur() {
         let isUykuBad = uyku.toLowerCase().match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
         let isTutuklukKotu = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
         let isAktif = aktivite !== "-" && !aktivite.toLowerCase().match(/(yapmad|hayır)/);
-        let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli)/);
+        let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
 
         if (isUykuBad) sorunluUykuGecesi++;
         if (isTutuklukKotu) agirTutuklukGunu++;
         if (isAktif) aktifGunSayisi++;
         if (terleme.includes("evet")) terlemeGunSayisi++;
         if (agri.toLowerCase().includes("sinir")) sinirHassasiyetiGun++;
+
+        let isAlevlenmeGunu = isTutuklukKotu || isAgriSiddetli;
 
         // KORTİZON HARİTASI
         let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
@@ -1343,9 +1351,10 @@ function doktorRaporuOlustur() {
             if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
         }
 
-        // KÖK NEDEN ANALİZİ
-        if (isTutuklukKotu || isAgriSiddetli) {
+        // KÖK NEDEN ANALİZİ (Alevlenme Algılandığında)
+        if (isAlevlenmeGunu) {
             toplamAlevlenme++;
+            alevlenmeTarihleri.push(tarih.substring(0,5)); // Örneğin "10.03" olarak diziye ekliyoruz
             
             let son7GunAktiflik = 0;
             let son5GunKotuUyku = isUykuBad ? 1 : 0; 
@@ -1393,9 +1402,16 @@ function doktorRaporuOlustur() {
 
         let gosterimAktivite = aktivite !== "-" ? aktivite : "-";
 
+        // Alevlenme yaşanan günün satırını renklendirme ve etiket ekleme
+        let satirStili = isAlevlenmeGunu ? `background-color: rgba(239, 68, 68, 0.05);` : ``;
+        let tarihSutunu = `<strong>${tarih.substring(0,5)}</strong>`;
+        if(isAlevlenmeGunu) {
+            tarihSutunu += `<br><span style="color:#ef4444; font-size:11px; font-weight:bold;">🚨 Alevlenme</span>`;
+        }
+
         tabloSatirlari += `
-            <tr>
-                <td><strong>${tarih.substring(0,5)}</strong></td>
+            <tr style="${satirStili}">
+                <td>${tarihSutunu}</td>
                 <td>${gosterimSistemik}</td>
                 <td>${tutukluk}</td>
                 <td>${gosterimAgri}</td>
@@ -1423,10 +1439,14 @@ function doktorRaporuOlustur() {
         let pUyku = Math.round((alevlenmeNedeniUyku / toplamAlevlenme) * 100) || 0;
         let pAktivite = Math.round((alevlenmeNedeniAktivite / toplamAlevlenme) * 100) || 0;
         let pIlac = Math.round((alevlenmeNedeniIlac / toplamAlevlenme) * 100) || 0;
+        
+        // Alevlenme tarihlerini kronolojik olarak sıralı göstermek için reverse ediyoruz
+        let alevlenmeTarihleriMetni = alevlenmeTarihleri.reverse().join(', ');
+
         kokNedenMetni = `
         <div style="margin-top: 15px;">
             <strong>🔍 Alevlenme (Flare-up) Kök Neden Analizi:</strong><br>
-            Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir. İlaç yarı ömürleri ve kümülatif yorgunluk süreleri baz alınarak yapılan geriye dönük (3-7 günlük pencereli) analizlere göre;
+            Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir <em>(${alevlenmeTarihleriMetni})</em>. İlaç yarı ömürleri ve kümülatif yorgunluk süreleri baz alınarak yapılan geriye dönük (3-7 günlük pencereli) analizlere göre;
             <ul style="margin-top: 5px; margin-bottom: 5px;">
                 ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, son 5 gün içerisinde oluşan kronik uyku borcu ve ardışık kalitesiz uyku örüntüsünün eşlik ettiği saptanmıştır. (Sekonder Fibromiyaljik Ağrı Eşiği Düşüklüğü)</li>` : ''}
                 ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 7 günlük periyotta yaşanan yoğun fiziksel yüklenmelerin (Kümülatif Yorgunluk) tetikleyici faktör olduğu görülmüştür. (Mekanik Zorlanma)</li>` : ''}
@@ -1464,7 +1484,7 @@ function doktorRaporuOlustur() {
         <div class="rap-bolum">
             <h3>📋 Hasta Özeti ve Temel Veriler</h3>
             <ul>
-                <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün</li>
+                <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün <em>(${ilkTarihGosterim} - ${sonTarihGosterim})</em></li>
                 <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
                 <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
                 <li><strong>En Aktif Semptom Bölgesi:</strong> ${enCokAgriyanBolge}</li>
@@ -1498,13 +1518,13 @@ function doktorRaporuOlustur() {
             <table class="rap-tablo">
                 <thead>
                     <tr>
-                        <th style="width:7%;">Tarih</th>
+                        <th style="width:10%;">Tarih</th>
                         <th style="width:13%;">Sistemik</th>
                         <th style="width:15%;">Sabah Tutukluğu</th>
                         <th style="width:20%;">Eklem Durumu</th>
-                        <th style="width:15%;">Sjögren (Kuruluk)</th>
+                        <th style="width:13%;">Sjögren (Kuruluk)</th>
                         <th style="width:15%;">Uyku & Enerji</th>
-                        <th style="width:15%;">Aktivite</th>
+                        <th style="width:14%;">Aktivite</th>
                     </tr>
                 </thead>
                 <tbody>${tabloSatirlari}</tbody>
