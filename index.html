@@ -786,7 +786,8 @@ function analyzeMonth(year, month) {
             if(!isNaN(ates) && ates >= 37.0) hStats.atesliGun++;
 
             if (String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrım vardı)/)) hStats.kotuUyku++;
-            if (String(tutukluk).toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/)) hStats.kotuSabah++;
+            // DÜZELTME: Sadece ciddi tutuklukları "kötü sabah" olarak sayıyoruz
+            if (String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|sürdü)/)) hStats.kotuSabah++;
             if (aktivite !== "-" && !String(aktivite).toLowerCase().includes("hayır") && !String(aktivite).toLowerCase().includes("yapmad")) hStats.aktifGun++;
 
             if (enerji !== "-") {
@@ -1007,7 +1008,7 @@ function renderHealthDiary() {
     let pGosterilen = sonGunTarihi.split('.');
     let gosterilenTarihObj = new Date(pGosterilen[2], pGosterilen[1]-1, pGosterilen[0]);
 
-    // ZAMAN KELİMELERİ (Bakılan verinin dünün verisi mi bugünün verisi mi olduğuna göre tamamen dinamik)
+    // ZAMAN KELİMELERİ 
     let tBugun = isTodayData ? "Bugün" : "Dün";
     let tYarin = isTodayData ? "Yarın" : "Bugün";
     let tGece = isTodayData ? "Dün gece" : "Önceki gece"; 
@@ -1043,9 +1044,8 @@ function renderHealthDiary() {
     let aiMsg = [];
     let isBadDay = false;
 
-    // --- ZAMAN YOLCULUĞU (TIBBİ GERÇEKLERE GÖRE PENCERELER) ---
+    // --- ZAMAN YOLCULUĞU ---
     
-    // 1 GÜN ÖNCESİ (Deltacortril kontrolü)
     let oncekiGunObj = new Date(gosterilenTarihObj); oncekiGunObj.setDate(oncekiGunObj.getDate() - 1);
     let oncekiGunStr = String(oncekiGunObj.getDate()).padStart(2, '0') + '.' + String(oncekiGunObj.getMonth() + 1).padStart(2, '0') + '.' + oncekiGunObj.getFullYear();
     let oncekiGunVeri = apiData.tumVeriler[oncekiGunStr];
@@ -1053,7 +1053,6 @@ function renderHealthDiary() {
     let oncekiGunMetoartcon = oncekiGunVeri && oncekiGunVeri['GECE_METOARTCON'] === "İçildi";
     let oncekiGunDelta = oncekiGunVeri && oncekiGunVeri['SABAH_TOK_DELTA'] === "İçildi";
 
-    // SON 7 GÜN KÜMÜLATİF (Aktivite Yükü - Kümülatif Yorgunluk)
     let son7GunAktifGunler = 0;
     for(let i=1; i<=7; i++) {
         let d = new Date(gosterilenTarihObj); d.setDate(d.getDate() - i);
@@ -1062,7 +1061,6 @@ function renderHealthDiary() {
         if (v && String(veriBul(v, ["aktivite"])).toLowerCase() !== "-" && !String(veriBul(v, ["aktivite"])).toLowerCase().match(/(hayır|yapmad)/)) son7GunAktifGunler++;
     }
 
-    // SON 7 GÜN KÜMÜLATİF (İlaç Eksikliği - DMARD Yarı Ömrü)
     let son7GunIlacAksadi = false;
     for(let i=1; i<=7; i++) {
         let d = new Date(gosterilenTarihObj); d.setDate(d.getDate() - i);
@@ -1071,48 +1069,46 @@ function renderHealthDiary() {
         if (v && Object.values(v).includes("İçilmedi")) son7GunIlacAksadi = true;
     }
 
-    // YENİ SEMPTOM CEVAPLARINI ANALİZ ETME
+    // DÜZELTİLMİŞ KONTROLLER (Alevlenme Alarmının Panik Yapmaması İçin)
     let isUykuBad = String(uyku).toLowerCase().match(/(bölündü|uyuyamad|ağrım vardı)/);
-    let isSabahBad = String(tutukluk).toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
+    let isSabahHafifKotu = String(tutukluk).toLowerCase().match(/(yarım saat)/); 
+    let isSabahCiddiKotu = String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|saat|sürdü)/) && !isSabahHafifKotu; // Sadece ağır tutukluk
     let isUykuGood = String(uyku).toLowerCase().match(/(deliksiz)/);
     let isSabahGood = String(tutukluk).toLowerCase().match(/(hemen)/);
+    
     let isAgriVar = agri !== "-" && !String(agri).toLowerCase().includes("ağrım yok");
+    let isAgriSiddetli = agri !== "-" && String(agri).toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
+    
     let isSinirVar = String(agri).toLowerCase().includes("sinir");
     let isTerleme = String(terleme).toLowerCase().includes("evet");
 
-    // ALEVLENME KONTROLÜ
-    let isAgriSiddetli = agri !== "-" && String(agri).toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
-    let isAlevlenme = isAgriSiddetli || isSabahBad;
+    // KIRMIZI ALARM (Alevlenme) SADECE CİDDİ DURUMLARDA ÇALIŞACAK
+    let isAlevlenme = isAgriSiddetli || isSabahCiddiKotu; 
 
     // ==========================================
     // SEVİYE 5 KORELASYONLAR
     // ==========================================
 
-    // 0. KIRMIZI VURGULU ALEVLENME UYARISI
     if (isAlevlenme) {
-        aiMsg.push(`<div style="padding: 12px; border-radius: 8px; border-left: 4px solid #EF4444; font-size: 15px; background: rgba(239, 68, 68, 0.15); margin-bottom: 8px;">🚨 <b style="color: #EF4444;">Alevlenme (Flare-up) Dönemi:</b><br>Sultanım, eklemlerindeki hassasiyet ve sabah tutukluğun romatizmal bir alevlenmeden geçtiğini gösteriyor. Lütfen bu geçici fırtınada motoru tamamen soğut, ağır işlerden kesinlikle kaçın ve sadece dinlenmeye odaklan. 💖</div>`);
+        aiMsg.push(`<div style="padding: 12px; border-radius: 8px; border-left: 4px solid #EF4444; font-size: 15px; background: rgba(239, 68, 68, 0.15); margin-bottom: 8px;">🚨 <b style="color: #EF4444;">Alevlenme (Flare-up) Dönemi:</b><br>Sultanım, eklemlerindeki hassasiyet ve ciddi tutukluğun romatizmal bir alevlenmeden geçtiğini gösteriyor. Lütfen bu geçici fırtınada motoru tamamen soğut, ağır işlerden kesinlikle kaçın ve sadece dinlenmeye odaklan. 💖</div>`);
         isBadDay = true;
     }
 
-    // 1. GECE TERLEMESİ
     if (isTerleme) {
         aiMsg.push(`🚨 <b>Gece Terlemesi:</b> ${tGece} yaşadığın terleme vücudunda iltihabın (enflamasyon) aktif olduğunu veya ufak bir enfeksiyon atlattığını gösterebilir. Lütfen ${tYarin.toLowerCase()} sabah ateşini her zamankinden daha dikkatli ölçmelisin.`);
         isBadDay = true;
     }
 
-    // 2. SİNİR HASSASİYETİ (NÖROPATİ)
     if (isSinirVar) {
         aiMsg.push(`🧬 <b>Sinir Hassasiyeti:</b> "Sinir uçlarım batıyor" hissi, Sjögren'e bağlı nöropatik bir sızıdır. ${tYarin} eklemlerini zorlayacak işlerden tamamen uzak durmalısın; vücudun sinir kılıflarını dinlendirmek istiyor.`);
         isBadDay = true;
     }
 
-    // 3. ATEŞ
     if (!isNaN(ates) && ates >= 37.0) {
         aiMsg.push(`🚨 <b>Bağışıklık Uyarısı:</b> Sultanım, ${tBugun.toLowerCase()} ateşin ${ates}°C. İmmünsupresif ilaçlar kullandığın için bu ateşi ciddiye alıp kendini korumaya almalısın.`);
         isBadDay = true;
     }
 
-    // 4. METOTREKSAT (METOARTCON) "HANGOVER" ETKİSİ
     let gunHaftaninKacinciGunu = gosterilenTarihObj.getDay(); 
     let numE = parseInt(enerji);
     let isEnerjiDusuk = (!isNaN(numE) && numE <= 4) || (isNaN(numE) && String(enerji).toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/));
@@ -1122,27 +1118,22 @@ function renderHealthDiary() {
         isBadDay = true;
     }
 
-    // 5. KÜMÜLATİF YORGUNLUK VE KORTİZON REBOUND
-    if (son7GunAktifGunler >= 3 && (isSabahBad || isAgriVar || isUykuBad)) {
+    if (son7GunAktifGunler >= 3 && (isSabahHafifKotu || isSabahCiddiKotu || isAgriVar || isUykuBad)) {
         let deltaUyari = oncekiGunDelta ? "Özellikle kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
         aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 7 gündür eklemlerine sık yüklendiğin (toplam ${son7GunAktifGunler} gün aktivite) görülüyor. ${tBugun} hissettiğin tutukluk o birikmiş yorgunluğun faturası. Lütfen ${tYarin.toLowerCase()} sıfır aktiviteyle motoru tamamen soğut.`);
         isBadDay = true;
-    } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahBad || isAgriVar)) {
+    } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahHafifKotu || isSabahCiddiKotu || isAgriVar)) {
         aiMsg.push(`⚠️ <b>Temponun Faturası:</b> ${tOncekiGun} kortizonun verdiği geçici enerjiyle yorulmuşsun. Ağrının ${tYarin.toLowerCase()}a sarkmaması için ${tYarin.toLowerCase()} eklemlerine kesinlikle dinlenme izni ver.`);
         isBadDay = true;
     }
 
-    // ==========================================
-    // STANDART KORELASYONLAR
-    // ==========================================
-
     if ((oncekiGunCimzia || oncekiGunMetoartcon) && isSabahGood && !isBadDay) {
         aiMsg.push(`💉 <b>İğne Şifası:</b> ${tGece} aldığın iğnenin şifası hemen kendini göstermiş, sabahki rahatlığından belli!`);
-    } else if (son7GunIlacAksadi && (isUykuBad || isSabahBad || isAgriVar)) {
+    } else if (son7GunIlacAksadi && (isUykuBad || isSabahHafifKotu || isSabahCiddiKotu || isAgriVar)) {
         aiMsg.push("🚨 Son 7 gün içinde atladığımız ilaçlar kandaki koruyucu seviyeyi düşürmüş olabilir. İnatçı sızıların kök nedeni ilacı aksatmamızdır.");
     }
 
-    if (isUykuBad && isSabahBad) {
+    if (isUykuBad && (isSabahHafifKotu || isSabahCiddiKotu)) {
         aiMsg.push(`${tGece}ki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. ${tYarin} sabah alacağın sıcak bir duş seni hafifletecektir.`);
         isBadDay = true;
     } else if (isUykuGood && isSabahGood && !isBadDay && aiMsg.length === 0) {
@@ -1199,7 +1190,7 @@ function renderHealthDiary() {
     }
     if (tutukluk !== "-") {
         let tutuklukText = String(tutukluk).toLowerCase().includes("öğlene") ? "Öğlene Kadar" : tutukluk;
-        pillsHTML += `<div class="diary-pill">${isSabahBad ? "🦴" : "✨"} ${tutuklukText}</div>`;
+        pillsHTML += `<div class="diary-pill">${(isSabahHafifKotu || isSabahCiddiKotu) ? "🦴" : "✨"} ${tutuklukText}</div>`;
     }
     if (!isNaN(ates) && ates >= 37.0) pillsHTML += `<div class="diary-pill alert">🌡️ ${ates}°C</div>`;
     else if (isAktiviteVar) {
@@ -1254,7 +1245,7 @@ function doktorRaporuOlustur() {
         return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]); 
     });
 
-    // RAPOR DÖNEMİ İÇİN İLK VE SON TARİHLER (Parantez içi gösterim için)
+    // RAPOR DÖNEMİ İÇİN İLK VE SON TARİHLER 
     let ilkTarihGosterim = tarihler.length > 0 ? tarihler[tarihler.length - 1] : "-";
     let sonTarihGosterim = tarihler.length > 0 ? tarihler[0] : "-";
 
@@ -1289,7 +1280,7 @@ function doktorRaporuOlustur() {
     
     var toplamAlevlenme = 0;
     var alevlenmeNedeniUyku = 0; var alevlenmeNedeniAktivite = 0; var alevlenmeNedeniIlac = 0;
-    var alevlenmeTarihleri = []; // Alevlenme yaşanan tarihleri hafızada tutmak için dizi
+    var alevlenmeTarihleri = []; 
 
     var deltaAlinanGun = 0; var deltaAlinanGunTutuklukVar = 0;
     var deltaAlinmayanGun = 0; var deltaAlinmayanGunTutuklukVar = 0;
@@ -1319,17 +1310,19 @@ function doktorRaporuOlustur() {
         if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yoktu")) { bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1; }
 
         let isUykuBad = uyku.toLowerCase().match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
-        let isTutuklukKotu = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
+        let isTutuklukGenel = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
+        // DÜZELTME: Sadece ciddi tutuklukları "Ağır Tutukluk" olarak kabul ediyoruz
+        let isTutuklukCiddi = tutukluk.toLowerCase().match(/(1-2 saat|öğlene|sürdü)/) && !tutukluk.toLowerCase().match(/(yarım saat)/);
         let isAktif = aktivite !== "-" && !aktivite.toLowerCase().match(/(yapmad|hayır)/);
         let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
 
         if (isUykuBad) sorunluUykuGecesi++;
-        if (isTutuklukKotu) agirTutuklukGunu++;
+        if (isTutuklukCiddi) agirTutuklukGunu++; 
         if (isAktif) aktifGunSayisi++;
         if (terleme.includes("evet")) terlemeGunSayisi++;
         if (agri.toLowerCase().includes("sinir")) sinirHassasiyetiGun++;
 
-        let isAlevlenmeGunu = isTutuklukKotu || isAgriSiddetli;
+        let isAlevlenmeGunu = isTutuklukCiddi || isAgriSiddetli;
 
         // KORTİZON HARİTASI
         let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
@@ -1337,13 +1330,12 @@ function doktorRaporuOlustur() {
 
         if (!bugunDeltaGunuMu) {
             deltaAlinmayanGun++;
-            if (isTutuklukKotu || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
+            if (isTutuklukGenel || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
         } else {
             deltaAlinanGun++;
-            if (isTutuklukKotu || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
+            if (isTutuklukGenel || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
         }
 
-        // METOTREKSAT HANGOVER ENDEKSİ (Pzt İğne -> Salı/Çrş Yorgunluk)
         let gunNo = dObj.getDay();
         if (gunNo === 2 || gunNo === 3) {
             mtxErtesiGunuToplami++;
@@ -1351,10 +1343,10 @@ function doktorRaporuOlustur() {
             if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
         }
 
-        // KÖK NEDEN ANALİZİ (Alevlenme Algılandığında)
+        // KÖK NEDEN ANALİZİ 
         if (isAlevlenmeGunu) {
             toplamAlevlenme++;
-            alevlenmeTarihleri.push(tarih.substring(0,5)); // Örneğin "10.03" olarak diziye ekliyoruz
+            alevlenmeTarihleri.push(tarih.substring(0,5)); 
             
             let son7GunAktiflik = 0;
             let son5GunKotuUyku = isUykuBad ? 1 : 0; 
@@ -1386,9 +1378,6 @@ function doktorRaporuOlustur() {
             if (son7GunIlacAksadi) alevlenmeNedeniIlac++;
         }
 
-        // ==========================================
-        // TABLO İÇİN KOMBİNE EDİLMİŞ ŞIK GÖSTERİMLER
-        // ==========================================
         let gosterimSistemik = atesGosterim;
         if(terleme.includes("evet")) gosterimSistemik += `<br><span style="font-size:12px; color:#d97706; font-weight:bold;">💦 Terleme</span>`;
 
@@ -1402,7 +1391,6 @@ function doktorRaporuOlustur() {
 
         let gosterimAktivite = aktivite !== "-" ? aktivite : "-";
 
-        // Alevlenme yaşanan günün satırını renklendirme ve etiket ekleme
         let satirStili = isAlevlenmeGunu ? `background-color: rgba(239, 68, 68, 0.05);` : ``;
         let tarihSutunu = `<strong>${tarih.substring(0,5)}</strong>`;
         if(isAlevlenmeGunu) {
@@ -1440,7 +1428,6 @@ function doktorRaporuOlustur() {
         let pAktivite = Math.round((alevlenmeNedeniAktivite / toplamAlevlenme) * 100) || 0;
         let pIlac = Math.round((alevlenmeNedeniIlac / toplamAlevlenme) * 100) || 0;
         
-        // Alevlenme tarihlerini kronolojik olarak sıralı göstermek için reverse ediyoruz
         let alevlenmeTarihleriMetni = alevlenmeTarihleri.reverse().join(', ');
 
         kokNedenMetni = `
