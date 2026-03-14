@@ -1073,18 +1073,17 @@ function renderHealthDiary() {
     let isSinirVar = String(agri).toLowerCase().includes("sinir");
     let isTerleme = String(terleme).toLowerCase().includes("evet");
 
-    // ALEVLENME (FLARE-UP) TESPİTİ - (Burada analiz ediliyor ama hap olarak gösterilmiyor)
-    let isAgriSiddetli = String(agri).toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
-    let isSabahCokKotu = String(tutukluk).toLowerCase().match(/(1-2 saat|öğlene|saat|sürdü)/);
-    let isAlevlenme = isAgriSiddetli || isSabahCokKotu;
+    // ALEVLENME KONTROLÜ (YENİ EKLENEN KISIM)
+    let isAgriSiddetli = agri !== "-" && String(agri).toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
+    let isAlevlenme = isAgriSiddetli || isSabahBad;
 
     // ==========================================
     // SEVİYE 5 KORELASYONLAR
     // ==========================================
 
-    // 0. ALEVLENME UYARISI (Asistan Kutusunda Görünür)
+    // 0. KIRMIZI VURGULU ALEVLENME UYARISI
     if (isAlevlenme) {
-        aiMsg.push(`🚨 <b>Alevlenme (Flare-up) Dönemi:</b> Sultanım, verilerine göre şu an romatizmal bir "alevlenme" döneminden geçiyor olabilirsin. Eklemlerindeki hassasiyet ve sabah tutukluğun bunun en net işareti. Bu fırtınalı süreçler hastalığın doğasında var ve geçicidir; lütfen bu süreçte motoru tamamen soğut, ağır işlerden kesinlikle kaçın ve sadece dinlenmeye odaklan. 💖`);
+        aiMsg.push(`<div style="padding: 12px; border-radius: 8px; border-left: 4px solid #EF4444; font-size: 15px; background: rgba(239, 68, 68, 0.15); margin-bottom: 8px;">🚨 <b style="color: #EF4444;">Alevlenme (Flare-up) Dönemi:</b><br>Sultanım, eklemlerindeki hassasiyet ve sabah tutukluğun romatizmal bir alevlenmeden geçtiğini gösteriyor. Lütfen bu geçici fırtınada motoru tamamen soğut, ağır işlerden kesinlikle kaçın ve sadece dinlenmeye odaklan. 💖</div>`);
         isBadDay = true;
     }
 
@@ -1117,11 +1116,11 @@ function renderHealthDiary() {
     }
 
     // 5. KÜMÜLATİF YORGUNLUK VE KORTİZON REBOUND
-    if (son7GunAktifGunler >= 3 && (isSabahBad || isAgriVar || isUykuBad) && !isAlevlenme) {
+    if (son7GunAktifGunler >= 3 && (isSabahBad || isAgriVar || isUykuBad)) {
         let deltaUyari = oncekiGunDelta ? "Özellikle kortizonun (Deltacortril) sahte enerjisine aldanıp fazla hareket etmiş olabilirsin. " : "";
         aiMsg.push(`⚠️ <b>Kümülatif Yorgunluk:</b> ${deltaUyari}Son 7 gündür eklemlerine sık yüklendiğin (toplam ${son7GunAktifGunler} gün aktivite) görülüyor. ${tBugun} hissettiğin tutukluk o birikmiş yorgunluğun faturası. Lütfen ${tYarin.toLowerCase()} sıfır aktiviteyle motoru tamamen soğut.`);
         isBadDay = true;
-    } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahBad || isAgriVar) && !isAlevlenme) {
+    } else if (oncekiGunDelta && son7GunAktifGunler >= 1 && (isSabahBad || isAgriVar)) {
         aiMsg.push(`⚠️ <b>Temponun Faturası:</b> Bir önceki gün kortizonun verdiği geçici enerjiyle yorulmuşsun. Ağrının ${tYarin.toLowerCase()}a sarkmaması için ${tYarin.toLowerCase()} eklemlerine kesinlikle dinlenme izni ver.`);
         isBadDay = true;
     }
@@ -1132,18 +1131,19 @@ function renderHealthDiary() {
 
     if ((oncekiGunCimzia || oncekiGunMetoartcon) && isSabahGood && !isBadDay) {
         aiMsg.push("💉 Bir önceki gece aldığın iğnenin şifası hemen kendini göstermiş, sabahki rahatlığından belli!");
-    } else if (son7GunIlacAksadi && (isUykuBad || isSabahBad || isAgriVar) && !isAlevlenme) {
+    } else if (son7GunIlacAksadi && (isUykuBad || isSabahBad || isAgriVar)) {
         aiMsg.push("🚨 Son 7 gün içinde atladığımız ilaçlar kandaki koruyucu seviyeyi düşürmüş olabilir. İnatçı sızıların kök nedeni ilacı aksatmamızdır.");
     }
 
-    if (isUykuBad && isSabahBad && !isAlevlenme) {
-        if(!isBadDay) aiMsg.push(`${tBuGece}ki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. ${tYarin} sabah alacağın sıcak bir duş seni hafifletecektir.`);
+    // (Değişiklik: Alevlenme varken de uykuyu yorumlasın diye "!isBadDay" kısıtlaması kaldırıldı)
+    if (isUykuBad && isSabahBad) {
+        aiMsg.push(`${tBuGece}ki uykun ağrılar yüzünden bölünmüş, sabah uyanmak da zor gelmiş. ${tYarin} sabah alacağın sıcak bir duş seni hafifletecektir.`);
         isBadDay = true;
     } else if (isUykuGood && isSabahGood && !isBadDay && aiMsg.length === 0) {
         aiMsg.push(`${tBuGece}yi deliksiz geçirmen ve kuş gibi uyanman harika haber! Tedavimiz tıkır tıkır çalışıyor.`);
     }
 
-    if (isEnerjiDusuk && gunHaftaninKacinciGunu !== 2 && gunHaftaninKacinciGunu !== 3 && !isAlevlenme) {
+    if (isEnerjiDusuk && gunHaftaninKacinciGunu !== 2 && gunHaftaninKacinciGunu !== 3) {
         aiMsg.push(`Romatizma kaynaklı genel enerjin ${tBugun.toLowerCase()} oldukça düşüktü, ${tYarin.toLowerCase()} ağır işleri tamamen bir kenara bırakıp kendini şarj etmelisin.`);
         isBadDay = true;
     }
@@ -1156,16 +1156,22 @@ function renderHealthDiary() {
     }
 
     let isAktiviteVar = aktivite !== "-" && !String(aktivite).toLowerCase().match(/(hayır|yapmad)/);
-    if (isAktiviteVar && !isBadDay && aiMsg.length < 3) {
+    // (Değişiklik: Alevlenme varken de aktiviteyi yorumlasın diye "!isBadDay" kısıtlaması kaldırıldı)
+    if (isAktiviteVar && aiMsg.length < 6) {
         let temizAktivite = String(aktivite).toLowerCase();
         if (temizAktivite.includes("pilates")) temizAktivite = "pilates";
         else if (temizAktivite.includes("yürü")) temizAktivite = "yürüyüş";
         else if (temizAktivite.includes("yüz")) temizAktivite = "yüzme";
         else { temizAktivite = temizAktivite.replace("yaptım", "").replace("ettim", "").trim(); }
-        aiMsg.push(`Hareket berekettir! Yaptığın ${temizAktivite} ile eklemlerini açık tutman tedavin için çok kıymetli.`);
+        
+        if (isAlevlenme) {
+             aiMsg.push(`Yaptığın ${temizAktivite} normalde eklemlerini açık tutmak için çok kıymetli, ancak alevlenme geçene kadar lütfen kendini hiç zorlama.`);
+        } else {
+             aiMsg.push(`Hareket berekettir! Yaptığın ${temizAktivite} ile eklemlerini açık tutman tedavin için çok kıymetli.`);
+        }
     }
 
-    if (streak >= 3 && aiMsg.length < 3 && !isAlevlenme) {
+    if (streak >= 3 && aiMsg.length < 6) {
         aiMsg.push(`<i>Tam ${streak} gündür ilaçlarını eksiksiz içme serin muazzam! Sen üzerine düşeni harika yapıyorsun.</i>`);
     }
 
@@ -1180,7 +1186,6 @@ function renderHealthDiary() {
     let moodClass = isBadDay ? "diary-mood-rest" : "diary-mood-good";
     let baslik = isTodayData ? (isBadDay ? "Yarın Dinlenme Vakti 💖" : "Harika Bir Gündü! 🌼") : (sonGunTarihi === dunTarihStr ? "⏪ Dünün Özeti" : `⏪ Son Özet (${sonGunTarihi.substring(0,5)})`);
     
-    // BURASI TAMAMEN ESKİ (İSTEDİĞİN GİBİ) - YATAYDA SCROLL EDİLEN YAPI
     let pillsHTML = "";
     if (isTerleme) pillsHTML += `<div class="diary-pill alert">💦 Terleme</div>`;
     if (uyku !== "-") {
