@@ -484,7 +484,7 @@ body {
 <div id="print-report-area"></div>
 <script>
 // API URL
-const API_URL = "https://script.google.com/macros/s/AKfycbyESzs7_DPH-vqJ1JZ5QUiAB_bch4T0_0Kq-xmmrjdgoEQqTMG7eIvubEGWoj6NGOT7RA/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbzXBD5yUTSwdnBVSlekAiKiKuIuyFWgFbWgzGA7tKUe9QqsmA2lC040CXPgLn3cSKBO/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
@@ -834,9 +834,12 @@ function renderMonthStat(prefix, data) {
     }
 
     let aiText = donemOzetiOlustur(data.healthStats, data.percentage, false);
+    let aiKey = prefix === 'thisMonth' ? 'buAy' : 'gecenAy';
+    let geminiAylik = (apiData.ai && apiData.ai[aiKey]) ? `<div style="margin-bottom:8px; font-style:italic; color:var(--purple); font-weight:700;">✨ ${apiData.ai[aiKey]}</div>` : "";
     let html = `
     <div class="stat-ai-summary">
-        <strong>✨ Dönem Özeti</strong>
+        <strong>✨ Dönem Özeti</strong><br>
+        ${geminiAylik}
         ${aiText}
     </div>`;
 
@@ -915,9 +918,11 @@ function renderYearStat(year) {
         detailsEl.innerHTML = `<div class="stat-row"><span class="stat-info">Henüz veri yok.</span></div>`;
     } else {
         let aiText = donemOzetiOlustur(yStats, yearPercentage, true);
+        let geminiYillik = (apiData.ai && apiData.ai.yillik) ? `<div style="margin-bottom:8px; font-style:italic; color:var(--purple); font-weight:700;">✨ ${apiData.ai.yillik}</div>` : "";
         let finalHTML = `
         <div class="stat-ai-summary">
-            <strong>🏆 ${year} Yılı Özeti</strong>
+            <strong>🏆 ${year} Yılı Özeti</strong><br>
+            ${geminiYillik}
             ${aiText}
         </div>
         ${monthRowsHTML}`;
@@ -1201,12 +1206,14 @@ function renderHealthDiary() {
 
     let streakHTML = streak > 0 ? `<div class="diary-streak">🔥 ${streak} Günlük Seri!</div>` : "";
 
+    let geminiGunluk = (apiData.ai && apiData.ai.gunluk) ? `<div style="margin-bottom:12px; font-style:italic; color:var(--purple); font-weight:700;">✨ ${apiData.ai.gunluk}</div>` : "";
+
     let finalHTML = `
         <div class="diary-card ${moodClass} ${collapseClass}" onclick="this.classList.toggle('collapsed')">
             <div class="diary-header"><h3 class="diary-title">${baslik}</h3>${streakHTML}</div>
             <div class="diary-pills">${pillsHTML}</div>
             <div class="diary-toggle-bar"><span class="dt-closed">✨ Asistan Yorumunu Gör <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
-            <div class="diary-ai-box">${aiMsg.join("<br><br>")}</div>
+            <div class="diary-ai-box">${geminiGunluk}${aiMsg.join("<br><br>")}</div>
         </div>`;
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
@@ -1290,7 +1297,7 @@ function doktorRaporuOlustur() {
         var atesHam = veriBul(veri, ["ates", "ateş"]);
         var tutukluk = String(veriBul(veri, ["tutuk", "sabah"]));
         var agri = String(veriBul(veri, ["agri", "ağrı", "şiş", "sis", "eklem"]));
-        var bolge = String(veriBul(veri, ["bölge", "bolge", "rahatsiz"]));
+        var bolge = String(veriBul(veri, ["bölge", "bolge", "rahatsiz"]);
         var aktivite = String(veriBul(veri, ["aktivite"]));
         var uyku = String(veriBul(veri, ["uyku", "gece"]));
         var enerji = String(veriBul(veri, ["enerji"]));
@@ -1457,8 +1464,11 @@ function doktorRaporuOlustur() {
         </div>`;
     }
 
+    let geminiRapor = (apiData.ai && apiData.ai.rapor) ? `<div style="border-left: 4px solid var(--purple); padding: 10px; background: rgba(175, 82, 222, 0.05); margin-bottom: 20px; border-radius: 4px;"><strong>🤖 Gemini Değerlendirmesi:</strong> ${apiData.ai.rapor}</div>` : "";
+
     var raporHTML = `
         <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
+        ${geminiRapor}
         <div class="rap-bolum">
             <h3>📋 Hasta Özeti ve Temel Veriler</h3>
             <ul>
