@@ -1522,21 +1522,42 @@ function doktorRaporuOlustur() {
     document.getElementById("print-report-area").innerHTML = raporHTML;
     setTimeout(function() { window.print(); }, 250);
 }
-
+  
 async function veriCek() {
     if (fetchDevamEdiyor) return;
     fetchDevamEdiyor = true;
+    const dNow = new Date();
+    const todayStr = String(dNow.getDate()).padStart(2, '0') + '.' + String(dNow.getMonth() + 1).padStart(2, '0') + '.' + dNow.getFullYear();
     
-    const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
     try {
+        document.getElementById('last-sync').innerText = "🕵️‍♂️ İz sürülüyor...";
         const res = await fetch(`${API_URL}?tarih=${todayStr}`);
-        if (!res.ok) throw new Error("Ağ Hatası");
-        apiData = await res.json();
+        
+        const rawText = await res.text();
+        
+        try {
+            apiData = JSON.parse(rawText);
+        } catch (jsonErr) {
+            // TUZAK 1: Eğer veri JSON değilse Google Login sayfası dönmüş demektir!
+            alert("🕵️‍♂️ DEDEKTİF RAPORU 1 (GİZLİ KAPI):\n\nGoogle veriyi göndermedi, bunun yerine 'Giriş Yap' sayfası gönderdi!\n\nÇÖZÜM: Apps Script'te Dağıtımı Yönet derken 'Erişimi Olanlar' kısmını 'Google hesabı olan herkes' DEĞİL, kesinlikle 'Herkes' (Anyone) olarak seçmelisin.");
+            throw new Error("Gelen veri JSON değil, bağlantı engellendi.");
+        }
+        
         sonBasariZamani = Date.now();
         ekraniCiz(); 
         istatistikleriCiz(); 
         renderHealthDiary(); 
-    } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
+        
+    } catch(e) { 
+        console.error("Dedektif Yakaladı:", e);
+        document.getElementById('last-sync').innerHTML = `🔴 Hata Bulundu!`; 
+        if(e.message.includes("Failed to fetch")) {
+            // TUZAK 2: Tarayıcı engeli
+            alert("🕵️‍♂️ DEDEKTİF RAPORU 2 (CORS ENGELİ):\n\nTarayıcı bağlantıyı reddetti. API URL linkini eksik kopyalamış olabilirsin veya sonu '/exec' ile bitmiyor.");
+        }
+    } finally { 
+        fetchDevamEdiyor = false; 
+    }
 }
 
 function ekraniCiz() {
