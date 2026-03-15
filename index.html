@@ -536,12 +536,22 @@ function ekraniCiz() {
     const timelineEl = document.getElementById('timelineArea'); if(timelineEl) timelineEl.innerHTML = timelineHTML;
 }
 
+// HTML'nin en altındaki bölümü bununla değiştir:
+
 veriCek();
-setInterval(veriCek, 60000); 
-setInterval(saniyeTiktak, 1000); 
+// Saniyede bir yerine 5 dakikada bir (300.000 ms) veri çek. Bu kotanı korur!
+setInterval(veriCek, 300000); 
+setInterval(saniyeTiktak, 1000);
 
 document.addEventListener("visibilitychange", () => { 
-    if (document.visibilityState === 'visible') { veriCek(); fetchWeather(); }
+    if (document.visibilityState === 'visible') { 
+        const simdi = Date.now();
+        // Sayfaya her dönüldüğünde değil, sadece son başarılı çekimden bu yana 5 dakika geçtiyse veri çek
+        if (sonBasariZamani === 0 || (simdi - sonBasariZamani > 300000)) {
+            veriCek(); 
+            fetchWeather(); 
+        }
+    }
 });
 </script>
 </body>
