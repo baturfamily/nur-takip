@@ -13,7 +13,7 @@
 <meta name="theme-color" content="#0B0B0E" media="(prefers-color-scheme: dark)">
 
 <style>
-/* --- TÜM CSS STİLLERİN (AYNEN KORUNDU) --- */
+/* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
   --bg: #F4F4F7; --card: #FFFFFF; --text: #2C2C2E; --muted: #8E8E93; --line: rgba(0,0,0,0.06);
   --accent: #34C759; --warning: #FF9500; --danger: #FF3B30; --early: #007AFF; --purple: #AF52DE;
@@ -23,9 +23,10 @@
   --done-border: rgba(52, 199, 89, 0.3); --wait-badge-bg: rgba(0,0,0,0.05); --wait-badge-text: #636366; 
 }
 
+/* --- KARANLIK (DARK) MOD RENKLERİ (GÖZ DİNLENDİREN YUMUŞAK KONTRAST) --- */
 @media (prefers-color-scheme: dark) {
   :root { 
-    --bg: #0B0B0E; --card: #1C1C1E; --text: #EAEBEE; --muted: #98989D; --line: rgba(255,255,255,0.08);
+    --bg: #0B0B0E; --card: #1C1C1E; --text: #D1D1D6; --muted: #98989D; --line: rgba(255,255,255,0.08);
     --accent: #32D74B; --warning: #FF9D0A; --danger: #FF453A; --early: #0A84FF; --purple: #BF5AF2;
     --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%); --vip-text: #FFFFFF; --vip-muted: #98989D;
     --vip-gold: #F1C40F; --vip-shadow: 0 12px 30px rgba(0,0,0,0.5); --card-border: rgba(255,255,255,0.05);
@@ -93,7 +94,10 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 @media (prefers-color-scheme: dark) { .stat-ai-summary { background: rgba(0,0,0,0.2); color: #E2E8F0; border-left-color: #BF5AF2; } .stat-ai-summary strong { color: #BF5AF2; } }
 .vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .vertical-list::-webkit-scrollbar { display: none; }
 .card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;} .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
-.card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; }
+
+/* TIKLAMA ALANI (PADDING) BÜYÜTÜLDÜ */
+.card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; padding: 8px 0; }
+
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
 .badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
 .badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); } .badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); } .badge-warning { background: rgba(255, 149, 0, 0.15); color: var(--warning); } 
@@ -106,8 +110,11 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
 .drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; } .drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
 .card.collapsed { cursor: pointer; } .card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
-.minik-button { position: fixed; bottom: calc(20px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
-.minik-toast { position: fixed; bottom: calc(90px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
+
+/* ÇENTİK KURTARMA ALANLARI: 30px ve 100px OLARAK GÜNCELLENDİ */
+.minik-button { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
+.minik-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
+
 .badge-danger { background: rgba(255, 59, 48, 0.15); color: var(--danger); font-weight: 900; } .late-card { border-color: var(--danger) !important; animation: latePulse 2s infinite; }
 @keyframes latePulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
 .stat-card { background: linear-gradient(135deg, #FFF7F0 0%, #FFEDE0 100%) !important; border: 1px solid #F5E0CD !important; }
@@ -210,6 +217,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbworl43bA0Xx83YRuR-b6Ln
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
+let minikTimer; // Minik mesajı için zamanlayıcı değişkeni eklendi
 
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
 
@@ -265,6 +273,12 @@ function mewMsg() {
     const t = document.getElementById('minikToast');
     t.innerHTML = "Seni minik kalbimle çok seviyorum! Şifamız bol olsun, canım nenem! 🐾❤️";
     t.style.display = 'block';
+    
+    // OTOMATİK KAPANMA EKLENDİ (4 SANİYE)
+    clearTimeout(minikTimer); // Eğer butona peş peşe basılırsa eski sayacı sıfırlar
+    minikTimer = setTimeout(() => {
+        t.style.display = 'none';
+    }, 4000);
 }
 
 function saniyeTiktak() {
@@ -523,7 +537,7 @@ function ekraniCiz() {
 }
 
 veriCek();
-setInterval(veriCek, 20000); // KOTAYI KORUMAK İÇİN 10 SN'Yİ 20 SN YAPTIK
+setInterval(veriCek, 20000); 
 setInterval(saniyeTiktak, 1000); 
 
 document.addEventListener("visibilitychange", () => { 
