@@ -1236,25 +1236,12 @@ function renderHealthDiary() {
 }
 
 // =======================================================
-// DOKTOR RAPORU (KÜMÜLATİF KÖK NEDEN ANALİZİ & HARİTALAR)
+// DOKTOR RAPORU (SADECE TEMEL VERİLER VE GEMINI YAPAY ZEKA)
 // =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler || Object.keys(apiData.tumVeriler).length === 0) {
         alert("Henüz veri yüklenmedi veya veri bulunamadı. Lütfen birkaç saniye bekleyip tekrar deneyin.");
         return;
-    }
-
-    function veriBul(gunlukVeri, aranacakKelimeler) {
-        if (!gunlukVeri) return "-";
-        for (var kolonIsmi in gunlukVeri) {
-            var cevap = gunlukVeri[kolonIsmi];
-            if (cevap === "İçildi" || cevap === "İçilmedi" || cevap === "" || cevap === null) continue;
-            var temizKolon = String(kolonIsmi).toLowerCase().replace(/ı/g,'i').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s').replace(/ö/g,'o').replace(/ç/g,'c');
-            for (var i = 0; i < aranacakKelimeler.length; i++) {
-                if (temizKolon.includes(aranacakKelimeler[i].toLowerCase())) return cevap;
-            }
-        }
-        return "-";
     }
 
     var tarihler = Object.keys(apiData.tumVeriler).filter(t => {
@@ -1273,6 +1260,9 @@ function doktorRaporuOlustur() {
     var bugunTarihStr = String(anlikTarih.getDate()).padStart(2, '0') + '.' + String(anlikTarih.getMonth() + 1).padStart(2, '0') + '.' + anlikTarih.getFullYear();
     var anlikDakika = (anlikTarih.getHours() * 60) + anlikTarih.getMinutes();
 
+    // İlaç oranını ve tabloyu oluştur
+    var tabloSatirlari = ""; 
+    
     tarihler.forEach(function(tarih) {
         var p = tarih.split('.');
         var dObj = new Date(p[2], p[1]-1, p[0]);
@@ -1291,228 +1281,61 @@ function doktorRaporuOlustur() {
                 if (veri[ilac.key] === "İçildi") toplamIcilenIlac++;
             });
         });
-    });
 
-    var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
-    var tabloSatirlari = ""; var atesliGunSayisi = 0; var bolgeFrekans = {};
-    var sorunluUykuGecesi = 0; var agirTutuklukGunu = 0; var aktifGunSayisi = 0;
-    
-    var toplamAlevlenme = 0;
-    var alevlenmeNedeniUyku = 0; var alevlenmeNedeniAktivite = 0; var alevlenmeNedeniIlac = 0;
-    var alevlenmeTarihleri = []; 
+        // Tablo için verileri çek (Eski hali gibi)
+        var atesHam = veri[Object.keys(veri).find(k => k.toLowerCase().includes("ates"))] || "-";
+        var tutukluk = veri[Object.keys(veri).find(k => k.toLowerCase().includes("tutuk"))] || "-";
+        var agri = veri[Object.keys(veri).find(k => k.toLowerCase().includes("agri"))] || "-";
+        var bolge = veri[Object.keys(veri).find(k => k.toLowerCase().includes("bolge") || k.toLowerCase().includes("bölge"))] || "-";
+        var aktivite = veri[Object.keys(veri).find(k => k.toLowerCase().includes("aktivite"))] || "-";
+        var uyku = veri[Object.keys(veri).find(k => k.toLowerCase().includes("uyku"))] || "-";
+        var kuruluk = veri[Object.keys(veri).find(k => k.toLowerCase().includes("kuru"))] || "-";
 
-    var deltaAlinanGun = 0; var deltaAlinanGunTutuklukVar = 0;
-    var deltaAlinmayanGun = 0; var deltaAlinmayanGunTutuklukVar = 0;
-
-    var terlemeGunSayisi = 0;
-    var sinirHassasiyetiGun = 0;
-    var mtxErtesiGunuToplami = 0; var mtxErtesiGunuYorgunluk = 0;
-
-    tarihler.forEach(function(tarih, index) {
-        var veri = apiData.tumVeriler[tarih];
-        
-        var atesHam = veriBul(veri, ["ates", "ateş"]);
-        var tutukluk = String(veriBul(veri, ["tutuk", "sabah"]));
-        var agri = String(veriBul(veri, ["agri", "ağrı", "şiş", "sis", "eklem"]));
-        var bolge = String(veriBul(veri, ["bölge", "bolge", "rahatsiz"]));
-        var aktivite = String(veriBul(veri, ["aktivite"]));
-        var uyku = String(veriBul(veri, ["uyku", "gece"]));
-        var enerji = String(veriBul(veri, ["enerji"]));
-        var terleme = String(veriBul(veri, ["terleme"])).toLowerCase();
-        var kuruluk = String(veriBul(veri, ["göz", "goz", "kuru"]));
-        
         var ates = (atesHam !== "-") ? parseFloat(atesHam.toString().replace(',', '.')) : 0;
         var atesGosterim = (!isNaN(ates) && ates > 0) ? ates + "°C" : "-";
-        if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; atesliGunSayisi++; }
+        if (!isNaN(ates) && ates >= 37.0) { atesGosterim = `<span class="rap-alert">${ates}°C ⚠️</span>`; }
 
-        var bKucuk = bolge.toLowerCase();
-        if (bolge !== "-" && !bKucuk.includes("hayır") && !bKucuk.includes("yoktu")) { bolgeFrekans[bolge] = (bolgeFrekans[bolge] || 0) + 1; }
+        var isAlevlenme = tutukluk.toLowerCase().match(/(1-2 saat|öğlene|sürdü)/) && !tutukluk.toLowerCase().match(/(yarım saat)/);
 
-        let isUykuBad = uyku.toLowerCase().match(/(bölündü|ağrım vardı|uyuyamad|vardı)/);
-        let isTutuklukGenel = tutukluk.toLowerCase().match(/(yarım saat|1-2 saat|öğlene|saat|sürdü)/);
-        let isTutuklukCiddi = tutukluk.toLowerCase().match(/(1-2 saat|öğlene|sürdü)/) && !tutukluk.toLowerCase().match(/(yarım saat)/);
-        let isAktif = aktivite !== "-" && !aktivite.toLowerCase().match(/(yapmad|hayır)/);
-        let isAgriSiddetli = agri.toLowerCase().match(/(şiş|ağrılı|şiddetli|çok ağrı)/);
-
-        if (isUykuBad) sorunluUykuGecesi++;
-        if (isTutuklukCiddi) agirTutuklukGunu++; 
-        if (isAktif) aktifGunSayisi++;
-        if (terleme.includes("evet")) terlemeGunSayisi++;
-        if (agri.toLowerCase().includes("sinir")) sinirHassasiyetiGun++;
-
-        let isAlevlenmeGunu = isTutuklukCiddi || isAgriSiddetli;
-
-        let p = tarih.split('.'); let dObj = new Date(p[2], p[1]-1, p[0]);
-        let bugunDeltaGunuMu = Math.round((dObj - new Date(2026, 1, 16))/(1000*60*60*24)) % 2 === 0;
-
-        if (!bugunDeltaGunuMu) {
-            deltaAlinmayanGun++;
-            if (isTutuklukGenel || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinmayanGunTutuklukVar++;
-        } else {
-            deltaAlinanGun++;
-            if (isTutuklukGenel || (!agri.toLowerCase().includes("ağrım yok") && agri !== "-")) deltaAlinanGunTutuklukVar++;
-        }
-
-        let gunNo = dObj.getDay();
-        if (gunNo === 2 || gunNo === 3) {
-            mtxErtesiGunuToplami++;
-            let numE = parseInt(enerji);
-            if ((!isNaN(numE) && numE <= 4) || (isNaN(numE) && enerji.toLowerCase().match(/(düşük|kötü|yorgun|az|çok bitkin)/))) mtxErtesiGunuYorgunluk++;
-        }
-
-        if (isAlevlenmeGunu) {
-            toplamAlevlenme++;
-            alevlenmeTarihleri.push(tarih.substring(0,5)); 
-            
-            let son7GunAktiflik = 0;
-            let son5GunKotuUyku = isUykuBad ? 1 : 0; 
-            let son7GunIlacAksadi = false;
-
-            for (let i = 1; i <= 7; i++) {
-                if (index + i < tarihler.length) {
-                    let gA = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["aktivite"])).toLowerCase();
-                    if (gA !== "-" && !gA.match(/(yapmad|hayır)/)) son7GunAktiflik++;
-                }
-            }
-            
-            for (let i = 1; i <= 5; i++) {
-                if (index + i < tarihler.length) {
-                    let gU = String(veriBul(apiData.tumVeriler[tarihler[index+i]], ["uyku", "gece"])).toLowerCase();
-                    if (gU.match(/(bölündü|ağrım vardı|uyuyamad|vardı)/)) son5GunKotuUyku++;
-                }
-            }
-
-            for (let i = 1; i <= 7; i++) {
-                if (index + i < tarihler.length) {
-                    let gV = apiData.tumVeriler[tarihler[index+i]];
-                    if (gV && Object.values(gV).includes("İçilmedi")) son7GunIlacAksadi = true;
-                }
-            }
-
-            if (son7GunAktiflik >= 4) alevlenmeNedeniAktivite++;
-            if (son5GunKotuUyku >= 3) alevlenmeNedeniUyku++; 
-            if (son7GunIlacAksadi) alevlenmeNedeniIlac++;
-        }
-
-        let gosterimSistemik = atesGosterim;
-        if(terleme.includes("evet")) gosterimSistemik += `<br><span style="font-size:12px; color:#d97706; font-weight:bold;">💦 Terleme</span>`;
-
-        let gosterimAgri = agri !== "-" ? agri : "-";
-        if(bolge !== "-" && !bKucuk.match(/(hayır|yoktu)/)) gosterimAgri += `<br><span style="font-size:12px; color:#475569;">📍 ${bolge}</span>`;
-
-        let gosterimSjogren = kuruluk !== "-" ? kuruluk : "-";
-        
-        let gosterimUyku = uyku !== "-" ? uyku : "-";
-        if(enerji !== "-") gosterimUyku += `<br><span style="font-size:12px; color:#475569;">⚡ Enerji: ${enerji}</span>`;
-
-        let gosterimAktivite = aktivite !== "-" ? aktivite : "-";
-
-        let satirStili = isAlevlenmeGunu ? `background-color: rgba(239, 68, 68, 0.05);` : ``;
+        let satirStili = isAlevlenme ? `background-color: rgba(239, 68, 68, 0.05);` : ``;
         let tarihSutunu = `<strong>${tarih.substring(0,5)}</strong>`;
-        if(isAlevlenmeGunu) {
-            tarihSutunu += `<br><span style="color:#ef4444; font-size:11px; font-weight:bold;">🚨 Alevlenme</span>`;
-        }
+        if(isAlevlenme) tarihSutunu += `<br><span style="color:#ef4444; font-size:11px; font-weight:bold;">🚨 Alevlenme</span>`;
 
         tabloSatirlari += `
             <tr style="${satirStili}">
                 <td>${tarihSutunu}</td>
-                <td>${gosterimSistemik}</td>
+                <td>${atesGosterim}</td>
                 <td>${tutukluk}</td>
-                <td>${gosterimAgri}</td>
-                <td>${gosterimSjogren}</td>
-                <td>${gosterimUyku}</td>
-                <td>${gosterimAktivite}</td>
+                <td>${agri} ${bolge !== "-" ? `<br><span style="font-size:11px;">(${bolge})</span>` : ""}</td>
+                <td>${kuruluk}</td>
+                <td>${uyku}</td>
+                <td>${aktivite}</td>
             </tr>`;
     });
 
-    var enCokAgriyanBolge = "Belirgin bir bölge yok"; var maxTekrar = 0;
-    for (var b in bolgeFrekans) { if (bolgeFrekans[b] > maxTekrar) { maxTekrar = bolgeFrekans[b]; enCokAgriyanBolge = b; } }
+    var ilacUyumOrani = toplamBeklenenIlac > 0 ? Math.round((toplamIcilenIlac / toplamBeklenenIlac) * 100) : 100;
 
-    var uykuMetni = sorunluUykuGecesi > 0 ? `<strong>${sorunluUykuGecesi} gece</strong> ağrı sebebiyle kalitesiz uyku deneyimlemiş` : `uyku sürecini genel olarak stabil geçirmiş`;
-    var tutuklukMetni = agirTutuklukGunu > 0 ? `<strong>${agirTutuklukGunu} gün</strong> belirgin sabah tutukluğu yaşamış` : `sabah açılmalarını iyi yönetmiş`;
-    var aktiviteMetni = aktifGunSayisi > 0 ? `toplam <strong>${aktifGunSayisi} gün</strong> fiziksel egzersiz yapabilmiştir.` : `fiziksel aktivite açısından hareketsiz (sedanter) kalmıştır.`;
-    
-    var terlemeMetni = terlemeGunSayisi > 0 ? `<li><strong>Enflamasyon Uyarısı:</strong> Toplam <strong>${terlemeGunSayisi} gece</strong> enflamasyon veya enfeksiyon belirteci olabilecek <u>gece terlemesi</u> raporlanmıştır. Hastalık aktivasyonu açısından takibi önerilir.</li>` : "";
-    var sinirMetni = sinirHassasiyetiGun > 0 ? `<li><strong>Nöropatik Tutulum:</strong> Hastamız <strong>${sinirHassasiyetiGun} gün</strong> "sinir uçlarında batma" tarifleyerek Sjögren Sendromu'na bağlı olası Small Fiber Neuropathy (Küçük Lif Nöropatisi) semptomu göstermiştir.</li>` : "";
-
-    var akilliYorum = `Bu izlem döneminde hastalık semptomları en çok <strong>${enCokAgriyanBolge}</strong> bölgesinde yoğunlaşmıştır. Hastamız bu periyotta ${uykuMetni}, ${tutuklukMetni} ve ${aktiviteMetni}`;
-
-    let kokNedenMetni = "";
-    if (toplamAlevlenme > 0) {
-        let pUyku = Math.round((alevlenmeNedeniUyku / toplamAlevlenme) * 100) || 0;
-        let pAktivite = Math.round((alevlenmeNedeniAktivite / toplamAlevlenme) * 100) || 0;
-        let pIlac = Math.round((alevlenmeNedeniIlac / toplamAlevlenme) * 100) || 0;
-        
-        let alevlenmeTarihleriMetni = alevlenmeTarihleri.reverse().join(', ');
-
-        kokNedenMetni = `
-        <div style="margin-top: 15px;">
-            <strong>🔍 Alevlenme (Flare-up) Kök Neden Analizi:</strong><br>
-            Bu periyotta toplam ${toplamAlevlenme} kez şiddetli alevlenme (ağrı/tutukluk) tespit edilmiştir <em>(${alevlenmeTarihleriMetni})</em>. İlaç yarı ömürleri ve kümülatif yorgunluk süreleri baz alınarak yapılan geriye dönük (3-7 günlük pencereli) analizlere göre;
-            <ul style="margin-top: 5px; margin-bottom: 5px;">
-                ${pUyku > 0 ? `<li>Vakaların <strong>%${pUyku}</strong> oranındaki kısmında, son 5 gün içerisinde oluşan kronik uyku borcu ve ardışık kalitesiz uyku örüntüsünün eşlik ettiği saptanmıştır. (Sekonder Fibromiyaljik Ağrı Eşiği Düşüklüğü)</li>` : ''}
-                ${pAktivite > 0 ? `<li>Alevlenmelerin <strong>%${pAktivite}</strong> oranındaki kısmında, alevlenmeden önceki 7 günlük periyotta yaşanan yoğun fiziksel yüklenmelerin (Kümülatif Yorgunluk) tetikleyici faktör olduğu görülmüştür. (Mekanik Zorlanma)</li>` : ''}
-                ${pIlac > 0 ? `<li>Alevlenmelerin <strong>%${pIlac}</strong> oranında, kandaki DMARD/Biyolojik düzeyinin azalmasına bağlı olarak (son 7 gün içerisindeki eksik/düzensiz ilaç kullanımı) ortaya çıktığı tespit edilmiştir.</li>` : ''}
-                ${(pUyku === 0 && pAktivite === 0 && pIlac === 0) ? `<li>Belirgin bir çevresel veya davranışsal tetikleyici bulunamamıştır. Temel hastalık aktivitesinin (inflamasyonun) değerlendirilmesi önerilir.</li>` : ''}
-            </ul>
-        </div>`;
-    }
-
-    let deltaBagimlilikMetni = "";
-    if (deltaAlinmayanGun > 0 && deltaAlinanGun > 0) {
-        let pctAlinmayan = Math.round((deltaAlinmayanGunTutuklukVar / deltaAlinmayanGun) * 100);
-        let pctAlinan = Math.round((deltaAlinanGunTutuklukVar / deltaAlinanGun) * 100);
-        
-        if (pctAlinmayan > pctAlinan * 1.5) {
-            deltaBagimlilikMetni = `
-            <div style="margin-top: 10px;">
-                <strong>📉 Kortizon Bağımlılık Haritası:</strong><br>
-                Hastanın Deltacortril <u>almadığı</u> ("Off") günlerde sabah tutukluğu yaşama oranı <strong>%${pctAlinmayan}</strong> iken, kortizon aldığı günlerde bu oran <strong>%${pctAlinan}</strong>'a düşmektedir. Vücudun inflamasyon kontrolü henüz tamamen temel ilaçların (DMARD/Biyolojik) kontrolüne geçmemiştir, hasta steroid rebound etkisi yaşamaktadır.
-            </div>`;
-        }
-    }
-
-    let toksisiteMetni = "";
-    if (mtxErtesiGunuToplami > 0 && (mtxErtesiGunuYorgunluk / mtxErtesiGunuToplami > 0.6)) {
-        toksisiteMetni = `
-        <div style="margin-top: 10px;">
-            <strong>🧪 Metotreksat (MTX) Hangover Endeksi:</strong><br>
-            Hasta Pazartesi günleri aldığı Metoartcon iğnesi sonrasındaki 24-48 saatlik periyotta (Salı ve Çarşamba günleri) yüksek oranda "ilaç yorgunluğu ve düşük enerji" raporlamaktadır. Folbiol desteğine rağmen devam eden bu MTX sisi/halsizliği klinik olarak olağandır.
-        </div>`;
-    }
-
-    // --- YAPAY ZEKA RAPORA EKLENTİSİ ---
-    let geminiRaporMetni = "";
-    if (apiData.ai && apiData.ai.rapor && !apiData.ai.rapor.includes("kullanılamıyor") && !apiData.ai.rapor.includes("Hata")) {
-        geminiRaporMetni = `
-        <div style="margin-top:15px; background-color: #f3e8ff; border-left: 4px solid #a855f7; padding: 14px 18px; border-radius: 4px;">
-            <strong style="color: #a855f7;">🤖 Yapay Zeka Klinik Özeti:</strong><br>
-            ${apiData.ai.rapor}
-        </div>`;
+    // --- YAPAY ZEKA RAPORA EKLENTİSİ (1. SAYFANIN TAMAMI ARTIK BURADA) ---
+    let geminiRaporMetni = "<span style='color:red;'>Yapay Zeka Analizi Bekleniyor...</span>";
+    if (apiData.ai && apiData.ai.rapor && !apiData.ai.rapor.includes("oluşturulamadı") && !apiData.ai.rapor.includes("Hata")) {
+        geminiRaporMetni = apiData.ai.rapor;
     }
 
     var raporHTML = `
-        <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
+        <div class="rap-baslik">Nurten BATUR - Romatoloji Klinik İzlem Raporu</div>
         <div class="rap-bolum">
-            <h3>📋 Hasta Özeti ve Temel Veriler</h3>
+            <h3>📋 Temel Hasta Verileri</h3>
             <ul>
                 <li><strong>Rapor Dönemi:</strong> Son ${tarihler.length} Kayıtlı Gün <em>(${ilkTarihGosterim} - ${sonTarihGosterim})</em></li>
-                <li><strong>Genel İlaç Uyum Oranı:</strong> Reçete edilen tedaviye <strong>%${ilacUyumOrani}</strong> oranında sadık kalınmıştır.</li>
-                <li><strong>Enfeksiyon & Güvenlik Uyarısı:</strong> Bu dönemde <strong>${atesliGunSayisi} gün</strong> vücut ısısı 37.0°C ve üzerinde seyretmiştir.</li>
-                <li><strong>En Aktif Semptom Bölgesi:</strong> ${enCokAgriyanBolge}</li>
-                ${terlemeMetni}
-                ${sinirMetni}
+                <li><strong>Genel İlaç Uyum Oranı:</strong> Hastanın reçete edilen protokole uyum oranı <strong>%${ilacUyumOrani}</strong> olarak ölçülmüştür.</li>
             </ul>
-            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 14px 18px; margin-top: 15px; font-size: 14px; line-height: 1.6; border-radius: 4px;">
-                <strong>💡 Sistemin Klinik Gözlemi:</strong> ${akilliYorum}
-                ${kokNedenMetni}
-                ${deltaBagimlilikMetni}
-                ${toksisiteMetni}
+            
+            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 16px 20px; margin-top: 20px; font-size: 15px; line-height: 1.6; border-radius: 6px;">
                 ${geminiRaporMetni}
             </div>
         </div>
 
-        <div class="rap-bolum">
+        <div class="rap-bolum" style="page-break-before: always;">
             <h3>💊 Aktif Tedavi ve İlaç Şeması</h3>
             <table class="rap-tablo">
                 <thead><tr><th style="width: 20%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
@@ -1532,11 +1355,11 @@ function doktorRaporuOlustur() {
                 <thead>
                     <tr>
                         <th style="width:10%;">Tarih</th>
-                        <th style="width:13%;">Sistemik</th>
-                        <th style="width:15%;">Sabah Tutukluğu</th>
+                        <th style="width:10%;">Ateş</th>
+                        <th style="width:16%;">Sabah Tutukluğu</th>
                         <th style="width:20%;">Eklem Durumu</th>
-                        <th style="width:13%;">Sjögren (Kuruluk)</th>
-                        <th style="width:15%;">Uyku & Enerji</th>
+                        <th style="width:15%;">Sjögren</th>
+                        <th style="width:15%;">Uyku</th>
                         <th style="width:14%;">Aktivite</th>
                     </tr>
                 </thead>
