@@ -69,7 +69,7 @@ color: white; line-height: 1.3;}
   border: 2px solid #3B82F6 !important;
 }
 .new-badge {
-  background: #3B82F6; color: white; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; animation: new-ai-pulse 2s infinite; letter-spacing: 0.5px;
+  background: #3B82F6; color: white; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; animation: new-ai-pulse 2s infinite; letter-spacing: 0.5px; margin-left: 6px; display: inline-block; vertical-align: middle;
 }
 
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
@@ -210,9 +210,9 @@ color: white; line-height: 1.3;}
 
     <div id="statsArea">
         
-        <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed')">
+        <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed'); markStatAsRead('buAy', 'card-stat-this-month')">
             <div class="card-header">
-                <div class="drug-name">📊 <span>Bu Ayki Özet</span></div>
+                <div class="drug-name">📊 <span id="title-buAy">Bu Ayki Özet</span></div>
                 <div class="badge badge-wait" id="thisMonthBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="thisMonthDetails">
@@ -220,9 +220,9 @@ color: white; line-height: 1.3;}
             </div>
         </div>
 
-        <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed')">
+        <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed'); markStatAsRead('gecenAy', 'card-stat-last-month')">
             <div class="card-header">
-                <div class="drug-name">⏪ <span>Geçen Ayın Özeti</span></div>
+                <div class="drug-name">⏪ <span id="title-gecenAy">Geçen Ayın Özeti</span></div>
                 <div class="badge badge-wait" id="lastMonthBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="lastMonthDetails">
@@ -230,9 +230,9 @@ color: white; line-height: 1.3;}
             </div>
         </div>
 
-        <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed')">
+        <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed'); markStatAsRead('yillik', 'card-stat-yearly')">
             <div class="card-header">
-                <div class="drug-name">🏆 <span>Yıllık Karne (<span id="currentYearText"></span>)</span></div>
+                <div class="drug-name">🏆 <span id="title-yillik">Yıllık Karne (<span id="currentYearText"></span>)</span></div>
                 <div class="badge badge-wait" id="yearlyBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="yearlyDetails">
@@ -252,7 +252,6 @@ color: white; line-height: 1.3;}
 <div id="print-report-area"></div>
 
 <script>
-// API URL - KENDİ URL'NİZ BURADA
 const API_URL = "https://script.google.com/macros/s/AKfycbworl43bA0Xx83YRuR-b6LnzLDMbmrHT8CydoIlze0_4TGq4ff7VEMzs4kleTqAi1Udug/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
@@ -313,9 +312,7 @@ function mewMsg() {
     t.innerHTML = "Seni minik kalbimle çok seviyorum! Şifamız bol olsun, canım nenem! 🐾❤️";
     t.style.display = 'block';
     clearTimeout(minikTimer);
-    minikTimer = setTimeout(() => {
-        t.style.display = 'none';
-    }, 4000);
+    minikTimer = setTimeout(() => { t.style.display = 'none'; }, 4000);
 }
 
 function saniyeTiktak() {
@@ -352,25 +349,23 @@ function getDailyProgram(dateObj) {
 }
 
 // =======================================================
-// YAPAY ZEKA DESTEKLİ SAĞLIK GÜNLÜĞÜ (YENİ RAPOR BİLDİRİMLİ)
+// GÜNLÜK RAPOR UI VE ROZET MANTIĞI
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.ai) return;
     let aiMsg = apiData.ai.gunluk || "Veriler değerlendiriliyor...";
-    
     let moodClass = aiMsg.includes("Alevlenme") || aiMsg.includes("Terleme") || aiMsg.includes("Sinir") ? "diary-mood-rest" : "diary-mood-good";
     
-    // YENİ RAPOR KONTROLÜ (Tarayıcı Hafızasından)
-    let lastReadReport = localStorage.getItem('lastReadAiReport');
-    let isNew = (aiMsg !== "Veriler değerlendiriliyor..." && lastReadReport !== aiMsg);
+    let lastReadReport = localStorage.getItem('lastRead_gunluk');
+    let isNew = (aiMsg && !aiMsg.includes("değerlendiriliyor") && !aiMsg.includes("güncellenemiyor") && lastReadReport !== aiMsg);
     
     let pulseClass = isNew ? "new-report-pulse" : "";
     let badgeHTML = isNew ? `<span class="new-badge">YENİ</span>` : "";
 
     let finalHTML = `
-        <div class="diary-card ${moodClass} ${pulseClass} collapsed" id="aiDiaryCard" onclick="markReportAsRead(); this.classList.toggle('collapsed')">
+        <div class="diary-card ${moodClass} ${pulseClass} collapsed" id="aiDiaryCard" data-new-text="${isNew ? aiMsg : ''}" onclick="markStatAsRead('gunluk', 'aiDiaryCard'); this.classList.toggle('collapsed')">
             <div class="diary-header">
-                <h3 class="diary-title">✨ Günlük Asistan Yorumu ${badgeHTML}</h3>
+                <h3 class="diary-title" id="title-gunluk">✨ Günlük Asistan Yorumu ${badgeHTML}</h3>
             </div>
             <div class="diary-toggle-bar"><span class="dt-closed">Aç <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
             <div class="diary-ai-box">
@@ -384,28 +379,26 @@ function renderHealthDiary() {
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
 
-// Okundu olarak işaretleyen fonksiyon (Tıklanınca Çalışır)
-window.markReportAsRead = function() {
-    if (!apiData || !apiData.ai) return;
-    let aiMsg = apiData.ai.gunluk || "";
-    if (aiMsg && aiMsg !== "Veriler değerlendiriliyor...") {
-        localStorage.setItem('lastReadAiReport', aiMsg); // Hafızaya kaydet
-        // Yanıp sönme efektini ve rozeti hemen UI'dan kaldır
-        let card = document.getElementById('aiDiaryCard');
-        if (card) {
+// GENEL "OKUNDU" FONKSİYONU (Günlük, Bu Ay, Geçen Ay ve Yıllık için Ortak Kullanım)
+window.markStatAsRead = function(statType, cardId) {
+    let card = document.getElementById(cardId);
+    if (card && card.hasAttribute('data-new-text')) {
+        let textToSave = card.getAttribute('data-new-text');
+        if (textToSave) {
+            localStorage.setItem('lastRead_' + statType, textToSave);
+            card.removeAttribute('data-new-text');
             card.classList.remove('new-report-pulse');
-            let badge = card.querySelector('.new-badge');
-            if(badge) badge.style.display = 'none';
+            let titleSpan = document.getElementById('title-' + statType);
+            if(titleSpan) titleSpan.innerHTML = titleSpan.innerHTML.replace(/ <span class="new-badge">YENİ<\/span>/g, '');
         }
     }
 };
 
 // =======================================================
-// YAPAY ZEKA DESTEKLİ İSTATİSTİKLER VE RAPOR
+// AYLIK/YILLIK İSTATİSTİKLER VE "SABİTLEME" MANTIĞI
 // =======================================================
 function analyzeMonth(year, month) {
-    let totalMeds = 0;
-    let missedMedsCount = 0; let breakdown = [];
+    let totalMeds = 0; let missedMedsCount = 0; let breakdown = [];
     const dNow = new Date();
     const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -446,13 +439,39 @@ function analyzeMonth(year, month) {
 
 function getBadgeClass(percentage) { return percentage >= 90 ? "badge-safe" : percentage >= 70 ? "badge-warning" : "badge-danger"; }
 
-function renderMonthStat(prefix, data, isLastMonth) {
+function renderMonthStat(prefix, data, statType, cardId) {
     const badgeEl = document.getElementById(prefix + 'Badge');
     const detailsEl = document.getElementById(prefix + 'Details');
+    const cardEl = document.getElementById(cardId);
+    const titleSpan = document.getElementById('title-' + statType);
     if(!badgeEl || !detailsEl) return;
+
     badgeEl.innerHTML = `%${data.percentage} <span class="exp-arrow">▲</span>`;
     badgeEl.className = `badge ${getBadgeClass(data.percentage)}`;
-    let aiText = isLastMonth ? (apiData.ai && apiData.ai.gecenAy ? apiData.ai.gecenAy : "") : (apiData.ai && apiData.ai.buAy ? apiData.ai.buAy : "");
+    
+    let aiText = "";
+    
+    // Geçen Ayın Verisini 1 Ay Sabitleme İşlemi (Zaman Kapsülü)
+    if (statType === 'gecenAy') {
+        const currentMonth = now.getMonth(); const currentYear = now.getFullYear();
+        let lm = currentMonth - 1; let lmy = currentYear;
+        if (lm < 0) { lm = 11; lmy--; }
+        const lmKey = "saved_gecenAy_" + lmy + "_" + lm;
+        
+        let savedLm = localStorage.getItem(lmKey);
+        if (savedLm) {
+            aiText = savedLm; // Hafızada varsa API'yi boşver, hafızadakini kullan
+        } else {
+            aiText = (apiData.ai && apiData.ai.gecenAy) ? apiData.ai.gecenAy : "";
+            // Eğer düzgün bir API yanıtıysa, bu ayı mühürle
+            if (aiText && !aiText.includes("güncellenemiyor") && !aiText.includes("yoğunluk")) {
+                localStorage.setItem(lmKey, aiText);
+            }
+        }
+    } else if (statType === 'buAy') {
+        aiText = (apiData.ai && apiData.ai.buAy) ? apiData.ai.buAy : "İstatistik bekleniyor...";
+    }
+
     let html = `<div class="stat-ai-summary"><strong>✨ Dönem Özeti</strong>${aiText}</div>`;
     data.breakdown.forEach(day => {
         if (day.isAllDone) {
@@ -462,24 +481,64 @@ function renderMonthStat(prefix, data, isLastMonth) {
         }
     });
     detailsEl.innerHTML = html;
+
+    // YENİ Rozeti ve Nabız (Pulse) Tetikleyicisi
+    if (aiText && !aiText.includes("bekleniyor") && !aiText.includes("güncellenemiyor")) {
+        let lastRead = localStorage.getItem('lastRead_' + statType);
+        if (lastRead !== aiText) {
+            cardEl.classList.add('new-report-pulse');
+            if(titleSpan && !titleSpan.innerHTML.includes('YENİ')) {
+                titleSpan.innerHTML += ` <span class="new-badge">YENİ</span>`;
+            }
+            cardEl.setAttribute('data-new-text', aiText); // Tıklanınca okundu işaretlemek için sakla
+        } else {
+            cardEl.classList.remove('new-report-pulse');
+            if(titleSpan) titleSpan.innerHTML = titleSpan.innerHTML.replace(/ <span class="new-badge">YENİ<\/span>/g, '');
+        }
+    }
 }
 
 function istatistikleriCiz() {
     if (!apiData || !apiData.tumVeriler) return;
     const currentYear = now.getFullYear(); const currentMonth = now.getMonth();
-    renderMonthStat('thisMonth', analyzeMonth(currentYear, currentMonth), false);
     
-    let lastMonth = currentMonth - 1;
-    let lastMonthYear = currentYear;
+    // Bu Ay ve Geçen Ay Çizimi
+    renderMonthStat('thisMonth', analyzeMonth(currentYear, currentMonth), 'buAy', 'card-stat-this-month');
+    let lastMonth = currentMonth - 1; let lastMonthYear = currentYear;
     if (lastMonth < 0) { lastMonth = 11; lastMonthYear--; }
-    renderMonthStat('lastMonth', analyzeMonth(lastMonthYear, lastMonth), true);
+    renderMonthStat('lastMonth', analyzeMonth(lastMonthYear, lastMonth), 'gecenAy', 'card-stat-last-month');
 
+    // Yıllık Çizimi ve Rozet Tetikleyicisi
     let yBadge = document.getElementById('yearlyBadge');
     if(yBadge) yBadge.innerHTML = `%100 <span class="exp-arrow">▲</span>`;
+    
     let yDetails = document.getElementById('yearlyDetails');
-    if(yDetails && apiData.ai) yDetails.innerHTML = `<div class="stat-ai-summary"><strong>🏆 ${currentYear} Yılı Özeti</strong>${apiData.ai.yillik || "İstatistik bekleniyor..."}</div>`;
+    let cardYillik = document.getElementById('card-stat-yearly');
+    let titleYillik = document.getElementById('title-yillik');
+    
+    let yillikText = (apiData.ai && apiData.ai.yillik) ? apiData.ai.yillik : "İstatistik bekleniyor...";
+    if(yDetails) {
+        yDetails.innerHTML = `<div class="stat-ai-summary"><strong>🏆 ${currentYear} Yılı Özeti</strong>${yillikText}</div>`;
+        
+        if (yillikText && !yillikText.includes("bekleniyor") && !yillikText.includes("güncellenemiyor")) {
+            let lastRead = localStorage.getItem('lastRead_yillik');
+            if (lastRead !== yillikText) {
+                cardYillik.classList.add('new-report-pulse');
+                if(titleYillik && !titleYillik.innerHTML.includes('YENİ')) {
+                    titleYillik.innerHTML += ` <span class="new-badge">YENİ</span>`;
+                }
+                cardYillik.setAttribute('data-new-text', yillikText);
+            } else {
+                cardYillik.classList.remove('new-report-pulse');
+                if(titleYillik) titleYillik.innerHTML = titleYillik.innerHTML.replace(/ <span class="new-badge">YENİ<\/span>/g, '');
+            }
+        }
+    }
 }
 
+// =======================================================
+// DOKTOR RAPORU VE DİNAMİK YERLEŞİM (YENİ)
+// =======================================================
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler) { alert("Henüz veri yüklenmedi. Lütfen bekleyin."); return; }
 
@@ -507,6 +566,8 @@ function doktorRaporuOlustur() {
     });
 
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "<span style='color:red;'>Yapay zeka analiz raporu oluşturulamadı.</span>";
+    
+    // NOT: Sayfayı bölmek (page-break-before: always) yerine, margin-top eklendi. Böylece boşluklar değerlenecek.
     var raporHTML = `
         <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
         <div class="rap-bolum">
@@ -530,7 +591,7 @@ function doktorRaporuOlustur() {
             </table>
         </div>
 
-        <div class="rap-bolum" style="page-break-before: always;">
+        <div class="rap-bolum" style="margin-top: 25px;">
             <h3>📅 Günlük Detay Çizelgesi</h3>
             <table class="rap-tablo">
                 <thead><tr><th style="width:10%;">Tarih</th><th style="width:13%;">Sistemik</th><th style="width:15%;">Sabah Tutukluğu</th><th style="width:20%;">Eklem Durumu</th><th style="width:13%;">Kuruluk</th><th style="width:15%;">Uyku</th><th style="width:14%;">Aktivite</th></tr></thead>
@@ -602,14 +663,12 @@ function ekraniCiz() {
 }
 
 veriCek();
-// Saniyede bir yerine 5 dakikada bir (300.000 ms) veri çek. Bu kotanı korur!
 setInterval(veriCek, 300000); 
 setInterval(saniyeTiktak, 1000);
 
 document.addEventListener("visibilitychange", () => { 
     if (document.visibilityState === 'visible') { 
         const simdi = Date.now();
-        // Sayfaya her dönüldüğünde değil, sadece son başarılı çekimden bu yana 5 dakika geçtiyse veri çek
         if (sonBasariZamani === 0 || (simdi - sonBasariZamani > 300000)) {
             veriCek(); 
             fetchWeather(); 
