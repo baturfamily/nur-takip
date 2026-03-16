@@ -15,40 +15,48 @@
 <style>
 /* --- AÇIK (LIGHT) MOD RENKLERİ --- */
 :root {
-  --bg: #F4F4F7; --card: #FFFFFF; --text: #2C2C2E; --muted: #8E8E93; --line: rgba(0,0,0,0.06);
+  --bg: #F4F4F7;
+  --card: #FFFFFF; --text: #2C2C2E; --muted: #8E8E93; --line: rgba(0,0,0,0.06);
   --accent: #34C759; --warning: #FF9500; --danger: #FF3B30; --early: #007AFF; --purple: #AF52DE;
   --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%); --vip-text: #FFFFFF; --vip-muted: #A0AAB5;
   --vip-gold: #F1C40F; --vip-shadow: 0 12px 24px rgba(0,0,0,0.15); --card-border: rgba(0,0,0,0.03);
   --card-shadow: 0 10px 30px rgba(0,0,0,0.06); --done-bg: rgba(52, 199, 89, 0.04);
-  --done-border: rgba(52, 199, 89, 0.3); --wait-badge-bg: rgba(0,0,0,0.05); --wait-badge-text: #636366; 
+  --done-border: rgba(52, 199, 89, 0.3); --wait-badge-bg: rgba(0,0,0,0.05); --wait-badge-text: #636366;
 }
 
 /* --- KARANLIK (DARK) MOD RENKLERİ (GÖZ DİNLENDİREN YUMUŞAK KONTRAST) --- */
 @media (prefers-color-scheme: dark) {
   :root { 
-    --bg: #0B0B0E; --card: #1C1C1E; --text: #D1D1D6; --muted: #98989D; --line: rgba(255,255,255,0.08);
+    --bg: #0B0B0E;
+    --card: #1C1C1E; --text: #D1D1D6; --muted: #98989D; --line: rgba(255,255,255,0.08);
     --accent: #32D74B; --warning: #FF9D0A; --danger: #FF453A; --early: #0A84FF; --purple: #BF5AF2;
     --vip-bg: linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%); --vip-text: #FFFFFF; --vip-muted: #98989D;
     --vip-gold: #F1C40F; --vip-shadow: 0 12px 30px rgba(0,0,0,0.5); --card-border: rgba(255,255,255,0.05);
     --card-shadow: 0 10px 30px rgba(0,0,0,0.4); --done-bg: rgba(50, 215, 75, 0.05);
-    --done-border: rgba(50, 215, 75, 0.3); --wait-badge-bg: rgba(255,255,255,0.1); --wait-badge-text: #D1D1D6; 
+    --done-border: rgba(50, 215, 75, 0.3); --wait-badge-bg: rgba(255,255,255,0.1); --wait-badge-text: #D1D1D6;
   }
 }
 
 html {
   scroll-behavior: smooth;
-  -webkit-tap-highlight-color: transparent; /* Tıklanan yerlerdeki çirkin mavi/gri kutuyu gizler */
+  -webkit-tap-highlight-color: transparent;
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed;
+top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased;
+transition: background 0.3s, color 0.3s; }
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
-.safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; line-height: 1.3;}
+.safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px;
+color: white; line-height: 1.3;}
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
 .shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
 .shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
 .shield-blue { background: linear-gradient(135deg, #0a84ff 0%, #0040dd 100%); animation: pulse-blue 2.5s ease-in-out infinite; }
-@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } @keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@keyframes pulse-red { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
+@keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
+@keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
+@keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
 .app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
 .app-title .greeting { font-size: 17px; font-weight: 700; color: var(--vip-muted); }
@@ -68,7 +76,13 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .ios-w-advice { display: flex; gap: 10px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 24px; margin-top: 2px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
 .ios-w-adv-text { font-size: 17px; font-weight: 700; color: #1E293B; line-height: 1.5; letter-spacing: -0.3px; display: block; }
-@media (prefers-color-scheme: dark) { .ios-weather-card { background: linear-gradient(135deg, #1A2639 0%, #111827 100%); border-color: #2D3E5B; } .ios-w-city { color: #8BA6C9; } .ios-w-divider { background: rgba(139, 166, 201, 0.15); } .ios-w-adv-text { color: #E2E8F0; } .ios-w-hum { background: rgba(0,0,0,0.4); } }
+@media (prefers-color-scheme: dark) { 
+  .ios-weather-card { background: linear-gradient(135deg, #1A2639 0%, #111827 100%); border-color: #2D3E5B; } 
+  .ios-w-city { color: #8BA6C9; } 
+  .ios-w-divider { background: rgba(139, 166, 201, 0.15); } 
+  .ios-w-adv-text { color: #E2E8F0; } 
+  .ios-w-hum { background: rgba(0,0,0,0.4); } 
+}
 .diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; cursor: pointer; }
 .diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
 .diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
@@ -80,7 +94,16 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.65); padding: 14px 16px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #475569; line-height: 1.5; border-left: 3px solid #3B82F6; }
 .diary-mood-good .diary-ai-box { border-left-color: #10B981; } .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
 .diary-card.collapsed .diary-ai-box { display: none; } .diary-card.collapsed .dt-opened { display: none; } .diary-card:not(.collapsed) .dt-closed { display: none; }
-@media (prefers-color-scheme: dark) { .diary-mood-good { background: var(--card); border-color: #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.12); } .diary-mood-rest { background: var(--card); border-color: #D97706; box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); } .diary-title { color: #F8FAFC; } .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; } .diary-ai-box { background: rgba(255,255,255,0.06); color: #E2E8F0; font-weight: 500; } .diary-toggle-bar { background: rgba(0,0,0,0.3); } .diary-mood-good .diary-toggle-bar { color: #34D399; } .diary-mood-rest .diary-toggle-bar { color: #FBBF24; } }
+@media (prefers-color-scheme: dark) { 
+  .diary-mood-good { background: var(--card); border-color: #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.12); } 
+  .diary-mood-rest { background: var(--card); border-color: #D97706; box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); } 
+  .diary-title { color: #F8FAFC; } 
+  .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; } 
+  .diary-ai-box { background: rgba(255,255,255,0.06); color: #E2E8F0; font-weight: 500; } 
+  .diary-toggle-bar { background: rgba(0,0,0,0.3); } 
+  .diary-mood-good .diary-toggle-bar { color: #34D399; } 
+  .diary-mood-rest .diary-toggle-bar { color: #FBBF24; } 
+}
 .stat-card .card-header { margin-bottom: 0; cursor: pointer; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
 .stat-card { padding: 12px 16px; margin-bottom: 12px; }
@@ -91,7 +114,10 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 .stat-ai-summary { background: rgba(255,255,255,0.6); padding: 16px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.5; color: #334155; margin-bottom: 16px; border-left: 3px solid var(--purple); }
 .stat-ai-summary strong { color: var(--purple); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
-@media (prefers-color-scheme: dark) { .stat-ai-summary { background: rgba(0,0,0,0.2); color: #E2E8F0; border-left-color: #BF5AF2; } .stat-ai-summary strong { color: #BF5AF2; } }
+@media (prefers-color-scheme: dark) { 
+  .stat-ai-summary { background: rgba(0,0,0,0.2); color: #E2E8F0; border-left-color: #BF5AF2; } 
+  .stat-ai-summary strong { color: #BF5AF2; } 
+}
 .vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .vertical-list::-webkit-scrollbar { display: none; }
 .card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;} .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
@@ -211,13 +237,14 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div class="minik-toast" id="minikToast">Miyav! ❤️</div>
 
 <div id="print-report-area"></div>
+
 <script>
-// API URL - KENDİ URL'NİZİ BURAYA YAPIŞTIRIN
+// API URL - KENDİ URL'NİZ BURADA
 const API_URL = "https://script.google.com/macros/s/AKfycbworl43bA0Xx83YRuR-b6LnzLDMbmrHT8CydoIlze0_4TGq4ff7VEMzs4kleTqAi1Udug/exec"; 
 let sonBasariZamani = 0;
 let fetchDevamEdiyor = false;
 let apiData = {};
-let minikTimer; // Minik mesajı için zamanlayıcı değişkeni eklendi
+let minikTimer; 
 
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
 
@@ -242,7 +269,7 @@ async function fetchWeather() {
         const data = await res.json();
         const t = Math.round(data.current.temperature_2m); 
         const h = data.current.relative_humidity_2m;
-        const w = data.current.wind_speed_10m; 
+        const w = data.current.wind_speed_10m;
         const uv = data.daily.uv_index_max[0]; 
 
         let icon = "🌥️", advIcon = "🩺", advColor = "var(--accent)", adviceList = [];
@@ -256,8 +283,7 @@ async function fetchWeather() {
         else { adviceList = [`Hava bugün senin için gayet güzel (${t}°C). Keyfini çıkar!`]; let tempColor = "var(--text)"; if (t < 20) tempColor = "#34C759"; else if (t < 28) tempColor = "#FF9500"; document.getElementById('wTempText').style.color = tempColor; }
 
         let humColor = "var(--text)";
-        if (h < 40) humColor = "#FF9500"; else if (h <= 60) humColor = "#34C759"; else if (h <= 75) humColor = "#32ADE6"; else humColor = "#AF52DE"; 
-
+        if (h < 40) humColor = "#FF9500"; else if (h <= 60) humColor = "#34C759"; else if (h <= 75) humColor = "#32ADE6"; else humColor = "#AF52DE";
         document.getElementById('wMainIcon').innerText = icon;
         document.getElementById('wTempText').innerText = t + "°";
         document.getElementById('wHumText').innerText = "%" + h + " Nem";
@@ -273,9 +299,7 @@ function mewMsg() {
     const t = document.getElementById('minikToast');
     t.innerHTML = "Seni minik kalbimle çok seviyorum! Şifamız bol olsun, canım nenem! 🐾❤️";
     t.style.display = 'block';
-    
-    // OTOMATİK KAPANMA EKLENDİ (4 SANİYE)
-    clearTimeout(minikTimer); // Eğer butona peş peşe basılırsa eski sayacı sıfırlar
+    clearTimeout(minikTimer);
     minikTimer = setTimeout(() => {
         t.style.display = 'none';
     }, 4000);
@@ -288,8 +312,8 @@ function saniyeTiktak() {
     const dNow = new Date();
     
     clockElement.textContent = dNow.getDate() + " " + dNow.toLocaleDateString('tr-TR', {month:'short'}) + " • " + String(dNow.getHours()).padStart(2,'0') + ':' + String(dNow.getMinutes()).padStart(2,'0');
-
     const farkSaniye = sonBasariZamani > 0 ? Math.floor((simdi - sonBasariZamani) / 1000) : 999;
+    
     if (sonBasariZamani === 0) { syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)"; } 
     else if (farkSaniye < 20) { const d = new Date(sonBasariZamani); syncElement.innerHTML = `🟢 Canlı (${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')})`; syncElement.style.color = "#4ADE80"; } 
     else if (farkSaniye < 60) { syncElement.innerHTML = `🟡 Gecikme: ${farkSaniye} sn`; syncElement.style.color = "var(--vip-gold)"; } 
@@ -315,11 +339,10 @@ function getDailyProgram(dateObj) {
 }
 
 // =======================================================
-// YAPAY ZEKA DESTEKLİ SAĞLIK GÜNLÜĞÜ
+// YAPAY ZEKA DESTEKLİ SAĞLIK GÜNLÜĞÜ (GÜNCELLENDİ)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.ai) return;
-
     let aiMsg = apiData.ai.gunluk || "Veriler değerlendiriliyor...";
     
     // UI'da şık görünmesi için eski "kötü mü iyi mi" mantığını basitçe tuttuk
@@ -329,7 +352,13 @@ function renderHealthDiary() {
         <div class="diary-card ${moodClass}" onclick="this.classList.toggle('collapsed')">
             <div class="diary-header"><h3 class="diary-title">✨ Günlük Asistan Yorumu</h3></div>
             <div class="diary-toggle-bar"><span class="dt-closed">Aç <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
-            <div class="diary-ai-box">${aiMsg}</div>
+            <div class="diary-ai-box">
+                ${aiMsg}
+                <br><br>
+                <span style='font-size:0.8em; color:var(--muted); font-weight:normal; display:block; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; margin-top: 8px;'>
+                    🕒 Son durum güncellemesi düzenli olarak 12:00 ve 21:30'da yapılmaktadır.
+                </span>
+            </div>
         </div>`;
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
@@ -338,12 +367,14 @@ function renderHealthDiary() {
 // YAPAY ZEKA DESTEKLİ İSTATİSTİKLER VE RAPOR
 // =======================================================
 function analyzeMonth(year, month) {
-    let totalMeds = 0; let missedMedsCount = 0; let breakdown = [];
-    const dNow = new Date(); const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
+    let totalMeds = 0;
+    let missedMedsCount = 0; let breakdown = [];
+    const dNow = new Date();
+    const isCurrentMonth = (year === dNow.getFullYear() && month === dNow.getMonth());
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const maxDay = isCurrentMonth ? dNow.getDate() : daysInMonth;
     const START_DATE = new Date(2026, 2, 7);
-
+    
     for (let d = maxDay; d >= 1; d--) { 
         let currentDay = new Date(year, month, d);
         if (currentDay < START_DATE) continue; 
@@ -351,7 +382,7 @@ function analyzeMonth(year, month) {
         let prog = getDailyProgram(currentDay);
         let dayTotal = 0; let dayMissedCount = 0; let dayMissedNames = [];
         let dayData = (apiData.tumVeriler && apiData.tumVeriler[dateStr]) ? apiData.tumVeriler[dateStr] : null;
-
+        
         prog.forEach(s => {
             let cardMins = s.time ? (parseInt(s.time.split(':')[0]) * 60) + parseInt(s.time.split(':')[1]) : 0;
             s.meds.forEach(m => {
@@ -379,13 +410,12 @@ function analyzeMonth(year, month) {
 function getBadgeClass(percentage) { return percentage >= 90 ? "badge-safe" : percentage >= 70 ? "badge-warning" : "badge-danger"; }
 
 function renderMonthStat(prefix, data, isLastMonth) {
-    const badgeEl = document.getElementById(prefix + 'Badge'); const detailsEl = document.getElementById(prefix + 'Details');
+    const badgeEl = document.getElementById(prefix + 'Badge');
+    const detailsEl = document.getElementById(prefix + 'Details');
     if(!badgeEl || !detailsEl) return;
     badgeEl.innerHTML = `%${data.percentage} <span class="exp-arrow">▲</span>`;
     badgeEl.className = `badge ${getBadgeClass(data.percentage)}`;
-
     let aiText = isLastMonth ? (apiData.ai && apiData.ai.gecenAy ? apiData.ai.gecenAy : "") : (apiData.ai && apiData.ai.buAy ? apiData.ai.buAy : "");
-    
     let html = `<div class="stat-ai-summary"><strong>✨ Dönem Özeti</strong>${aiText}</div>`;
     data.breakdown.forEach(day => {
         if (day.isAllDone) {
@@ -402,11 +432,11 @@ function istatistikleriCiz() {
     const currentYear = now.getFullYear(); const currentMonth = now.getMonth();
     renderMonthStat('thisMonth', analyzeMonth(currentYear, currentMonth), false);
     
-    let lastMonth = currentMonth - 1; let lastMonthYear = currentYear;
+    let lastMonth = currentMonth - 1;
+    let lastMonthYear = currentYear;
     if (lastMonth < 0) { lastMonth = 11; lastMonthYear--; }
     renderMonthStat('lastMonth', analyzeMonth(lastMonthYear, lastMonth), true);
 
-    // Yıllık Karne (AI üzerinden)
     let yBadge = document.getElementById('yearlyBadge');
     if(yBadge) yBadge.innerHTML = `%100 <span class="exp-arrow">▲</span>`;
     let yDetails = document.getElementById('yearlyDetails');
@@ -417,7 +447,6 @@ function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler) { alert("Henüz veri yüklenmedi. Lütfen bekleyin."); return; }
 
     var tarihler = Object.keys(apiData.tumVeriler).filter(t => new Date(t.split('.')[2], t.split('.')[1]-1, t.split('.')[0]) >= new Date(2026, 2, 7)).sort((a,b) => new Date(b.split('.')[2], b.split('.')[1]-1, b.split('.')[0]) - new Date(a.split('.')[2], a.split('.')[1]-1, a.split('.')[0]));
-    
     let tabloSatirlari = "";
     tarihler.forEach(function(tarih) {
         let v = apiData.tumVeriler[tarih];
@@ -441,7 +470,6 @@ function doktorRaporuOlustur() {
     });
 
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "<span style='color:red;'>Yapay zeka analiz raporu oluşturulamadı.</span>";
-
     var raporHTML = `
         <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
         <div class="rap-bolum">
@@ -535,8 +563,6 @@ function ekraniCiz() {
     });
     const timelineEl = document.getElementById('timelineArea'); if(timelineEl) timelineEl.innerHTML = timelineHTML;
 }
-
-// HTML'nin en altındaki bölümü bununla değiştir:
 
 veriCek();
 // Saniyede bir yerine 5 dakikada bir (300.000 ms) veri çek. Bu kotanı korur!
