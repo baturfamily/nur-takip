@@ -57,6 +57,21 @@ color: white; line-height: 1.3;}
 @keyframes pulse-yellow { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
 @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* YENİ RAPOR EFEKTLERİ */
+@keyframes new-ai-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+.new-report-pulse {
+  animation: new-ai-pulse 2s infinite !important;
+  border: 2px solid #3B82F6 !important;
+}
+.new-badge {
+  background: #3B82F6; color: white; padding: 3px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; animation: new-ai-pulse 2s infinite; letter-spacing: 0.5px;
+}
+
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
 .app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
 .app-title .greeting { font-size: 17px; font-weight: 700; color: var(--vip-muted); }
@@ -87,7 +102,7 @@ color: white; line-height: 1.3;}
 .diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
 .diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
 .diary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
-.diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 4px;}
+.diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 6px;}
 .diary-streak { font-size: 12px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 10px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; flex-shrink: 0;}
 .diary-toggle-bar { text-align: center; font-size: 13px; font-weight: 700; margin: 12px auto 0 auto; transition: 0.2s; background: rgba(255,255,255,0.5); display: block; width: max-content; padding: 6px 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
 .diary-mood-good .diary-toggle-bar { color: #047857; } .diary-mood-rest .diary-toggle-bar { color: #B45309; }
@@ -121,7 +136,6 @@ color: white; line-height: 1.3;}
 .vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .vertical-list::-webkit-scrollbar { display: none; }
 .card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;} .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 
-/* TIKLAMA ALANI (PADDING) BÜYÜTÜLDÜ */
 .card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; padding: 8px 0; }
 
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
@@ -137,7 +151,6 @@ color: white; line-height: 1.3;}
 .drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; } .drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
 .card.collapsed { cursor: pointer; } .card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
 
-/* ÇENTİK KURTARMA ALANLARI: 30px ve 100px OLARAK GÜNCELLENDİ */
 .minik-button { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
 
@@ -339,18 +352,26 @@ function getDailyProgram(dateObj) {
 }
 
 // =======================================================
-// YAPAY ZEKA DESTEKLİ SAĞLIK GÜNLÜĞÜ (GÜNCELLENDİ)
+// YAPAY ZEKA DESTEKLİ SAĞLIK GÜNLÜĞÜ (YENİ RAPOR BİLDİRİMLİ)
 // =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.ai) return;
     let aiMsg = apiData.ai.gunluk || "Veriler değerlendiriliyor...";
     
-    // UI'da şık görünmesi için eski "kötü mü iyi mi" mantığını basitçe tuttuk
     let moodClass = aiMsg.includes("Alevlenme") || aiMsg.includes("Terleme") || aiMsg.includes("Sinir") ? "diary-mood-rest" : "diary-mood-good";
     
+    // YENİ RAPOR KONTROLÜ (Tarayıcı Hafızasından)
+    let lastReadReport = localStorage.getItem('lastReadAiReport');
+    let isNew = (aiMsg !== "Veriler değerlendiriliyor..." && lastReadReport !== aiMsg);
+    
+    let pulseClass = isNew ? "new-report-pulse" : "";
+    let badgeHTML = isNew ? `<span class="new-badge">YENİ</span>` : "";
+
     let finalHTML = `
-        <div class="diary-card ${moodClass}" onclick="this.classList.toggle('collapsed')">
-            <div class="diary-header"><h3 class="diary-title">✨ Günlük Asistan Yorumu</h3></div>
+        <div class="diary-card ${moodClass} ${pulseClass} collapsed" id="aiDiaryCard" onclick="markReportAsRead(); this.classList.toggle('collapsed')">
+            <div class="diary-header">
+                <h3 class="diary-title">✨ Günlük Asistan Yorumu ${badgeHTML}</h3>
+            </div>
             <div class="diary-toggle-bar"><span class="dt-closed">Aç <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
             <div class="diary-ai-box">
                 ${aiMsg}
@@ -362,6 +383,22 @@ function renderHealthDiary() {
         </div>`;
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
+
+// Okundu olarak işaretleyen fonksiyon (Tıklanınca Çalışır)
+window.markReportAsRead = function() {
+    if (!apiData || !apiData.ai) return;
+    let aiMsg = apiData.ai.gunluk || "";
+    if (aiMsg && aiMsg !== "Veriler değerlendiriliyor...") {
+        localStorage.setItem('lastReadAiReport', aiMsg); // Hafızaya kaydet
+        // Yanıp sönme efektini ve rozeti hemen UI'dan kaldır
+        let card = document.getElementById('aiDiaryCard');
+        if (card) {
+            card.classList.remove('new-report-pulse');
+            let badge = card.querySelector('.new-badge');
+            if(badge) badge.style.display = 'none';
+        }
+    }
+};
 
 // =======================================================
 // YAPAY ZEKA DESTEKLİ İSTATİSTİKLER VE RAPOR
