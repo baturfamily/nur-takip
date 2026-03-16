@@ -381,7 +381,7 @@ function renderHealthDiary() {
     let isNew = (aiMsg && !aiMsg.includes("değerlendiriliyor") && !aiMsg.includes("güncellenemiyor") && lastReadReport !== aiMsg);
     
     let pulseClass = isNew ? "new-report-pulse" : "";
-    let badgeHTML = isNew ? `<span class="new-badge">💌 SANA ÖZEL MESAJ</span>` : "";
+    let badgeHTML = isNew ? `<span class="new-badge">💌 SANA ÖZEL YENİ MESAJ VAR</span>` : "";
 
     let finalHTML = `
         <div class="diary-card ${moodClass} ${pulseClass} collapsed" id="aiDiaryCard" data-new-text="${isNew ? aiMsg : ''}" onclick="markStatAsRead('gunluk', 'aiDiaryCard'); this.classList.toggle('collapsed')">
