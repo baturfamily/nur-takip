@@ -535,57 +535,68 @@ function doktorRaporuOlustur() {
     
     tarihler.forEach(function(tarih) {
         let v = apiData.tumVeriler[tarih];
-        let sys = "", agri = "", sjogren = "", uyku = "", akt = "", tut = "";
-        let isAlevlenme = false; 
+        
+        // Verileri tutacağımız temiz değişkenler
+        let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "";
         
         for (let k in v) {
             let cl = k.toLowerCase();
             if(v[k] === "İçildi" || v[k] === "İçilmedi") continue;
             
             let valStr = String(v[k] || "");
-            let valLower = valStr.toLowerCase(); 
             
-            // TAMAMEN RESMİ VE SİYAH-BEYAZ FORMAT (Emojiler ve renkler kaldırıldı)
-            if(cl.includes("ateş") || cl.includes("ates")) {
-                sys += `<strong>${valStr}°C</strong>`;
-            }
-            if(cl.includes("terleme")) {
-                sys += `<br><span style="font-size:11px;">Terleme: ${valStr}</span>`;
-            }
-            
-            if(cl.includes("tutuk")) {
-                tut = valStr;
-                // Sabah tutukluğu "1-2 saat" veya "öğlene" içeriyorsa alevlenme
-                if (valLower.includes("1-2 saat") || valLower.includes("öğlene")) isAlevlenme = true;
-            }
-            
-            if(cl.includes("ağrı") || cl.includes("agri")) {
-                agri = valStr;
-                // Eklem durumu "şiş" kelimesi içeriyorsa alevlenme
-                if (valLower.includes("şiş")) isAlevlenme = true;
-            }
-            
-            // Lokasyon ve enerji ikonları da kaldırıldı, sadece temiz metin bırakıldı
-            if(cl.includes("bolge") || cl.includes("bölge")) agri += `<br><span style="font-size:10px;">${valStr}</span>`;
-            if(cl.includes("kuru") || cl.includes("göz")) sjogren = valStr;
-            if(cl.includes("uyku")) uyku = valStr;
-            if(cl.includes("enerji")) uyku += `<br><span style="font-size:10px;">${valStr}</span>`;
-            if(cl.includes("aktivite")) akt = valStr;
+            // Verileri doğru değişkenlere atıyoruz
+            if (cl === "ates" || cl === "ateş") ates = valStr;
+            else if (cl === "gece_terlemesi" || cl.includes("terleme")) terleme = valStr;
+            else if (cl === "sabah_tutuklugu" || cl.includes("tutuk")) tut = valStr;
+            else if (cl === "eklem_agrisi" || cl.includes("ağrı") || cl.includes("agri")) agri = valStr;
+            else if (cl === "rahatsizlik_bolgesi" || cl.includes("bolge") || cl.includes("bölge")) bolge = valStr;
+            else if (cl === "kuruluk" || cl.includes("kuru") || cl.includes("göz")) sjogren = valStr;
+            else if (cl === "uyku" || cl.includes("uyku")) uyku = valStr;
+            else if (cl === "enerji_seviyesi" || cl.includes("enerji")) enerji = valStr;
+            else if (cl === "aktivite" || cl.includes("aktivite")) akt = valStr;
         }
+
+        // --- SİSTEMİK SÜTUNU (Açıkça etiketlenmiş) ---
+        let sysHTML = "";
+        if (ates) sysHTML += `<strong>Ateş:</strong> ${ates}°C<br>`;
+        if (terleme) sysHTML += `<span style="font-size:11px;"><strong>Terleme:</strong> ${terleme}</span>`;
+
+        // --- UYKU VE ENERJİ SÜTUNU (Açıkça etiketlenmiş) ---
+        let uykuHTML = "";
+        if (uyku) uykuHTML += `<strong>Uyku:</strong> ${uyku}<br>`;
+        if (enerji) uykuHTML += `<span style="font-size:11px;"><strong>Enerji:</strong> ${enerji}</span>`;
+
+        // --- EKLEM SÜTUNU (Ağrı ve Bölge net bir şekilde ayrılmış) ---
+        let eklemHTML = "";
+        if (agri) eklemHTML += `<strong>${agri}</strong><br>`;
+        if (bolge && bolge !== "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:11px;">Bölge: ${bolge}</span>`;
+        else if (bolge === "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:11px; color:#555;">Sorunsuz</span>`;
+
+        // Alevlenme Kontrolü
+        let isAlevlenme = false; 
+        if (tut.toLowerCase().includes("1-2 saat") || tut.toLowerCase().includes("öğlene")) isAlevlenme = true;
+        if (agri.toLowerCase().includes("şiş")) isAlevlenme = true;
 
         let rowStyle = "";
         if (isAlevlenme) {
-            // Siyah-beyaz yazıcıda çok şık ve resmi duracak hafif gri tonlama
             rowStyle = 'style="background-color: #f0f0f0; color: #000000; font-weight: 500;"'; 
-            sys = `<strong style="font-size:11px;">ALEVLENME</strong><br>` + sys;
+            sysHTML = `<strong style="font-size:11px; border-bottom:1px solid #000; display:inline-block; margin-bottom:4px;">ALEVLENME</strong><br>` + sysHTML;
         }
 
-        tabloSatirlari += `<tr ${rowStyle}><td><strong>${tarih.substring(0,5)}</strong></td><td>${sys || '-'}</td><td>${tut || '-'}</td><td>${agri || '-'}</td><td>${sjogren || '-'}</td><td>${uyku || '-'}</td><td>${akt || '-'}</td></tr>`;
+        tabloSatirlari += `<tr ${rowStyle}>
+            <td><strong>${tarih.substring(0,5)}</strong></td>
+            <td>${sysHTML || '-'}</td>
+            <td>${tut || '-'}</td>
+            <td>${eklemHTML || '-'}</td>
+            <td>${sjogren || '-'}</td>
+            <td>${uykuHTML || '-'}</td>
+            <td>${akt || '-'}</td>
+        </tr>`;
     });
 
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "Yapay zeka analiz raporu oluşturulamadı.";
     
-    // BOŞLUKLARI AZALTAN VE TABLOLARI BİRBİRİNE YAPIŞTIRAN YENİ YAPI
     var raporHTML = `
         <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Raporu</div>
         <div class="rap-bolum" style="margin-bottom: 12px;">
@@ -613,7 +624,17 @@ function doktorRaporuOlustur() {
             <div class="rap-bolum rap-bolum-tablo" style="margin-top: 0;">
                 <h3 style="margin-bottom: 6px;">📅 Günlük Detay Çizelgesi</h3>
                 <table class="rap-tablo">
-                    <thead><tr><th style="width:10%;">Tarih</th><th style="width:14%;">Sistemik</th><th style="width:15%;">Sabah Tutukluğu</th><th style="width:20%;">Eklem Durumu</th><th style="width:13%;">Kuruluk</th><th style="width:15%;">Uyku</th><th style="width:13%;">Aktivite</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:9%;">Tarih</th>
+                            <th style="width:16%;">Sistemik</th>
+                            <th style="width:15%;">Sabah Tutuk.</th>
+                            <th style="width:18%;">Eklem Durumu</th>
+                            <th style="width:13%;">Kuruluk</th>
+                            <th style="width:16%;">Uyku & Enerji</th>
+                            <th style="width:13%;">Aktivite</th>
+                        </tr>
+                    </thead>
                     <tbody>${tabloSatirlari}</tbody>
                 </table>
             </div>
