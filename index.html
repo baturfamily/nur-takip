@@ -25,7 +25,7 @@
 }
 
 /* --- KARANLIK (DARK) MOD RENKLERİ --- */
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) { 
   :root { 
     --bg: #0B0B0E;
     --card: #1C1C1E; --text: #D1D1D6; --muted: #98989D; --line: rgba(255,255,255,0.08);
@@ -63,7 +63,11 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .app-title .name-tag { font-size: 22px; white-space: nowrap; color: var(--vip-text); }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; z-index: 1;}
 .clock-text { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
-.sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); }
+
+/* --- MANUEL YENİLEME İÇİN BUTON STİLLERİ --- */
+.sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); cursor: pointer; transition: transform 0.2s, background 0.2s; user-select: none; }
+.sync-badge:active { transform: scale(0.92); background: rgba(255,255,255,0.2); }
+
 .premium-card { background: var(--card); border-radius: 20px; padding: 12px 14px; border: 1px solid var(--card-border); margin-bottom: 8px; box-shadow: var(--card-shadow); transition: all 0.3s ease; overflow: hidden; flex-shrink: 0; }
 .ios-weather-card { padding: 16px; background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%); border: 1px solid #BADCFF; }
 .ios-w-top { display: flex; justify-content: space-between; align-items: center; }
@@ -138,8 +142,14 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
 .history-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); gap: 12px;} .history-item:last-child { border-bottom: none; }
+
+/* --- İÇİLEN İLAÇLARIN ÜSTÜNÜ ÇİZME (NÖROLOJİ ETKİSİ) --- */
+.history-item.is-done .drug-title { text-decoration: line-through; opacity: 0.5; }
+.history-item.is-done .drug-purpose { opacity: 0.4; }
+/* -------------------------------------------------------- */
+
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
-.drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; } .drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
+.drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; transition: all 0.3s ease; } .drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; transition: all 0.3s ease; }
 .card.collapsed { cursor: pointer; } .card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
 .minik-button { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
@@ -154,7 +164,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
    DOKTOR RAPORU PDF/ÇIKTI OPTİMİZASYONU (SİHİRLİ DOKUNUŞ)
    ======================================================= */
 @media print {
-  @page { margin: 10mm; } /* PDF kenar boşlukları */
+  @page { margin: 10mm; } 
   html, body { position: static !important; overflow: visible !important; height: auto !important; width: auto !important; display: block !important; background: white !important; padding: 0 !important; margin: 0 !important; }
   body > :not(#print-report-area) { display: none !important; }
   #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
@@ -163,11 +173,9 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
   .rap-bolum { margin-bottom: 16px; page-break-inside: avoid; } 
   .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
   
-  /* İlaç şeması ile detay çizelgesini birbirine yapıştırıyoruz */
   .rap-bolum-ilac { margin-bottom: 8px; page-break-after: avoid; } 
   .rap-bolum-tablo { page-break-before: avoid; margin-top: 0; }
   
-  /* Tablo fontlarını küçülterek PDF'e kusursuz sığmasını sağlıyoruz */
   .rap-tablo { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; } 
   .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 5px; text-align: center; }
   .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 11px; } 
@@ -188,7 +196,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
     </div>
     <div class="header-info">
         <div id="clock" class="clock-text">--:--</div>
-        <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
+        <div id="last-sync" class="sync-badge" onclick="manuelYenile()">🔄 Bağlanıyor...</div>
     </div>
 </div>
 
@@ -280,6 +288,17 @@ const vipHeader = document.querySelector('.vip-header');
 if (vipHeader) { vipHeader.style.background = vipBg; vipHeader.style.border = "none"; }
 document.querySelectorAll('.app-title .greeting, .clock-text').forEach(el => el.style.color = "rgba(255, 255, 255, 0.85)");
 
+// --- MANUEL YENİLEME FONKSİYONU ---
+function manuelYenile() {
+    if(fetchDevamEdiyor) return;
+    const syncElement = document.getElementById('last-sync');
+    syncElement.innerHTML = `🔄 Tazeleniyor...`;
+    syncElement.style.color = "var(--vip-gold)";
+    sonBasariZamani = 0; // Tiktak sayacını sıfırlamak için
+    veriCek();
+    fetchWeather();
+}
+
 async function fetchWeather() {
     try {
         const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=41.07&longitude=28.64&current=temperature_2m,relative_humidity_2m,wind_speed_10m&daily=uv_index_max&timezone=auto');
@@ -293,7 +312,8 @@ async function fetchWeather() {
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
         if (uv > 5) { advIcon = "🕶️"; advColor = "var(--warning)"; adviceList = ["Güneş (UV) bugün çok dik geliyor. İlaçların cildini hassas yapabilir, lütfen koruyucu sür ve gölgede kal."]; } 
-        else if (w > 20) { icon = "🌬️"; advIcon = "💧"; advColor = "var(--early)"; adviceList = ["Dışarıda sert bir rüzgar var. Rüzgar Sjögren'in düşmanıdır ve gözlerini anında kurutur. Mutlaka damlanı damlat."]; } 
+        // --- YENİ RÜZGAR UYARISI (SJÖGREN İÇİN) ---
+        else if (w > 20) { icon = "🌬️"; advIcon = "💧"; advColor = "var(--early)"; adviceList = ["Dışarıda esintili bir hava var. En ufak rüzgar bile Sjögren'li gözleri anında kurutur, damlanı almadan çıkma."]; } 
         else if (h > 70 && t < 15) { icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)"; adviceList = [`Hava soğuk ve nemli (%${h}). Nem eklem sıvılarının basıncını değiştirip ağrı yapabilir. Lütfen dizlerini sıcak tut.`]; } 
         else if (t < 12) { icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)"; adviceList = ["Dışarısı oldukça soğuk. Soğuk hava eklemleri sertleştirir, lütfen kat kat giyinmeyi ihmal etme."]; } 
         else if (t > 28) { icon = "☀️"; advIcon = "🥤"; advColor = "var(--warning)"; adviceList = ["Hava oldukça sıcak. Sıval kaybı ağız ve göz kuruluğunu artırır. Bol bol su içmeyi unutma."]; } 
@@ -353,9 +373,6 @@ function getDailyProgram(dateObj) {
     return p;
 }
 
-// =======================================================
-// GÜNLÜK RAPOR UI VE ROZET MANTIĞI
-// =======================================================
 function renderHealthDiary() {
     if (!apiData || !apiData.ai) return;
     let aiMsg = apiData.ai.gunluk || "Veriler değerlendiriliyor...";
@@ -544,20 +561,14 @@ function doktorRaporuOlustur() {
     
     let tabloSatirlari = "";
     
-    // Deltacortril Miladı (Senin ana kodundaki hesaplama: 16 Şubat 2026)
     const deltaMilat = new Date(2026, 1, 16); 
     
     tarihler.forEach(function(tarihStr) {
         let v = apiData.tumVeriler[tarihStr];
-        
-        // O anki satırın tarih objesini oluşturuyoruz
         let p = tarihStr.split('.');
         let currentDayObj = new Date(p[2], p[1]-1, p[0]);
-        
-        // Deltacortril günü mü? (Gün aşırı kontrolü)
         let isDeltaDay = Math.round((currentDayObj - deltaMilat)/(1000*60*60*24)) % 2 === 0;
         
-        // Tarih sütununun HTML'ini hazırlıyoruz
         let tarihSutunuHTML = `<strong>${tarihStr.substring(0,5)}</strong>`;
         if (isDeltaDay) {
             tarihSutunuHTML += `<br><span style="font-size:9px; color:#555;">Deltacortril</span>`;
@@ -702,7 +713,10 @@ function ekraniCiz() {
             const isDone = (apiData && apiData.tumVeriler && apiData.tumVeriler[String(dNow.getDate()).padStart(2, '0') + '.' + String(dNow.getMonth() + 1).padStart(2, '0') + '.' + dNow.getFullYear()] && apiData.tumVeriler[String(dNow.getDate()).padStart(2, '0') + '.' + String(dNow.getMonth() + 1).padStart(2, '0') + '.' + dNow.getFullYear()][m.key] === "İçildi");
             if(isDone) sTC++; 
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
-            medsHTML += `<div class="history-item">${iconHTML}<div class="med-info"><span class="drug-title">${m.name}</span><span class="drug-purpose">${m.purpose}</span></div></div>`; 
+            
+            // --- NÖROLOJİ ETKİSİ: İÇİLEN İLAÇLARI ÇİZME ---
+            const doneClass = isDone ? "is-done" : "";
+            medsHTML += `<div class="history-item ${doneClass}">${iconHTML}<div class="med-info"><span class="drug-title">${m.name}</span><span class="drug-purpose">${m.purpose}</span></div></div>`; 
         });
         
         const isAllDone = (sTC === s.meds.length);
