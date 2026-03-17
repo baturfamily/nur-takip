@@ -542,12 +542,17 @@ function doktorRaporuOlustur() {
             let cl = k.toLowerCase();
             if(v[k] === "İçildi" || v[k] === "İçilmedi") continue;
             
-            // HATA BURADAYDI: Ateş gibi sayısal verilerde çökmemesi için önce String'e çeviriyoruz.
+            // Veriyi metne çevirip küçük harf yapıyoruz (büyük/küçük harf sorununu ve sayısal değer çökmesini önlemek için)
             let valStr = String(v[k] || "");
             let valLower = valStr.toLowerCase(); 
             
-            if(cl.includes("ateş") || cl.includes("ates")) sys += valStr;
-            if(cl.includes("terleme")) sys += `<br><span style="color:#d97706; font-size:10px;">💦 Terleme: ${valStr}</span>`;
+            // SİSTEMİK SÜTUNU GÖRSEL DÜZENLEMESİ (Sıcaklık ve Terleme)
+            if(cl.includes("ateş") || cl.includes("ates")) {
+                sys += `🌡️ <strong>${valStr}°C</strong>`;
+            }
+            if(cl.includes("terleme")) {
+                sys += `<br><span style="color:#d97706; font-size:11px;">💦 Terleme: ${valStr}</span>`;
+            }
             
             if(cl.includes("tutuk")) {
                 tut = valStr;
