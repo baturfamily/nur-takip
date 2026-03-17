@@ -527,12 +527,10 @@ function istatistikleriCiz() {
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler) { alert("Henüz veri yüklenmedi. Lütfen bekleyin."); return; }
 
-    // Bugünün tarihini oluşturuyoruz (Örn: "17.03.2026")
     const dNow = new Date();
     const bugunStr = String(dNow.getDate()).padStart(2, '0') + '.' + String(dNow.getMonth() + 1).padStart(2, '0') + '.' + dNow.getFullYear();
 
     var tarihler = Object.keys(apiData.tumVeriler)
-        // Milat 7 Mart'tan büyük eşit olsun VE bugünün tarihi OLMASIN
         .filter(t => new Date(t.split('.')[2], t.split('.')[1]-1, t.split('.')[0]) >= new Date(2026, 2, 7) && t !== bugunStr)
         .sort((a,b) => new Date(a.split('.')[2], a.split('.')[1]-1, a.split('.')[0]) - new Date(b.split('.')[2], b.split('.')[1]-1, b.split('.')[0]));
     
@@ -541,7 +539,6 @@ function doktorRaporuOlustur() {
     tarihler.forEach(function(tarih) {
         let v = apiData.tumVeriler[tarih];
         
-        // Verileri tutacağımız temiz değişkenler
         let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "";
         
         for (let k in v) {
@@ -550,7 +547,6 @@ function doktorRaporuOlustur() {
             
             let valStr = String(v[k] || "");
             
-            // Verileri doğru değişkenlere atıyoruz
             if (cl === "ates" || cl === "ateş") ates = valStr;
             else if (cl === "gece_terlemesi" || cl.includes("terleme")) terleme = valStr;
             else if (cl === "sabah_tutuklugu" || cl.includes("tutuk")) tut = valStr;
@@ -562,21 +558,20 @@ function doktorRaporuOlustur() {
             else if (cl === "aktivite" || cl.includes("aktivite")) akt = valStr;
         }
 
-        // --- SİSTEMİK SÜTUNU (Açıkça etiketlenmiş) ---
+        // --- SİSTEMİK SÜTUNU (Gereksiz kalınlıklar ve tekrarlar temizlendi) ---
         let sysHTML = "";
-        if (ates) sysHTML += `<strong>Ateş:</strong> ${ates}°C<br>`;
-        if (terleme) sysHTML += `<span style="font-size:11px;"><strong>Terleme:</strong> ${terleme}</span>`;
+        if (ates) sysHTML += `${ates}°C<br>`;
+        if (terleme) sysHTML += `<span style="font-size:10px; color:#444;">Terleme: ${terleme}</span>`;
 
-        // --- UYKU VE ENERJİ SÜTUNU (Açıkça etiketlenmiş) ---
+        // --- UYKU VE ENERJİ SÜTUNU ---
         let uykuHTML = "";
-        if (uyku) uykuHTML += `<strong>Uyku:</strong> ${uyku}<br>`;
-        if (enerji) uykuHTML += `<span style="font-size:11px;"><strong>Enerji:</strong> ${enerji}</span>`;
+        if (uyku) uykuHTML += `${uyku}<br>`;
+        if (enerji) uykuHTML += `<span style="font-size:10px; color:#444;">Enerji: ${enerji}</span>`;
 
-        // --- EKLEM SÜTUNU (Ağrı ve Bölge net bir şekilde ayrılmış) ---
+        // --- EKLEM SÜTUNU ---
         let eklemHTML = "";
-        if (agri) eklemHTML += `<strong>${agri}</strong><br>`;
-        if (bolge && bolge !== "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:11px;">Bölge: ${bolge}</span>`;
-        else if (bolge === "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:11px; color:#555;">Sorunsuz</span>`;
+        if (agri) eklemHTML += `${agri}<br>`;
+        if (bolge && bolge !== "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:10px; color:#444;">${bolge}</span>`;
 
         // Alevlenme Kontrolü
         let isAlevlenme = false; 
@@ -585,8 +580,9 @@ function doktorRaporuOlustur() {
 
         let rowStyle = "";
         if (isAlevlenme) {
-            rowStyle = 'style="background-color: #f0f0f0; color: #000000; font-weight: 500;"'; 
-            sysHTML = `<strong style="font-size:11px; border-bottom:1px solid #000; display:inline-block; margin-bottom:4px;">ALEVLENME</strong><br>` + sysHTML;
+            // Alevlenme satırı hafif gri, sadece 'ALEVLENME' yazısı kalın olacak
+            rowStyle = 'style="background-color: #f0f0f0; color: #000;"'; 
+            sysHTML = `<strong style="font-size:10px; border-bottom:1px solid #000; display:inline-block; margin-bottom:4px;">ALEVLENME</strong><br>` + sysHTML;
         }
 
         tabloSatirlari += `<tr ${rowStyle}>
