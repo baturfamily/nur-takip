@@ -536,8 +536,24 @@ function doktorRaporuOlustur() {
     
     let tabloSatirlari = "";
     
-    tarihler.forEach(function(tarih) {
-        let v = apiData.tumVeriler[tarih];
+    // Deltacortril Miladı (Senin ana kodundaki hesaplama: 16 Şubat 2026)
+    const deltaMilat = new Date(2026, 1, 16); 
+    
+    tarihler.forEach(function(tarihStr) {
+        let v = apiData.tumVeriler[tarihStr];
+        
+        // O anki satırın tarih objesini oluşturuyoruz
+        let p = tarihStr.split('.');
+        let currentDayObj = new Date(p[2], p[1]-1, p[0]);
+        
+        // Deltacortril günü mü? (Gün aşırı kontrolü)
+        let isDeltaDay = Math.round((currentDayObj - deltaMilat)/(1000*60*60*24)) % 2 === 0;
+        
+        // Tarih sütununun HTML'ini hazırlıyoruz
+        let tarihSutunuHTML = `<strong>${tarihStr.substring(0,5)}</strong>`;
+        if (isDeltaDay) {
+            tarihSutunuHTML += `<br><span style="font-size:9px; color:#555;">💊 Delta</span>`;
+        }
         
         let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "";
         
@@ -558,35 +574,30 @@ function doktorRaporuOlustur() {
             else if (cl === "aktivite" || cl.includes("aktivite")) akt = valStr;
         }
 
-        // --- SİSTEMİK SÜTUNU (Gereksiz kalınlıklar ve tekrarlar temizlendi) ---
         let sysHTML = "";
         if (ates) sysHTML += `${ates}°C<br>`;
         if (terleme) sysHTML += `<span style="font-size:10px; color:#444;">Terleme: ${terleme}</span>`;
 
-        // --- UYKU VE ENERJİ SÜTUNU ---
         let uykuHTML = "";
         if (uyku) uykuHTML += `${uyku}<br>`;
         if (enerji) uykuHTML += `<span style="font-size:10px; color:#444;">Enerji: ${enerji}</span>`;
 
-        // --- EKLEM SÜTUNU ---
         let eklemHTML = "";
         if (agri) eklemHTML += `${agri}<br>`;
         if (bolge && bolge !== "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:10px; color:#444;">${bolge}</span>`;
 
-        // Alevlenme Kontrolü
         let isAlevlenme = false; 
         if (tut.toLowerCase().includes("1-2 saat") || tut.toLowerCase().includes("öğlene")) isAlevlenme = true;
         if (agri.toLowerCase().includes("şiş")) isAlevlenme = true;
 
         let rowStyle = "";
         if (isAlevlenme) {
-            // Alevlenme satırı hafif gri, sadece 'ALEVLENME' yazısı kalın olacak
             rowStyle = 'style="background-color: #f0f0f0; color: #000;"'; 
             sysHTML = `<strong style="font-size:10px; border-bottom:1px solid #000; display:inline-block; margin-bottom:4px;">ALEVLENME</strong><br>` + sysHTML;
         }
 
         tabloSatirlari += `<tr ${rowStyle}>
-            <td><strong>${tarih.substring(0,5)}</strong></td>
+            <td>${tarihSutunuHTML}</td>
             <td>${sysHTML || '-'}</td>
             <td>${tut || '-'}</td>
             <td>${eklemHTML || '-'}</td>
