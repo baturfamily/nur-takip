@@ -24,7 +24,7 @@
   --done-border: rgba(52, 199, 89, 0.3); --wait-badge-bg: rgba(0,0,0,0.05); --wait-badge-text: #636366;
 }
 
-/* --- KARANLIK (DARK) MOD RENKLERİ (GÖZ DİNLENDİREN YUMUŞAK KONTRAST) --- */
+/* --- KARANLIK (DARK) MOD RENKLERİ --- */
 @media (prefers-color-scheme: dark) {
   :root { 
     --bg: #0B0B0E;
@@ -37,18 +37,11 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-tap-highlight-color: transparent;
-}
-
+html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed;
-top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased;
-transition: background 0.3s, color 0.3s; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
-.safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px;
-color: white; line-height: 1.3;}
+.safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; line-height: 1.3;}
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
 .shield-yellow { background: linear-gradient(135deg, #ff9d0a 0%, #c35900 100%); animation: pulse-yellow 2.5s ease-in-out infinite; }
 .shield-purple { background: linear-gradient(135deg, #bf5af2 0%, #5e5ce6 100%); animation: pulse-purple 2.5s ease-in-out infinite; }
@@ -59,39 +52,10 @@ color: white; line-height: 1.3;}
 @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
 /* YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ */
-@keyframes exciting-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.5); transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-  70% { box-shadow: 0 0 0 12px rgba(255, 69, 58, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0); transform: translateY(0); }
-}
-@keyframes badge-bounce {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.08); }
-}
-
-.new-report-pulse {
-  animation: exciting-pulse 2s infinite ease-in-out !important;
-  border: 2px solid #FF453A !important;
-  background-image: linear-gradient(to bottom right, var(--card), rgba(255, 69, 58, 0.05)) !important;
-}
-
-.new-badge {
-  background: linear-gradient(135deg, #FF453A 0%, #FF9D0A 100%);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.5px;
-  margin-left: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  box-shadow: 0 4px 10px rgba(255, 69, 58, 0.3);
-  animation: badge-bounce 1.5s infinite ease-in-out;
-  vertical-align: middle;
-}
+@keyframes exciting-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.5); transform: translateY(0); } 50% { transform: translateY(-3px); } 70% { box-shadow: 0 0 0 12px rgba(255, 69, 58, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0); transform: translateY(0); } }
+@keyframes badge-bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+.new-report-pulse { animation: exciting-pulse 2s infinite ease-in-out !important; border: 2px solid #FF453A !important; background-image: linear-gradient(to bottom right, var(--card), rgba(255, 69, 58, 0.05)) !important; }
+.new-badge { background: linear-gradient(135deg, #FF453A 0%, #FF9D0A 100%); color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; margin-left: 8px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 10px rgba(255, 69, 58, 0.3); animation: badge-bounce 1.5s infinite ease-in-out; vertical-align: middle; }
 
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0;}
 .app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
@@ -156,9 +120,7 @@ color: white; line-height: 1.3;}
 }
 .vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .vertical-list::-webkit-scrollbar { display: none; }
 .card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;} .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
-
 .card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; padding: 8px 0; }
-
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
 .badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
 .badge-safe { background: rgba(52, 199, 89, 0.15); color: var(--accent); } .badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); } .badge-warning { background: rgba(255, 149, 0, 0.15); color: var(--warning); } 
@@ -171,25 +133,39 @@ color: white; line-height: 1.3;}
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
 .drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; } .drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; }
 .card.collapsed { cursor: pointer; } .card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
-
 .minik-button { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
-
 .badge-danger { background: rgba(255, 59, 48, 0.15); color: var(--danger); font-weight: 900; } .late-card { border-color: var(--danger) !important; animation: latePulse 2s infinite; }
 @keyframes latePulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
 .stat-card { background: linear-gradient(135deg, #FFF7F0 0%, #FFEDE0 100%) !important; border: 1px solid #F5E0CD !important; }
 @media (prefers-color-scheme: dark) { .stat-card { background: linear-gradient(135deg, #2E2825 0%, #221D1A 100%) !important; border: 1px solid #3D322C !important; } }
 .rapor-btn { background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); color: white; padding: 14px 20px; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 4px; margin-bottom: 24px; width: 100%; box-shadow: 0 4px 15px rgba(142, 84, 233, 0.25); flex-shrink:0; }
 #print-report-area { display: none; }
+
+/* =======================================================
+   DOKTOR RAPORU PDF/ÇIKTI OPTİMİZASYONU (SİHİRLİ DOKUNUŞ)
+   ======================================================= */
 @media print {
+  @page { margin: 10mm; } /* PDF kenar boşlukları */
   html, body { position: static !important; overflow: visible !important; height: auto !important; width: auto !important; display: block !important; background: white !important; padding: 0 !important; margin: 0 !important; }
   body > :not(#print-report-area) { display: none !important; }
-  #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 20px !important; font-family: Arial, sans-serif !important; color: #000 !important; font-size: 16px !important; }
-  .rap-baslik { font-size: 26px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 24px; color: #111; }
-  .rap-bolum { margin-bottom: 24px; break-inside: avoid; } .rap-bolum h3 { font-size: 19px; border-bottom: 2px solid #ccc; padding-bottom: 6px; margin-bottom: 12px; color: #222; }
-  .rap-bolum ul { padding-left: 20px; margin-bottom: 10px; } .rap-bolum ul li { margin-bottom: 8px; font-size: 16px; line-height: 1.5; }
-  .rap-tablo { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 10px; } .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 8px 6px; text-align: center; }
-  .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 15px; } .rap-alert { color: red; font-weight: bold; }
+  #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
+  
+  .rap-baslik { font-size: 20px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; color: #111; }
+  .rap-bolum { margin-bottom: 16px; page-break-inside: avoid; } 
+  .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
+  
+  /* İlaç şeması ile detay çizelgesini birbirine yapıştırıyoruz */
+  .rap-bolum-ilac { margin-bottom: 8px; page-break-after: avoid; } 
+  .rap-bolum-tablo { page-break-before: avoid; margin-top: 0; }
+  
+  /* Tablo fontlarını küçülterek PDF'e kusursuz sığmasını sağlıyoruz */
+  .rap-tablo { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; } 
+  .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 5px; text-align: center; }
+  .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 11px; } 
+  .rap-alert { color: red; font-weight: bold; }
+  
+  .ai-rapor-kutu { background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px; margin-top: 8px; font-size: 12px; line-height: 1.5; border-radius: 4px; page-break-inside: avoid; }
 }
 </style>
 </head>
@@ -400,7 +376,6 @@ function renderHealthDiary() {
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
 }
 
-// GENEL "OKUNDU" FONKSİYONU
 window.markStatAsRead = function(statType, cardId) {
     let card = document.getElementById(cardId);
     if (card && card.hasAttribute('data-new-text')) {
@@ -410,15 +385,11 @@ window.markStatAsRead = function(statType, cardId) {
             card.removeAttribute('data-new-text');
             card.classList.remove('new-report-pulse');
             let titleSpan = document.getElementById('title-' + statType);
-            // Tüm new-badge span'larını temizler
             if(titleSpan) titleSpan.innerHTML = titleSpan.innerHTML.replace(/\s*<span class="new-badge[^>]*>.*?<\/span>/gi, '');
         }
     }
 };
 
-// =======================================================
-// AYLIK/YILLIK İSTATİSTİKLER
-// =======================================================
 function analyzeMonth(year, month) {
     let totalMeds = 0; let missedMedsCount = 0; let breakdown = [];
     const dNow = new Date();
@@ -566,13 +537,13 @@ function doktorRaporuOlustur() {
             let cl = k.toLowerCase();
             if(v[k] === "İçildi" || v[k] === "İçilmedi") continue;
             if(cl.includes("ateş") || cl.includes("ates")) sys += v[k];
-            if(cl.includes("terleme")) sys += `<br><span style="color:#d97706; font-size:12px;">💦 Terleme: ${v[k]}</span>`;
+            if(cl.includes("terleme")) sys += `<br><span style="color:#d97706; font-size:11px;">💦 Terleme: ${v[k]}</span>`;
             if(cl.includes("tutuk")) tut = v[k];
             if(cl.includes("ağrı") || cl.includes("agri")) agri = v[k];
-            if(cl.includes("bolge") || cl.includes("bölge")) agri += `<br><span style="color:#475569; font-size:12px;">📍 ${v[k]}</span>`;
+            if(cl.includes("bolge") || cl.includes("bölge")) agri += `<br><span style="color:#475569; font-size:11px;">📍 ${v[k]}</span>`;
             if(cl.includes("kuru") || cl.includes("göz")) sjogren = v[k];
             if(cl.includes("uyku")) uyku = v[k];
-            if(cl.includes("enerji")) uyku += `<br><span style="color:#475569; font-size:12px;">⚡ ${v[k]}</span>`;
+            if(cl.includes("enerji")) uyku += `<br><span style="color:#475569; font-size:11px;">⚡ ${v[k]}</span>`;
             if(cl.includes("aktivite")) akt = v[k];
         }
 
@@ -581,30 +552,31 @@ function doktorRaporuOlustur() {
 
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "<span style='color:red;'>Yapay zeka analiz raporu oluşturulamadı.</span>";
     
+    // YENİ HTML KURGUSU - CSS BLOCKLARI İLE BAĞLANTILI
     var raporHTML = `
         <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Klinik Raporu</div>
         <div class="rap-bolum">
             <h3>📋 Klinik Analiz ve Uzman Değerlendirmesi</h3>
-            <div style="background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 14px 18px; margin-top: 15px; font-size: 15px; line-height: 1.6; border-radius: 4px;">
+            <div class="ai-rapor-kutu">
                 ${aiRaporu}
             </div>
         </div>
 
-        <div class="rap-bolum">
+        <div class="rap-bolum rap-bolum-ilac">
             <h3>💊 Aktif Tedavi ve İlaç Şeması</h3>
             <table class="rap-tablo">
-                <thead><tr><th style="width: 20%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
+                <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
                 <tbody>
-                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:12px; color:#555;">(06:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:12px; color:#555;">(10:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
-                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:12px; color:#555;">(13:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:12px; color:#555;">(18:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:12px; color:#555;">(21:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#555;">(06:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#555;">(10:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#555;">(13:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#555;">(18:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#555;">(21:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
                 </tbody>
             </table>
         </div>
 
-        <div class="rap-bolum" style="margin-top: 25px;">
+        <div class="rap-bolum rap-bolum-tablo">
             <h3>📅 Günlük Detay Çizelgesi</h3>
             <table class="rap-tablo">
                 <thead><tr><th style="width:10%;">Tarih</th><th style="width:13%;">Sistemik</th><th style="width:15%;">Sabah Tutukluğu</th><th style="width:20%;">Eklem Durumu</th><th style="width:13%;">Kuruluk</th><th style="width:15%;">Uyku</th><th style="width:14%;">Aktivite</th></tr></thead>
