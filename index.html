@@ -610,7 +610,7 @@ function doktorRaporuOlustur() {
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "Yapay zeka analiz raporu oluşturulamadı.";
     
     var raporHTML = `
-        <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Raporu</div>
+        <div class="rap-baslik">Nurten BATUR - Romatoloji Raporu</div>
         <div class="rap-bolum" style="margin-bottom: 12px;">
             <h3 style="margin-bottom: 6px;">📋 Veri Analizi</h3>
             <div class="ai-rapor-kutu" style="padding: 10px; margin-top: 4px;">
@@ -624,11 +624,11 @@ function doktorRaporuOlustur() {
                 <table class="rap-tablo">
                     <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
                     <tbody>
-                        <tr><td><strong> Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
-                        <tr><td><strong> Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
-                        <tr><td><strong> Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
-                        <tr><td><strong> Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
-                        <tr><td><strong> Gece</strong><br><span style="font-size:10px; color:#000;">(21:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                        <tr><td><strong> Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08.00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                        <tr><td><strong> Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12.00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                        <tr><td><strong> Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14.00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                        <tr><td><strong> Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19.00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                        <tr><td><strong> Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22.00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
                     </tbody>
                 </table>
             </div>
