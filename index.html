@@ -91,15 +91,19 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .diary-streak { font-size: 12px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 10px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; flex-shrink: 0;}
 .diary-toggle-bar { text-align: center; font-size: 13px; font-weight: 700; margin: 12px auto 0 auto; transition: 0.2s; background: rgba(255,255,255,0.5); display: block; width: max-content; padding: 6px 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
 .diary-mood-good .diary-toggle-bar { color: #047857; } .diary-mood-rest .diary-toggle-bar { color: #B45309; }
-.diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.65); padding: 14px 16px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; color: #475569; line-height: 1.5; border-left: 3px solid #FF453A; }
+
+/* --- GÜNLÜK YAPAY ZEKA KUTUSU (NURTEN SULTAN İÇİN BÜYÜTÜLMÜŞ) --- */
+.diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; font-size: 19px; font-weight: 600; letter-spacing: 0.1px; color: #1E293B; line-height: 1.6; border-left: 4px solid #FF453A; }
 .diary-mood-good .diary-ai-box { border-left-color: #10B981; } .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
+/* ------------------------------------------------------------------ */
+
 .diary-card.collapsed .diary-ai-box { display: none; } .diary-card.collapsed .dt-opened { display: none; } .diary-card:not(.collapsed) .dt-closed { display: none; }
 @media (prefers-color-scheme: dark) { 
   .diary-mood-good { background: var(--card); border-color: #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.12); } 
   .diary-mood-rest { background: var(--card); border-color: #D97706; box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); } 
   .diary-title { color: #F8FAFC; } 
   .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; } 
-  .diary-ai-box { background: rgba(255,255,255,0.06); color: #E2E8F0; font-weight: 500; } 
+  .diary-ai-box { background: rgba(255,255,255,0.08); color: #F8FAFC; font-weight: 500; } 
   .diary-toggle-bar { background: rgba(0,0,0,0.3); } 
   .diary-mood-good .diary-toggle-bar { color: #34D399; } 
   .diary-mood-rest .diary-toggle-bar { color: #FBBF24; } 
@@ -112,10 +116,14 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .stat-info { flex: 1; display: flex; flex-direction: column; gap: 6px;}
 .stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
-.stat-ai-summary { background: rgba(255,255,255,0.6); padding: 16px; border-radius: 12px; font-size: 17px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.5; color: #334155; margin-bottom: 16px; border-left: 3px solid var(--purple); }
-.stat-ai-summary strong { color: var(--purple); font-weight: 800; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 8px; }
+
+/* --- AYLIK/YILLIK İSTATİSTİK YAPAY ZEKA KUTUSU (BÜYÜTÜLMÜŞ) --- */
+.stat-ai-summary { background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; font-size: 19px; font-weight: 600; letter-spacing: 0.1px; line-height: 1.6; color: #1E293B; margin-bottom: 16px; border-left: 4px solid var(--purple); }
+.stat-ai-summary strong { color: var(--purple); font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 10px; }
+/* --------------------------------------------------------------- */
+
 @media (prefers-color-scheme: dark) { 
-  .stat-ai-summary { background: rgba(0,0,0,0.2); color: #E2E8F0; border-left-color: #BF5AF2; } 
+  .stat-ai-summary { background: rgba(0,0,0,0.3); color: #F8FAFC; border-left-color: #BF5AF2; font-weight: 500; } 
   .stat-ai-summary strong { color: #BF5AF2; } 
 }
 .vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .vertical-list::-webkit-scrollbar { display: none; }
