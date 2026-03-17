@@ -527,8 +527,13 @@ function istatistikleriCiz() {
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler) { alert("Henüz veri yüklenmedi. Lütfen bekleyin."); return; }
 
+    // Bugünün tarihini oluşturuyoruz (Örn: "17.03.2026")
+    const dNow = new Date();
+    const bugunStr = String(dNow.getDate()).padStart(2, '0') + '.' + String(dNow.getMonth() + 1).padStart(2, '0') + '.' + dNow.getFullYear();
+
     var tarihler = Object.keys(apiData.tumVeriler)
-        .filter(t => new Date(t.split('.')[2], t.split('.')[1]-1, t.split('.')[0]) >= new Date(2026, 2, 7))
+        // Milat 7 Mart'tan büyük eşit olsun VE bugünün tarihi OLMASIN
+        .filter(t => new Date(t.split('.')[2], t.split('.')[1]-1, t.split('.')[0]) >= new Date(2026, 2, 7) && t !== bugunStr)
         .sort((a,b) => new Date(a.split('.')[2], a.split('.')[1]-1, a.split('.')[0]) - new Date(b.split('.')[2], b.split('.')[1]-1, b.split('.')[0]));
     
     let tabloSatirlari = "";
