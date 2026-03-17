@@ -527,7 +527,6 @@ function istatistikleriCiz() {
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler) { alert("Henüz veri yüklenmedi. Lütfen bekleyin."); return; }
 
-    // 1. SIRALAMA DEĞİŞİKLİĞİ: Eskiden yeniye (a - b) olarak değiştirildi.
     var tarihler = Object.keys(apiData.tumVeriler)
         .filter(t => new Date(t.split('.')[2], t.split('.')[1]-1, t.split('.')[0]) >= new Date(2026, 2, 7))
         .sort((a,b) => new Date(a.split('.')[2], a.split('.')[1]-1, a.split('.')[0]) - new Date(b.split('.')[2], b.split('.')[1]-1, b.split('.')[0]));
@@ -537,26 +536,28 @@ function doktorRaporuOlustur() {
     tarihler.forEach(function(tarih) {
         let v = apiData.tumVeriler[tarih];
         let sys = "", agri = "", sjogren = "", uyku = "", akt = "", tut = "";
-        let isAlevlenme = false; // Alevlenme bayrağı
+        let isAlevlenme = false; 
         
         for (let k in v) {
             let cl = k.toLowerCase();
             if(v[k] === "İçildi" || v[k] === "İçilmedi") continue;
             
-            // Verileri toplarken alevlenme kriterlerini kontrol ediyoruz
+            // Gelen veriyi küçük harfe çevirip büyük/küçük harf krizini çözüyoruz
+            let valLower = v[k].toLowerCase(); 
+            
             if(cl.includes("ateş") || cl.includes("ates")) sys += v[k];
             if(cl.includes("terleme")) sys += `<br><span style="color:#d97706; font-size:10px;">💦 Terleme: ${v[k]}</span>`;
             
             if(cl.includes("tutuk")) {
                 tut = v[k];
-                // Sabah tutukluğu uzun sürdüyse alevlenme say
-                if (v[k].includes("1-2 saat") || v[k].includes("öğlene")) isAlevlenme = true;
+                // Sabah tutukluğu "1-2 saat" veya "öğlene" içeriyorsa alevlenme
+                if (valLower.includes("1-2 saat") || valLower.includes("öğlene")) isAlevlenme = true;
             }
             
             if(cl.includes("ağrı") || cl.includes("agri")) {
                 agri = v[k];
-                // Eklemler şiş ve ağrılıysa alevlenme say
-                if (v[k].includes("Şiş")) isAlevlenme = true;
+                // Eklem durumu "şiş" kelimesi içeriyorsa alevlenme
+                if (valLower.includes("şiş")) isAlevlenme = true;
             }
             
             if(cl.includes("bolge") || cl.includes("bölge")) agri += `<br><span style="color:#475569; font-size:10px;">📍 ${v[k]}</span>`;
@@ -566,10 +567,10 @@ function doktorRaporuOlustur() {
             if(cl.includes("aktivite")) akt = v[k];
         }
 
-        // 2. ALEVLENME GÖRSELLEŞTİRMESİ
         let rowStyle = "";
         if (isAlevlenme) {
-            rowStyle = 'style="background-color: #fff0f0; color: #b71c1c;"'; // Kırmızımsı arka plan ve koyu kırmızı metin
+            // Sadece arka plan pastel kırmızı, metin rengi siyah!
+            rowStyle = 'style="background-color: #ffe8e8; color: #000000;"'; 
             sys = `<strong style="color:#d70015; font-size:11px;">🔥 ALEVLENME</strong><br>` + sys;
         }
 
@@ -578,7 +579,6 @@ function doktorRaporuOlustur() {
 
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "<span style='color:red;'>Yapay zeka analiz raporu oluşturulamadı.</span>";
     
-    // 3. BAŞLIK VE ETİK DÜZENLEMESİ
     var raporHTML = `
         <div class="rap-baslik">Nurten BATUR - Gelişmiş Romatoloji Raporu</div>
         <div class="rap-bolum">
