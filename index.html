@@ -170,18 +170,19 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
   #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
   
   .rap-baslik { font-size: 20px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; color: #111; }
-  .rap-bolum { margin-bottom: 16px; page-break-inside: avoid; } 
+  .rap-bolum { margin-bottom: 16px; /* page-break-inside: avoid KALDIRILDI */ } 
   .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
   
   .rap-bolum-ilac { margin-bottom: 8px; page-break-after: avoid; } 
-  .rap-bolum-tablo { page-break-before: avoid; margin-top: 0; }
+  .rap-bolum-tablo { margin-top: 0; /* page-break-before: avoid KALDIRILDI */ }
   
   .rap-tablo { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; } 
   .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 5px; text-align: center; }
   .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 11px; } 
   .rap-alert { color: red; font-weight: bold; }
   
-  .ai-rapor-kutu { background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px; margin-top: 8px; font-size: 12px; line-height: 1.5; border-radius: 4px; page-break-inside: avoid; }
+  /* page-break-inside: avoid KALDIRILDI */
+  .ai-rapor-kutu { background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px; margin-top: 8px; font-size: 12px; line-height: 1.5; border-radius: 4px; }
 }
 </style>
 </head>
@@ -574,11 +575,11 @@ function doktorRaporuOlustur() {
             tarihSutunuHTML += `<br><span style="font-size:9px; color:#555;">Deltacortril</span>`;
         }
         
-        let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "";
+        let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "", mide = "", agiz = "";
         
         for (let k in v) {
             let cl = k.toLowerCase();
-            if(v[k] === "İçildi" || v[k] === "İçilmedi") continue;
+            if(v[k] === "İçildi" || v[k] === "İçilmedi" || v[k] === "-") continue;
             
             let valStr = String(v[k] || "");
             
@@ -591,6 +592,8 @@ function doktorRaporuOlustur() {
             else if (cl === "uyku" || cl.includes("uyku")) uyku = valStr;
             else if (cl === "enerji_seviyesi" || cl.includes("enerji")) enerji = valStr;
             else if (cl === "aktivite" || cl.includes("aktivite")) akt = valStr;
+            else if (cl === "mide_durumu" || cl.includes("mide")) mide = valStr;
+            else if (cl === "agiz_cilt" || cl.includes("ağız") || cl.includes("cilt")) agiz = valStr;
         }
 
         let sysHTML = "";
@@ -604,6 +607,10 @@ function doktorRaporuOlustur() {
         let eklemHTML = "";
         if (agri) eklemHTML += `${agri}<br>`;
         if (bolge && bolge !== "Rahatsızlığım yoktu") eklemHTML += `<span style="font-size:10px; color:#444;">${bolge}</span>`;
+
+        let mideCiltHTML = "";
+        if (mide) mideCiltHTML += `${mide}<br>`;
+        if (agiz) mideCiltHTML += `<span style="font-size:10px; color:#444;">${agiz}</span>`;
 
         let isAlevlenme = false; 
         if (tut.toLowerCase().includes("1-2 saat") || tut.toLowerCase().includes("öğlene")) isAlevlenme = true;
@@ -621,6 +628,7 @@ function doktorRaporuOlustur() {
             <td>${tut || '-'}</td>
             <td>${eklemHTML || '-'}</td>
             <td>${sjogren || '-'}</td>
+            <td>${mideCiltHTML || '-'}</td>
             <td>${uykuHTML || '-'}</td>
             <td>${akt || '-'}</td>
         </tr>`;
@@ -658,12 +666,13 @@ function doktorRaporuOlustur() {
                     <thead>
                         <tr>
                             <th style="width:9%;">Tarih</th>
-                            <th style="width:16%;">Sistemik</th>
-                            <th style="width:15%;">Sabah Tutuk.</th>
-                            <th style="width:18%;">Eklem Durumu</th>
-                            <th style="width:13%;">Kuruluk</th>
-                            <th style="width:16%;">Uyku & Enerji</th>
-                            <th style="width:13%;">Aktivite</th>
+                            <th style="width:13%;">Sistemik</th>
+                            <th style="width:13%;">Sabah Tutuk.</th>
+                            <th style="width:16%;">Eklem Durumu</th>
+                            <th style="width:11%;">Kuruluk</th>
+                            <th style="width:13%;">Mide & Cilt</th>
+                            <th style="width:14%;">Uyku & Enerji</th>
+                            <th style="width:11%;">Aktivite</th>
                         </tr>
                     </thead>
                     <tbody>${tabloSatirlari}</tbody>
