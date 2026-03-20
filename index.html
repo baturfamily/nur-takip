@@ -96,7 +96,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .diary-toggle-bar { text-align: center; font-size: 13px; font-weight: 700; margin: 12px auto 0 auto; transition: 0.2s; background: rgba(255,255,255,0.5); display: block; width: max-content; padding: 6px 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
 .diary-mood-good .diary-toggle-bar { color: #047857; } .diary-mood-rest .diary-toggle-bar { color: #B45309; }
 
-/* --- GÜNLÜK YAPAY ZEKA KUTUSU (NURTEN SULTAN İÇİN BÜYÜTÜLMÜŞ) --- */
+/* --- GÜNLÜK YAPAY ZEKA KUTUSU (NURTEN HANIM İÇİN BÜYÜTÜLMÜŞ) --- */
 .diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; font-size: 19px; font-weight: 600; letter-spacing: 0.1px; color: #1E293B; line-height: 1.6; border-left: 4px solid #FF453A; }
 .diary-mood-good .diary-ai-box { border-left-color: #10B981; } .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
 /* ------------------------------------------------------------------ */
@@ -193,7 +193,7 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 <div class="vip-header">
     <div class="app-title">
         <span class="greeting" id="greetingText">Günaydın,</span> 
-        <span class="name-tag">Nurten Sultan 🌼</span>
+        <span class="name-tag">Nurten Hanım 🌼</span>
     </div>
     <div class="header-info">
         <div id="clock" class="clock-text">--:--</div>
@@ -747,13 +747,13 @@ function ekraniCiz() {
 }
 
 veriCek();
-setInterval(veriCek, 300000); 
+setInterval(veriCek, 600000); 
 setInterval(saniyeTiktak, 1000);
 
 document.addEventListener("visibilitychange", () => { 
     if (document.visibilityState === 'visible') { 
         const simdi = Date.now();
-        if (sonBasariZamani === 0 || (simdi - sonBasariZamani > 300000)) {
+        if (sonBasariZamani === 0 || (simdi - sonBasariZamani > 600000)) {
             veriCek(); 
             fetchWeather(); 
         }
