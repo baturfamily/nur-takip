@@ -289,6 +289,147 @@ const vipHeader = document.querySelector('.vip-header');
 if (vipHeader) { vipHeader.style.background = vipBg; vipHeader.style.border = "none"; }
 document.querySelectorAll('.app-title .greeting, .clock-text').forEach(el => el.style.color = "rgba(255, 255, 255, 0.85)");
 
+const ilacAciklamalari = {
+  "INH": [
+    "Bağışıklık sistemin dinlenirken akciğerlerini mikroplara karşı özenle korur. Böylece sen fark etmeden vücudunun savunma hattını güçlü tutar.",
+    "Vücudunun direnci zayıfladığında bile seni dışarıdaki enfeksiyonlardan sakınır. Göğüs sağlığını güvence altına alarak rahat bir nefes almanı sağlar.",
+    "Akciğerlerine kalkan olur ve uykudaki bakterilerin uyanmasına asla izin vermez. Tedavini güvenle sürdürmen için arka planda sessizce çalışır.",
+    "Ağır romatizma ilaçları kullanırken akciğerlerinin en büyük destekçisidir. Seni olası hastalıklara karşı görünmez bir zırh gibi sarar.",
+    "Vücudunu dışarıdan gelebilecek tehditlere karşı her an hazırlıklı tutar. Senin hissetmediğin tehlikeleri önceden sezerek hastalanmanı engeller.",
+    "Romatizma tedavini sorunsuz bir şekilde atlatabilmen için göğsüne siper olur. Uykuda olabilecek mikropları tamamen etkisiz hale getirerek içini ferah tutar.",
+    "Tedavinin pürüzsüz ilerlemesi için akciğerlerinde sağlam bir güvenlik duvarı örer. Bu sayede sen günlük hayatına sağlıkla devam edebilirsin.",
+    "Bağışıklık baskılayıcı ilaçlar bedenini yorarken o senin koruyucu meleğin olur. Akciğer sağlığını her gün yeniden güvence altına alır.",
+    "Mikropların fırsat bulup güçlenmesini engelleyen çok değerli bir nöbetçidir. Nefesinin her zaman taze ve sağlıklı kalması için çabalar.",
+    "Romatizma ile savaşırken diğer cephelerin açık kalmasını önler. Akciğerlerini güvenli bir liman gibi koruyarak bedenine huzur verir."
+  ],
+  "Balık Yağı": [
+    "Eklemlerini hücresel boyutta yağlayarak sabahları daha esnek uyanmanı sağlar. Aynı zamanda kalbini koruyarak güne zinde başlamana destek olur.",
+    "Doğal yapısıyla vücudundaki iltihabın ve şişkinliğin sönmesine yardımcı olur. Damarlarının sağlıklı çalışmasını sağlayarak ritmini korur.",
+    "Gün boyu hareketli kalman için hücrelerine enerji ve canlılık taşır. Eklemlerindeki sürtünmeyi azaltarak adımlarını yumuşatır.",
+    "Hem kalbine hem de hafızana iyi gelerek bütünsel sağlığını kucaklar. Romatizmanın bedeninde yarattığı yangıyı hafifleten doğal bir kalkandır.",
+    "Kan akışını düzenleyerek el ve ayaklarının daha sıcak kalmasına yardım eder. Vücudunun yenilenme sürecine katılarak yorgunluğunu alır.",
+    "Hücrelerini derinden besleyerek hem cildine hem de iskelet sistemine şifa olur. Kemiklerini güçlendirerek hareket özgürlüğünü geri kazandırır.",
+    "Vücudundaki onarım sürecini hızlandıran ve ağrılarını dindiren doğal bir destektir. Her gün hücrelerini tazeleyerek bedensel direncini artırır.",
+    "Kalp ve damar sağlığını güvence altına alırken eklem sıvını da zenginleştirir. Böylece hareket ederken hissettiğin tutukluğu en aza indirir.",
+    "Zihnini berraklaştırır ve gün içindeki yorgunluk hissini hafifletir. Romatizmanın yıpratıcı etkilerini vücudundan usulca uzaklaştırır.",
+    "Doğanın sana sunduğu bu şifa, eklemlerinin paslanmasını engeller. Bedenine esneklik katarak günlük işlerini ağrısız yapmanı kolaylaştırır."
+  ],
+  "Göz Damlası": [
+    "Gözlerindeki kuruluk hissini alarak sana net ve pırıl pırıl bir görüş sağlar. Sjögren'in yarattığı batma ve kumlanma hissini anında ferahlatır.",
+    "Gözyaşı kanallarını nemlendirip göz kapaklarının acımadan kırpılmasını sağlar. Günlük hayatında göz yorgunluğunu silip atarak bakışlarını dinlendirir.",
+    "Rüzgar ve güneşin gözlerinde yaratabileceği hassasiyeti ve kızarıklığı önler. Göz yüzeyini adeta bir kalkan gibi sararak ince çizilmeleri engeller.",
+    "Gözlerine çok ihtiyacı olan o nemi vererek berrak ve acısız bakmanı sağlar. Ekran ışığı veya havadan kaynaklı yanma hissini ortadan kaldırır.",
+    "Göz pınarlarını şefkatle besleyerek Sjögren kuruluğuna karşı kalkan olur. Uykudayken veya uyanıkken gözlerini neme doyurarak huzur verir.",
+    "Sabah uyandığında gözlerini açarken hissettiğin o kuruluğu ve acıyı alır. Gözlerinin içine serin bir su serpilmiş gibi eşsiz bir tazelik katar.",
+    "Gözlerinin kendi kendini temizleme sistemine destek olarak bulanıklığı giderir. Kitap okurken veya televizyon izlerken gözlerini yormadan odaklanmanı sağlar.",
+    "Hava değişimlerinin göz bebeklerinde yarattığı stresi ve gerginliği azaltır. Gözlerini zararlı dış etkenlere karşı pamuk gibi sarıp sarmalar.",
+    "Nemini kaybeden gözlerine can suyu olarak gününü daha konforlu geçirmeni sağlar. Gözyaşının kalitesini artırarak doğal bir koruma perdesi oluşturur.",
+    "Sadece ıslatmakla kalmaz, aynı zamanda gözyaşının çabuk buharlaşmasını önler. Böylece gözlerin uzun saatler boyunca nemli ve sağlıklı kalır."
+  ],
+  "Benexol": [
+    "Sinir uçlarını besleyerek ellerindeki ve ayaklarındaki batmaları önler. Ağır ilaçların yarattığı yorgunluğu siler, gün ortasında enerjini yeniler.",
+    "Unutkanlık ve beyin sisini dağıtarak zihnini berraklaştırır ve odaklanmanı kolaylaştırır. Vücudunun sinir ağını bir kazak gibi örerek onarır ve güçlendirir.",
+    "İlaçların sinir sistemine verebileceği uyuşma ve karıncalanma hissini sıfırlar. Zayıflayan sinir kılıflarını tamir ederek vücuduna sağlamlık katar.",
+    "Vücudundaki enerji santrallerini yeniden çalıştırarak derin bitkinliğini alır. Hem zihinsel hem de bedensel direncini artırarak seni canlandırır.",
+    "Hasar gören hücreleri onararak ağrı eşiğini yükseltir ve seni rahatlatır. Hücrelerinin ihtiyacı olan gücü sağlayarak güne sağlam devam etmeni sağlar.",
+    "Sinir ağrılarını kaynağında yumuşatarak bedenini adeta sakinleştirici bir kılıfla sarar. Sinir sisteminin daha düzenli mesaj iletmesine yardımcı olur.",
+    "Günün stresine ve yorgunluğuna karşı sinirlerine güçlü bir kalkan oluşturur. Hafızanı tazeleyerek günlük işlerini daha kolay hatırlamanı sağlar.",
+    "İlaçların yapabileceği ufak tefek uyuşuklukları anında tamir eden usta bir vitamindir. Kaslarındaki seğirmeleri ve istemsiz gerilmeleri engeller.",
+    "İçindeki vitamin kompleksi ile ruh halini dengeler ve yaşam enerjini yükseltir. Vücudunun iç iletişim ağını kusursuz hale getirerek sağlığını korur.",
+    "Vücudundaki hücrelerin nefes almasını ve daha verimli çalışmasını sağlar. Nörolojik yorgunluğunu alıp yerine taptaze bir dinçlik bırakır."
+  ],
+  "Plaquenil": [
+    "Eklemlerindeki iltihabı yavaşça ve derinden temizleyen temel ilacındır. Vücudunun kendi kendine zarar vermesini engelleyen şefkatli bir dengeleyicidir.",
+    "Romatizmanın hızını keserek eklemlerini geleceğe dönük güvence altına alır. Hastalığın alevlenmesini önleyerek yarın sabah çok daha rahat uyanmanı sağlar.",
+    "Eklem kıkırdaklarını koruyan ve yıkımı sessizce durduran en büyük dostundur. Şişlik ve ağrıların geri gelmemesi için arka planda yorulmadan çalışır.",
+    "Bağışıklık sistemini sakinleştirip hastalık aktivitesini derin bir uykuya yatırır. Uzun vadede eklemlerinin şeklini ve hareket kabiliyetini korur.",
+    "Vücuttaki yangı ateşini kısarak seni içeriden ferahlatır ve rahatlatır. Günün yorgunluğunu atarken romatizmayı da seninle birlikte uyutur.",
+    "Eklemlerindeki tahribatı hücre hücre durdurarak hayat kaliteni geri kazandırır. Ağrıların zamanla tamamen silinmesi için temel taşı niteliğinde bir tedavidir.",
+    "İltihap hücrelerinin eklem sıvısında birikmesini engelleyerek seni korur. Senin fark etmediğin ufak hasarları bile büyümeden onarmaya başlar.",
+    "Romatizmanın alevlenip seni yatağa düşürmesini kesin bir dille reddeder. Zamanın eklemlerine vereceği zararı en aza indirerek seni genç tutar.",
+    "Uzun soluklu sağlığın için bedeninde görünmez bir restorasyon çalışması yapar. Hastalığı bir alev olmaktan çıkarıp sönmüş bir küle dönüştürür.",
+    "Vücudunun kendi dokularıyla barışmasını sağlayarak içsel bir huzur ortamı yaratır. Eklem sağlığını koruma konusunda senin en istikrarlı yol arkadaşındır."
+  ],
+  "Quantavir": [
+    "Vücudun zorlu tedavilerle meşgulken karaciğerini yorulmaktan korur. İlaçların karaciğerine zarar vermemesi için sağlam ve güçlü bir zırh oluşturur.",
+    "Geçmişte uyuyan virüslerin bir daha asla uyanmasına izin vermez. Karaciğer enzimlerini dengede tutarak midenin bulanmasını tamamen engeller.",
+    "Ağır romatizma tedavilerinin karaciğerde yaratacağı yükü pamuk gibi hafifletir. Senin hissetmediğin tehlikelere karşı karaciğerinin sarsılmaz nöbetçisidir.",
+    "Diğer ilaçlarını gönül rahatlığıyla kullanabilmen için güvenli bir alan yaratır. Vücudun dinlenirken o arka planda karaciğer hücrelerini temizler ve yeniler.",
+    "En hayati organlarından olan karaciğerini bir kalkan gibi şefkatle korur. Karaciğerinin yorulmadan saat gibi tıkır tıkır çalışmasını güvenceye alır.",
+    "Karaciğerini toksinlerden arındırarak vücudunun ana filtresini tertemiz tutar. Romatizma ilaçlarının olası yan etkilerini sıfırlayarak bedenini rahatlatır.",
+    "Vücudunda gizlenen virüslerin bağışıklık zayıfladığında kapıyı çalmasını önler. Böylece sadece romatizmana odaklanıp hızla iyileşmeni sağlar.",
+    "Tedavinin yan etkilerine karşı karaciğerinin yıpranmasını engelleyen sadık bir dosttur. Mide bulantılarını ve sebepsiz yorgunlukları bu sayede hayatından çıkarır.",
+    "Karaciğer hücrelerine güç vererek ağır tedavilere karşı direncini artırır. Vücudundaki detoks sisteminin kesintisiz ve kusursuz işlemesine destek olur.",
+    "Sadece karaciğerini değil, tüm vücudunun zehirlerden arınma gücünü artırır. Sen şifana odaklanırken o sessizce organlarının güvenliğini sağlar."
+  ],
+  "Deltacortril": [
+    "Eklemlerindeki alevi ve şişliği saniyeler içinde söndüren en hızlı itfaiyecidir. Sabah yataktan çok daha ağrısız ve enerjik bir şekilde kalkmanı sağlar.",
+    "Vücudundaki dayanılmaz ağrı döngüsünü hızla kırıp seni anında ferahlatır. Bağışıklık sisteminin aşırı tepkisini hemen frenleyerek bedenine huzur verir.",
+    "Tutukluk hissini ortadan kaldırıp hareketlerini ve adımlarını özgürleştirir. Şiddetli eklem iltihaplarına karşı vücudunun en acil durum müdahalesidir.",
+    "Hastalığın aniden kontrolden çıkmasını engelleyen en keskin ve kesin çözümdür. İçeriden gelen yangı hissini yatıştırıp eklemlerine derin bir nefes aldırır.",
+    "Zor günlerinde ağrılarını bir sünger gibi emerek hayatını ciddi anlamda kolaylaştırır. Gününü sevdiklerinle daha ağrısız ve kaliteli geçirmen için en büyük destekçindir.",
+    "Eklemlerini saran kızarıklığı ve ateşi bir buz kütlesi gibi serinleterek yok eder. Beklenmedik anlarda gelen şiddetli sızıları bıçak gibi keserek durdurur.",
+    "Bedenindeki isyanı bastırarak sistemin yeniden düzenli çalışmasını sağlar. Yürümeni ve iş yapmanı engelleyen o görünmez kelepçeleri çözüp atar.",
+    "Şişliklerin inmesini sağlayarak eklemlerinin normal görünümüne kavuşmasına yardım eder. Seni ağrının esaretinden kurtarıp yeniden hayata bağlayan çok güçlü bir kalkandır.",
+    "Kriz anlarında vücudunun imdadına yetişerek seni o zorlu durumdan çekip çıkarır. Acıyı beynine ulaşmadan dindirerek ruh halini ve motivasyonunu yüksek tutar.",
+    "Sadece bir ilaç değil, en ağrılı anlarında tutunacağın sağlam bir daldır. Hareket etme isteğini geri getirerek bedenine canlılık ve umut pompalar."
+  ],
+  "Coledan-D3": [
+    "Kortizonun kemiklerini zayıflatmasına izin vermeyen sapasağlam bir kalkandır. Eklemlerine ve kemiklerine ihtiyaç duyduğu gücü ve kalsiyumu eksiksiz taşır.",
+    "Kaslarındaki güçsüzlüğü ve yorgunluğu alarak vücut direncini hissedilir şekilde artırır. Kemiklerinin yapısını beton gibi sağlamlaştırıp erimeleri ve çatlamaları önler.",
+    "Güneşin şifasını vücuduna taşıyarak iskelet sistemini yıllar boyu dimdik ayakta tutar. Bağışıklık sistemini dengede tutarak hastalıklara karşı direncini katlayarak artırır.",
+    "Romatizma ilaçlarının kemikler üzerindeki yıpratıcı etkisini tamamen sıfırlar. Bedeninin yapıtaşlarını şefkatle besleyerek duruşunu ve adımlarını sağlamlaştırır.",
+    "Haftalık D vitamini deponu doldurarak gün boyu çok daha dinç kalmanı sağlar. Eklemlerini içeriden onararak hareket kabiliyetini yıllar boyu güvence altına alır.",
+    "Kemiklerine kaybettiği yoğunluğu geri kazandırarak kırılma korkusunu hayatından çıkarır. Bedensel dayanıklılığını artırarak her sabah daha sağlam yere basmanı sağlar.",
+    "Eklemlerindeki hücre yenilenmesini destekleyip içten içe bir bakım yapar. Vücudunun dik durmasını sağlayan kolonları güçlendirerek sağlığını destekler.",
+    "Sadece kemiklerine değil, genel enerji seviyene de harika bir canlılık katar. İskelet sistemini bir zırh gibi sararak zamanın yıpratıcı etkisinden korur.",
+    "Kortizonla bir arada çalışırken olası zararları engelleyen mükemmel bir dengeleyicidir. Kalsiyumun tam olarak nerede kullanılması gerektiğini bedenine akıllıca öğretir.",
+    "İskelet sağlığını koruyarak yaşının getirebileceği sıkıntıları senin için öteler. Bedenini içeriden destekleyip hayata daha güçlü ve güvenli adımlar atmanı sağlar."
+  ],
+  "Metoartcon": [
+    "Romatizmanın kalıcı hasar bırakmasını önleyen en güçlü ana tedavi yöntemindir. Hastalığı derin bir uykuya yatırarak eklemlerini şekil bozukluklarından kurtarır.",
+    "İltihap hücrelerinin çoğalmasını durdurup hastalığın kökünü temelli kurutur. Zamanla oluşabilecek eklem eğriliklerini (deformasyonları) kesin olarak engeller.",
+    "Bağışıklık sistemine şefkatli bir dur diyerek kendi vücuduna saldırmasının önüne geçer. Haftalık uygulanan bu ufak iğne, uzun yıllar boyunca rahatça yürüyebilmeni garantiler.",
+    "Romatizmanın yakan ateşini temelinden keserek tüm vücudunu rahata kavuşturur. Hastalığı en etkili şekilde frenleyerek o özlediğin hareket özgürlüğünü sana geri verir.",
+    "Vücudundaki hatalı çalışan sistemi düzene sokan son derece akıllı bir yönlendiricidir. Gece sen uyurken hastalığın hücrelerine nüfuz edip onu tamamen etkisiz bırakır.",
+    "Ellerini ve dizlerini koruma altına alarak ileride yaşanacak sorunları bugünden çözer. Romatizmaya karşı vücudunun en donanımlı ve güvenilir savunma ordusudur.",
+    "İltihabın eklem zarını kalınlaştırmasını engelleyerek hareketlerinin takılmasını önler. Sadece ağrıyı değil, hastalığın bizzat kendini ortadan kaldırmaya odaklanmıştır.",
+    "Tüm hücrelerine barış mesajı göndererek iç savaşı bitiren son derece kritik bir ajandır. Şişmiş ve sızlayan dokuların inmesine yardım ederek esnekliğini geri kazandırır.",
+    "Hastalığın vücudunda ilerlemesine set çeken ve onu olduğu yere hapseden güçlü bir ilaçtır. Sağlıklı bir gelecek ve aktif bir yaşam için bedeninin vazgeçilmez bir parçasıdır.",
+    "Romatizmanı hücresel düzeyde silahsızlandırıp bedensel bütünlüğünü korur. Yaşam konforunu en üst seviyede tutabilmek için aralıksız çalışan koruyucu kalkanındır."
+  ],
+  "Folbiol": [
+    "İğnenin sende yaratabileceği bitkinlik, bulantı ve yorgunluğu adeta silip atar. Ağzında yara çıkmasını (aft) ve saçlarının zayıflamasını hücresel boyutta kesinlikle önler.",
+    "Metotreksatın tüm yan etkilerini sıfırlayarak karaciğerini ve mideni tamamen güvene alır. Vücudunda yepyeni ve sağlıklı kan hücrelerinin yapılmasına kesintisiz destek olur.",
+    "Pazartesi iğnesinden sonra vücudunu tazeleyip yenileyen çok değerli bir şifa vitaminidir. Hücre bölünmesini destekleyerek cildini ve iç dokularını her zaman koruma altına alır.",
+    "İğne sonrası oluşabilecek halsizliği engelleyerek haftaya bomba gibi enerjik devam etmeni sağlar. Romatizma tedavisinin vücuduna zarar vermeden sadece şifa olmasını bizzat garantiler.",
+    "Senin hissetmediğin ufak eksiklikleri hızla tamamlayarak kusursuz bir beden dengesi kurar. İğneden kaynaklı mide ve bağırsak hassasiyetlerini yatıştırıp iç huzuru verir.",
+    "Vücudunun yenilenme hızını artırarak tedavinin getirdiği yükü omuzlarından hafifçe alır. Sana özel bu vitamin kalkanı sayesinde ağır iğne bile vücudunda sadece iyilik yapar.",
+    "Hücrelerinin DNA onarımına yardım ederek dokularının genç ve sağlıklı kalmasını sağlar. İğne gününün ertesi sabahı yataktan yorgun değil, gayet dinç kalkmana yardımcı olur.",
+    "Ağır tedavinin kemik iliğini yormasına izin vermeden kan değerlerini yüksek tutar. İğnenin geçici olarak düşürdüğü enerjini hızla yukarı çekerek seni motive eder.",
+    "Cildine canlılık verip dudak kenarlarında oluşabilecek çatlak ve kurulukları önler. Sisteminin tıkır tıkır çalışması için gereken eksik parçayı mükemmel şekilde tamamlar.",
+    "Tedavi protokolünün en nazik ama bir o kadar da elzem olan altın değerindeki koruyucusudur. Bedenini yormadan sadece tamir edip şifalanma sürecini keyifli hale getirir."
+  ],
+  "Cimzia İğnesi": [
+    "Diğer ilaçların gücünün yetmediği inatçı iltihabı kaynağında akıllıca bulur ve yok eder. Doğrudan hedefleme ile sadece eklemlerdeki sorunlu bölgeyi tespit eder ve dondurur.",
+    "Romatizmanın ilerlemesini tamamen durdurup yaşam kaliteni en üst seviyeye güvenle taşır. Seni yoran o şişlik ve ağrı döngüsünü bıçak gibi kesen en modern ve ileri tedavidir.",
+    "Sadece hastalıklı hücrelere odaklanarak bedeninin geri kalanına gereksiz yük bindirmez. Hastalığı derin bir uykuda tutarak sabahları çok daha zinde, esnek ve ağrısız kalkmanı sağlar.",
+    "Eklem tahribatını kalıcı olarak engelleyen üst düzey bir biyolojik ve teknolojik kalkandır. Normal hayatına hiçbir kısıtlama olmadan ve özgürce devam edebilmen için özel geliştirilmiştir.",
+    "Vücudundaki yangı üreten fabrikaları tek tek kapatarak bedenine derin bir nefes aldırır. İki haftada bir uygulanan bu sihirli dokunuş, eklemlerine resmen gençliğini geri verir.",
+    "Nokta atışı tedavi uygulayarak sadece iltihap proteinlerini bloke eder ve romatizmayı kör eder. Günden güne kendini daha güçlü ve kendi bedenine daha hakim hissetmeni sağlar.",
+    "Daha önce seni rahatsız eden hareket kısıtlılıklarını çözüp eklem menteşelerini yağlar. İleri teknoloji ürünü bu ilaç sayesinde ağrıların sadece kötü bir anı olarak maziye karışır.",
+    "Diğer ilaçların yanında en güçlü silahımız olarak romatizmaya son ve kesin darbeyi indirir. Kalıcı şifaya giden yolda vücudunun en değerli, en akıllı ve en sadık rehberidir.",
+    "İltihabın sana hissettirdiği o ağır yükü üzerinden kaldırıp yerine kuş gibi bir hafiflik bırakır. Sağlam formülü sayesinde hastalığın tekrar uyanmasını haftalar boyunca başarıyla engeller.",
+    "Yaşam enerjini çalan romatizmayı kökünden durdurup seni yeniden hayata sımsıkı bağlar. Bedeninde adeta bir kalkan oluşturarak her adımda güvenle ve ağrısız ilerlemeni sağlar."
+  ]
+};
+
+function rastgeleAciklama(ilacAdi) {
+  const liste = ilacAciklamalari[ilacAdi];
+  if (!liste) return "";
+  return liste[Math.floor(Math.random() * liste.length)];
+}
+
 // --- MANUEL YENİLEME FONKSİYONU ---
 function manuelYenile() {
     if(fetchDevamEdiyor) return;
@@ -359,18 +500,18 @@ function saniyeTiktak() {
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
-      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: 'Bağışıklık baskılandığı için mikropların uyanmasını engeller.' }] },
-      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: 'Kalp ve damar sağlığını korur.' }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: 'Sjögren kuruluğunu önler.' }] },
-      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: 'Sinir ağını güçlendirir.' }] },
-      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: 'Romatizmayı dengeler.' }] },
-      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: 'Karaciğeri korur.' }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: 'Kornea koruyucu.' }] }
+      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: rastgeleAciklama('INH') }] },
+      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: rastgeleAciklama('Balık Yağı') }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: rastgeleAciklama('Göz Damlası') }] },
+      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: rastgeleAciklama('Benexol') }] },
+      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: rastgeleAciklama('Plaquenil') }] },
+      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: rastgeleAciklama('Quantavir') }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: rastgeleAciklama('Göz Damlası') }] }
     ];
     const dS = new Date(2026, 1, 16); 
-    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: 'Akut iltihabı baskılar.' });
-    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: 'Kemik erimesini önler.' }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: 'Vitamin dengeler.' }); }
-    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: 'Eklemlerdeki hasarı durdurur.' });
+    if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: rastgeleAciklama('Deltacortril') });
+    if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: rastgeleAciklama('Coledan-D3') }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: rastgeleAciklama('Folbiol') }); }
+    if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: rastgeleAciklama('Metoartcon') });
     const cS = new Date(2026, 1, 12);
-    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: 'Biyolojik ilaç.' });
+    if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: rastgeleAciklama('Cimzia İğnesi') });
     return p;
 }
 
