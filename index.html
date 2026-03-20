@@ -149,7 +149,11 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 /* -------------------------------------------------------- */
 
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
-.drug-title { font-size: 18px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; transition: all 0.3s ease; } .drug-purpose { font-size: 16px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.4; margin-top: 2px; display: block; transition: all 0.3s ease; }
+
+/* 🌟 DÜZENLENEN KISIM: İLAÇ ADI VE AÇIKLAMASININ FONT BOYUTLARI 🌟 */
+.drug-title { font-size: 20px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; transition: all 0.3s ease; } 
+.drug-purpose { font-size: 18px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.45; margin-top: 4px; display: block; transition: all 0.3s ease; }
+
 .card.collapsed { cursor: pointer; } .card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
 .minik-button { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
