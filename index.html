@@ -67,7 +67,7 @@ body {
 .app-title { font-size: 20px; font-weight: 900; letter-spacing: 0px; margin-bottom: 6px; color: #fff; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
 .app-title .greeting { font-size: 17px; font-weight: 700; opacity: 0.9; }
 .app-title .name-tag { font-size: 20px; white-space: nowrap; color: #fff; }
-.header-sub { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 10px; transition: color 0.3s; }
+.header-sub { font-size: 12px; color: rgba(255, 255, 255, 0.75); font-weight: 600; margin-bottom: 10px; transition: color 0.3s; }
 .header-info { display: flex; justify-content: center; align-items: center; gap: 10px; }
 .clock-text { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); }
 .sync-badge { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 8px; background: rgba(0,0,0,0.3); color: #fff; display: flex; align-items: center; gap: 4px; }
@@ -215,7 +215,7 @@ body {
 <div id="alertsArea"></div>
 
 <div class="sticky-top-wrapper">
-    <div class="header-compact" onclick="manuelYenile()" id="dynamicHeaderBg">
+    <div class="header-compact" onclick="manuelYenile()" ontouchstart="" id="dynamicHeaderBg">
         <div class="app-title">
             <span class="greeting" id="greetingText">Günaydın,</span> 
             <span class="name-tag">Nurten Hanım 🌼</span>
