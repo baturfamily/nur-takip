@@ -62,8 +62,8 @@ body {
 
 /* YENİ HEADER EFEKTLERİ */
 .sticky-top-wrapper { position: relative; z-index: 100; flex-shrink: 0; margin-bottom: 10px; }
-.header-compact { text-align: center; background: linear-gradient(145deg, #1e293b, #0f172a); padding: 16px 12px; border-radius: 16px; border: 1px solid var(--line); box-shadow:0 6px 20px rgba(0,0,0,0.4); cursor: pointer; user-select: none; transition: transform 0.1s ease, filter 0.1s ease; -webkit-tap-highlight-color: transparent; }
-.header-compact:active { transform: scale(0.96); filter: brightness(0.8); }
+.header-compact { text-align: center; background: linear-gradient(145deg, #1e293b, #0f172a); padding: 16px 12px; border-radius: 16px; border: 1px solid var(--line); box-shadow:0 6px 20px rgba(0,0,0,0.4); cursor: pointer; user-select: none; transition: transform 0.15s ease, opacity 0.15s ease; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.header-compact:active { transform: scale(0.94) !important; opacity: 0.8 !important; }
 .app-title { font-size: 20px; font-weight: 900; letter-spacing: 0px; margin-bottom: 6px; color: #fff; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
 .app-title .greeting { font-size: 17px; font-weight: 700; opacity: 0.9; }
 .app-title .name-tag { font-size: 20px; white-space: nowrap; color: #fff; }
