@@ -51,11 +51,54 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
 @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ */
-@keyframes exciting-pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0.5); transform: translateY(0); } 50% { transform: translateY(-3px); } 70% { box-shadow: 0 0 0 12px rgba(255, 69, 58, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 69, 58, 0); transform: translateY(0); } }
-@keyframes badge-bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
-.new-report-pulse { animation: exciting-pulse 2s infinite ease-in-out !important; border: 2px solid #FF453A !important; background-image: linear-gradient(to bottom right, var(--card), rgba(255, 69, 58, 0.05)) !important; }
-.new-badge { background: linear-gradient(135deg, #FF453A 0%, #FF9D0A 100%); color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; margin-left: 8px; display: inline-flex; align-items: center; gap: 4px; box-shadow: 0 4px 10px rgba(255, 69, 58, 0.3); animation: badge-bounce 1.5s infinite ease-in-out; vertical-align: middle; }
+/* --- YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ (SİHİRLİ ZARF KONSEPTİ) --- */
+@keyframes premium-glow { 
+  0% { box-shadow: 0 0 0 0 rgba(175, 82, 222, 0.4); transform: translateY(0); } 
+  50% { box-shadow: 0 0 0 12px rgba(175, 82, 222, 0); transform: translateY(-2px); } 
+  100% { box-shadow: 0 0 0 0 rgba(175, 82, 222, 0); transform: translateY(0); } 
+}
+@keyframes shimmer-bg { 
+  0% { background-position: 0% 50%; } 
+  50% { background-position: 100% 50%; } 
+  100% { background-position: 0% 50%; } 
+}
+@keyframes badge-float { 
+  0%, 100% { transform: translateY(0); } 
+  50% { transform: translateY(-3px); } 
+}
+
+.new-report-pulse { 
+  animation: premium-glow 2.5s infinite ease-in-out, shimmer-bg 4s ease infinite !important; 
+  border: 1px solid #AF52DE !important; 
+  background: linear-gradient(270deg, #F9F0FF, #FFFFFF, #F9F0FF) !important; 
+  background-size: 200% 200% !important; 
+}
+
+.new-badge { 
+  background: linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%); 
+  color: white; 
+  padding: 4px 12px; 
+  border-radius: 12px; 
+  font-size: 11px; 
+  font-weight: 900; 
+  letter-spacing: 0.5px; 
+  margin-left: 8px; 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 4px; 
+  box-shadow: 0 4px 12px rgba(175, 82, 222, 0.4); 
+  animation: badge-float 2s infinite ease-in-out; 
+  vertical-align: middle; 
+  text-transform: uppercase;
+}
+
+/* Karanlık Mod İçin Sihirli Zarf Efekti */
+@media (prefers-color-scheme: dark) {
+  .new-report-pulse {
+    background: linear-gradient(270deg, #2A1B38, #1C1C1E, #2A1B38) !important;
+    background-size: 200% 200% !important;
+  }
+}
 
 .vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; user-select: none; -webkit-tap-highlight-color: transparent;}
 .vip-header:active { transform: scale(0.97); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
@@ -539,7 +582,7 @@ function renderHealthDiary() {
             <div class="diary-ai-box">
                 ${aiMsg}
                 <div style='font-size:14px; color:var(--muted); font-weight:500; display:flex; align-items:center; gap:6px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 12px; margin-top: 14px;'>
-                    🕒 Her gün 12:00 ve 21:30'da güncellenir.
+                    🕒 Her gün 10:00 ve 22:00'da güncellenir.
                 </div>
             </div>
         </div>`;
