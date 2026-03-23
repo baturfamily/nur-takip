@@ -87,31 +87,31 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
   .ios-w-adv-text { color: #E2E8F0; } 
   .ios-w-hum { background: rgba(0,0,0,0.4); } 
 }
-.diary-card { padding: 12px 14px; border-radius: 18px; margin-bottom: 12px; transition: all 0.3s; flex-shrink: 0; cursor: pointer; }
-.diary-mood-good { background: var(--card); border: 1px solid #86EFAC; box-shadow: 0 6px 16px rgba(52, 199, 89, 0.08); }
-.diary-mood-rest { background: var(--card); border: 1px solid #FDBA74; box-shadow: 0 6px 16px rgba(255, 149, 0, 0.08); }
-.diary-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; gap: 8px; }
-.diary-title { font-size: 17px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; line-height: 1.2; display: flex; align-items: center; gap: 2px;}
-.diary-streak { font-size: 12px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 10px; color: #D97706; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); white-space: nowrap; flex-shrink: 0;}
-.diary-toggle-bar { text-align: center; font-size: 13px; font-weight: 700; margin: 12px auto 0 auto; transition: 0.2s; background: rgba(255,255,255,0.5); display: block; width: max-content; padding: 6px 16px; border-radius: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); }
-.diary-mood-good .diary-toggle-bar { color: #047857; } .diary-mood-rest .diary-toggle-bar { color: #B45309; }
 
-/* --- GÜNLÜK YAPAY ZEKA KUTUSU (NURTEN HANIM İÇİN BÜYÜTÜLMÜŞ) --- */
-.diary-ai-box { margin-top: 12px; background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; font-size: 19px; font-weight: 600; letter-spacing: 0.1px; color: #1E293B; line-height: 1.6; border-left: 4px solid #FF453A; }
-.diary-mood-good .diary-ai-box { border-left-color: #10B981; } .diary-mood-rest .diary-ai-box { border-left-color: #F59E0B; }
-/* ------------------------------------------------------------------ */
+/* --- YENİ GÜNLÜK ASİSTAN KARTI TASARIMI (VIP EKRAN) --- */
+.diary-card { padding: 16px 18px; border-radius: 22px; margin-bottom: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0; cursor: pointer; border: none; overflow: hidden; position: relative;}
 
-.diary-card.collapsed .diary-ai-box { display: none; } .diary-card.collapsed .dt-opened { display: none; } .diary-card:not(.collapsed) .dt-closed { display: none; }
+.diary-mood-good { background: linear-gradient(135deg, #DCF8E3 0%, #F0FFF4 100%); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.12); border: 1px solid #BFEBCB; }
+.diary-mood-rest { background: linear-gradient(135deg, #FFF0D1 0%, #FFF8EB 100%); box-shadow: 0 8px 20px rgba(255, 149, 0, 0.12); border: 1px solid #FDE0B4; }
+
+.diary-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.diary-title { font-size: 19px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; line-height: 1.2;}
+
+.diary-toggle-icon { font-size: 12px; font-weight: 900; color: #64748B; transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: rgba(255,255,255,0.7); border-radius: 50%; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.04);}
+.diary-card.collapsed .diary-toggle-icon { transform: rotate(180deg); } /* Kapalıyken aşağı baksın */
+
+.diary-ai-box { margin-top: 16px; background: rgba(255, 255, 255, 0.55); padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 600; letter-spacing: 0.1px; color: #334155; line-height: 1.55; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.6); }
+
+.diary-card.collapsed .diary-ai-box { display: none; }
+
 @media (prefers-color-scheme: dark) { 
-  .diary-mood-good { background: var(--card); border-color: #059669; box-shadow: 0 6px 16px rgba(5, 150, 105, 0.12); } 
-  .diary-mood-rest { background: var(--card); border-color: #D97706; box-shadow: 0 6px 16px rgba(217, 119, 6, 0.12); } 
+  .diary-mood-good { background: linear-gradient(135deg, #132E22 0%, #061A10 100%); border-color: #1A4D35; } 
+  .diary-mood-rest { background: linear-gradient(135deg, #3A260F 0%, #1E1205 100%); border-color: #5C3D15; } 
   .diary-title { color: #F8FAFC; } 
-  .diary-streak { background: rgba(0,0,0,0.4); color: #FBBF24; } 
-  .diary-ai-box { background: rgba(255,255,255,0.08); color: #F8FAFC; font-weight: 500; } 
-  .diary-toggle-bar { background: rgba(0,0,0,0.3); } 
-  .diary-mood-good .diary-toggle-bar { color: #34D399; } 
-  .diary-mood-rest .diary-toggle-bar { color: #FBBF24; } 
+  .diary-ai-box { background: rgba(0,0,0,0.25); color: #E2E8F0; border-color: rgba(255,255,255,0.05); } 
+  .diary-toggle-icon { background: rgba(0,0,0,0.3); color: #F8FAFC; }
 }
+
 .stat-card .card-header { margin-bottom: 0; cursor: pointer; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
 .stat-card { padding: 12px 16px; margin-bottom: 12px; }
@@ -528,20 +528,19 @@ function renderHealthDiary() {
     let isNew = (aiMsg && !aiMsg.includes("değerlendiriliyor") && !aiMsg.includes("güncellenemiyor") && lastReadReport !== aiMsg);
     
     let pulseClass = isNew ? "new-report-pulse" : "";
-    let badgeHTML = isNew ? `<span class="new-badge">💌 SANA ÖZEL YENİ MESAJ VAR</span>` : "";
+    let badgeHTML = isNew ? `<span class="new-badge">💌 YENİ MESAJ</span>` : "";
 
     let finalHTML = `
         <div class="diary-card ${moodClass} ${pulseClass} collapsed" id="aiDiaryCard" data-new-text="${isNew ? aiMsg : ''}" onclick="markStatAsRead('gunluk', 'aiDiaryCard'); this.classList.toggle('collapsed')">
             <div class="diary-header">
-                <h3 class="diary-title" id="title-gunluk">✨ Günlük Asistan Yorumu ${badgeHTML}</h3>
+                <h3 class="diary-title" id="title-gunluk">✨ Asistan Yorumu ${badgeHTML}</h3>
+                <div class="diary-toggle-icon">▲</div>
             </div>
-            <div class="diary-toggle-bar"><span class="dt-closed">Aç <span style="font-size:10px;">▼</span></span><span class="dt-opened">Gizle <span style="font-size:10px;">▲</span></span></div>
             <div class="diary-ai-box">
                 ${aiMsg}
-                <br><br>
-                <span style='font-size:0.8em; color:var(--muted); font-weight:normal; display:block; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; margin-top: 8px;'>
-                    🕒 Son durum güncellemesi düzenli olarak 12:00 ve 21:30'da yapılmaktadır.
-                </span>
+                <div style='font-size:14px; color:var(--muted); font-weight:500; display:flex; align-items:center; gap:6px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 12px; margin-top: 14px;'>
+                    🕒 Her gün 12:00 ve 21:30'da güncellenir.
+                </div>
             </div>
         </div>`;
     document.getElementById('healthDiaryArea').innerHTML = finalHTML;
