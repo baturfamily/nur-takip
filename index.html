@@ -37,9 +37,18 @@
   }
 }
 
+/* NATIVE IOS DENEYİMİ İÇİN UX DOKUNUŞLARI */
 html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s; }
+body { 
+    margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, system-ui, sans-serif; 
+    padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
+    height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
+    -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
+    -webkit-user-select: none; user-select: none; /* Metin seçimini engelle */
+    overscroll-behavior-y: none; /* Rubber-band efektini engelle */
+}
+
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
 .safety-shield { display: none; padding: 10px 12px; text-align: center; font-weight: 800; font-size: 15px; border-radius: 14px; box-shadow: var(--card-shadow); letter-spacing: 0.3px; color: white; line-height: 1.3;}
 .shield-red { background: linear-gradient(135deg, #ff453a 0%, #d70015 100%); animation: pulse-red 2.5s ease-in-out infinite; }
@@ -51,21 +60,15 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
 @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-/* --- YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ (SİHİRLİ ZARF KONSEPTİ) --- */
+/* YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ (SİHİRLİ ZARF) */
 @keyframes premium-glow { 
   0% { box-shadow: 0 0 0 0 rgba(175, 82, 222, 0.4); transform: translateY(0); } 
   50% { box-shadow: 0 0 0 12px rgba(175, 82, 222, 0); transform: translateY(-2px); } 
   100% { box-shadow: 0 0 0 0 rgba(175, 82, 222, 0); transform: translateY(0); } 
 }
-@keyframes shimmer-bg { 
-  0% { background-position: 0% 50%; } 
-  50% { background-position: 100% 50%; } 
-  100% { background-position: 0% 50%; } 
-}
-@keyframes badge-float { 
-  0%, 100% { transform: translateY(0); } 
-  50% { transform: translateY(-3px); } 
-}
+@keyframes shimmer-bg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+@keyframes badge-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes spin-anim { 100% { transform: rotate(360deg); } }
 
 .new-report-pulse { 
   animation: premium-glow 2.5s infinite ease-in-out, shimmer-bg 4s ease infinite !important; 
@@ -73,34 +76,17 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
   background: linear-gradient(270deg, #F9F0FF, #FFFFFF, #F9F0FF) !important; 
   background-size: 200% 200% !important; 
 }
-
 .new-badge { 
-  background: linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%); 
-  color: white; 
-  padding: 4px 12px; 
-  border-radius: 12px; 
-  font-size: 11px; 
-  font-weight: 900; 
-  letter-spacing: 0.5px; 
-  margin-left: 8px; 
-  display: inline-flex; 
-  align-items: center; 
-  gap: 4px; 
-  box-shadow: 0 4px 12px rgba(175, 82, 222, 0.4); 
-  animation: badge-float 2s infinite ease-in-out; 
-  vertical-align: middle; 
-  text-transform: uppercase;
+  background: linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%); color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; 
+  font-weight: 900; letter-spacing: 0.5px; margin-left: 8px; display: inline-flex; align-items: center; gap: 4px; 
+  box-shadow: 0 4px 12px rgba(175, 82, 222, 0.4); animation: badge-float 2s infinite ease-in-out; vertical-align: middle; text-transform: uppercase;
 }
 
-/* Karanlık Mod İçin Sihirli Zarf Efekti */
 @media (prefers-color-scheme: dark) {
-  .new-report-pulse {
-    background: linear-gradient(270deg, #2A1B38, #1C1C1E, #2A1B38) !important;
-    background-size: 200% 200% !important;
-  }
+  .new-report-pulse { background: linear-gradient(270deg, #2A1B38, #1C1C1E, #2A1B38) !important; background-size: 200% 200% !important; }
 }
 
-.vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; user-select: none; -webkit-tap-highlight-color: transparent;}
+.vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;}
 .vip-header:active { transform: scale(0.97); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 .app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
 .app-title .greeting { font-size: 17px; font-weight: 700; color: var(--vip-muted); }
@@ -108,10 +94,10 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .header-info { display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; z-index: 1;}
 .clock-text { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
 
-/* --- MANUEL YENİLEME İÇİN BUTON STİLLERİ --- */
-.sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); user-select: none; pointer-events: none; }
+.sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); pointer-events: none; display: flex; align-items: center; gap: 4px;}
+.spinning-icon { display: inline-block; animation: spin-anim 1s linear infinite; }
 
-.premium-card { background: var(--card); border-radius: 20px; padding: 12px 14px; border: 1px solid var(--card-border); margin-bottom: 8px; box-shadow: var(--card-shadow); transition: all 0.3s ease; overflow: hidden; flex-shrink: 0; }
+.premium-card { background: var(--card); border-radius: 20px; padding: 12px 14px; border: 1px solid var(--card-border); margin-bottom: 8px; box-shadow: var(--card-shadow); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; flex-shrink: 0; }
 .ios-weather-card { padding: 16px; background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%); border: 1px solid #BADCFF; }
 .ios-w-top { display: flex; justify-content: space-between; align-items: center; }
 .ios-w-city { font-size: 13px; font-weight: 800; color: #5B7BA6; margin: 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase;}
@@ -131,20 +117,17 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
   .ios-w-hum { background: rgba(0,0,0,0.4); } 
 }
 
-/* --- YENİ GÜNLÜK ASİSTAN KARTI TASARIMI (VIP EKRAN) --- */
-.diary-card { padding: 16px 18px; border-radius: 22px; margin-bottom: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); flex-shrink: 0; cursor: pointer; border: none; overflow: hidden; position: relative;}
+/* YENİ GÜNLÜK ASİSTAN KARTI */
+.diary-card { padding: 16px 18px; border-radius: 22px; margin-bottom: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease; flex-shrink: 0; cursor: pointer; border: none; overflow: hidden; position: relative;}
+.diary-card:active { transform: scale(0.98); }
 
 .diary-mood-good { background: linear-gradient(135deg, #DCF8E3 0%, #F0FFF4 100%); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.12); border: 1px solid #BFEBCB; }
 .diary-mood-rest { background: linear-gradient(135deg, #FFF0D1 0%, #FFF8EB 100%); box-shadow: 0 8px 20px rgba(255, 149, 0, 0.12); border: 1px solid #FDE0B4; }
-
 .diary-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 .diary-title { font-size: 19px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; line-height: 1.2;}
-
 .diary-toggle-icon { font-size: 12px; font-weight: 900; color: #64748B; transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: rgba(255,255,255,0.7); border-radius: 50%; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.04);}
-.diary-card.collapsed .diary-toggle-icon { transform: rotate(180deg); } /* Kapalıyken aşağı baksın */
-
+.diary-card.collapsed .diary-toggle-icon { transform: rotate(180deg); } 
 .diary-ai-box { margin-top: 16px; background: rgba(255, 255, 255, 0.55); padding: 16px; border-radius: 16px; font-size: 22px; font-weight: 600; letter-spacing: 0.1px; color: #334155; line-height: 1.6; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.6); }
-
 .diary-card.collapsed .diary-ai-box { display: none; }
 
 @media (prefers-color-scheme: dark) { 
@@ -155,26 +138,29 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
   .diary-toggle-icon { background: rgba(0,0,0,0.3); color: #F8FAFC; }
 }
 
-.stat-card .card-header { margin-bottom: 0; cursor: pointer; }
+.stat-card { padding: 12px 16px; margin-bottom: 12px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.stat-card:active { transform: scale(0.98); }
+.stat-card .card-header { margin-bottom: 0; }
 .stat-card:not(.collapsed) .card-header { margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;}
-.stat-card { padding: 12px 16px; margin-bottom: 12px; }
 .stat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 14px 0; border-bottom: 1px dashed var(--line); gap: 12px; } .stat-row:last-child { border-bottom: none; }
 .stat-date { font-weight: 900; color: var(--text); min-width: 80px; font-size: 17px;}
 .stat-info { flex: 1; display: flex; flex-direction: column; gap: 6px;}
 .stat-status { font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 6px; font-size: 16px;}
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
-/* --- AYLIK/YILLIK İSTATİSTİK YAPAY ZEKA KUTUSU (BÜYÜTÜLMÜŞ) --- */
+/* BÜYÜTÜLMÜŞ İSTATİSTİK YAPAY ZEKA KUTUSU */
 .stat-ai-summary { background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; font-size: 22px; font-weight: 600; letter-spacing: 0.1px; line-height: 1.6; color: #1E293B; margin-bottom: 16px; border-left: 4px solid var(--purple); }
 .stat-ai-summary strong { color: var(--purple); font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 10px; }
-/* --------------------------------------------------------------- */
 
 @media (prefers-color-scheme: dark) { 
   .stat-ai-summary { background: rgba(0,0,0,0.3); color: #F8FAFC; border-left-color: #BF5AF2; font-weight: 500; } 
   .stat-ai-summary strong { color: #BF5AF2; } 
 }
+
 .vertical-list { display: flex; flex-direction: column; gap: 12px; flex: 1; overflow-y: auto; padding-bottom: max(120px, env(safe-area-inset-bottom)); -ms-overflow-style: none; scrollbar-width: none; -webkit-overflow-scrolling: touch; } .vertical-list::-webkit-scrollbar { display: none; }
-.card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0;} .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
+.card { display: flex; flex-direction: column; padding: 12px 14px; margin-bottom: 12px; flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;} 
+.card:active { transform: scale(0.98); }
+.card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 .card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 12px; width: 100%; padding: 8px 0; }
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.5px;}
 .badge { padding: 4px 8px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
@@ -185,50 +171,39 @@ body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple
 .check-icon svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .meds-container { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; transition: opacity 0.3s; }
 .history-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); gap: 12px;} .history-item:last-child { border-bottom: none; }
-
-/* --- İÇİLEN İLAÇLARIN ÜSTÜNÜ ÇİZME (NÖROLOJİ ETKİSİ) --- */
 .history-item.is-done .drug-title { text-decoration: line-through; opacity: 0.5; }
 .history-item.is-done .drug-purpose { opacity: 0.4; }
-/* -------------------------------------------------------- */
 
 .med-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; flex: 1; min-width: 0; }
-
-/* 🌟 DÜZENLENEN KISIM: İLAÇ ADI VE AÇIKLAMASININ FONT BOYUTLARI 🌟 */
 .drug-title { font-size: 20px; font-weight: 800; color: var(--text); white-space: normal; line-height: 1.2; transition: all 0.3s ease; } 
 .drug-purpose { font-size: 18px; color: var(--muted); font-weight: 600; font-style: italic; line-height: 1.45; margin-top: 4px; display: block; transition: all 0.3s ease; }
 
-.card.collapsed { cursor: pointer; } .card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
+.card.collapsed .meds-container { display: none; } .card.collapsed .card-header { margin-bottom: 0; }
 .minik-button { position: fixed; bottom: calc(30px + env(safe-area-inset-bottom)); right: 20px; background: var(--card); width: 60px; height: 60px; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: var(--card-shadow); border: 1px solid var(--card-border); z-index: 1000; cursor: pointer; transition: transform 0.2s; } .minik-button:active { transform: scale(0.9); }
 .minik-toast { position: fixed; bottom: calc(100px + env(safe-area-inset-bottom)); right: 20px; left: 20px; background: var(--early); color: #fff; padding: 20px; border-radius: 24px; font-size: 18px; font-weight: 700; display: none; z-index: 1001; box-shadow: 0 12px 40px rgba(0,0,0,0.4); line-height: 1.6; text-align: left; border: 2px solid rgba(255,255,255,0.2); }
 .badge-danger { background: rgba(255, 59, 48, 0.15); color: var(--danger); font-weight: 900; } .late-card { border-color: var(--danger) !important; animation: latePulse 2s infinite; }
 @keyframes latePulse { 0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); } }
 .stat-card { background: linear-gradient(135deg, #FFF7F0 0%, #FFEDE0 100%) !important; border: 1px solid #F5E0CD !important; }
 @media (prefers-color-scheme: dark) { .stat-card { background: linear-gradient(135deg, #2E2825 0%, #221D1A 100%) !important; border: 1px solid #3D322C !important; } }
-.rapor-btn { background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); color: white; padding: 14px 20px; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 4px; margin-bottom: 24px; width: 100%; box-shadow: 0 4px 15px rgba(142, 84, 233, 0.25); flex-shrink:0; }
+.rapor-btn { background: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%); color: white; padding: 14px 20px; border: none; border-radius: 18px; font-weight: 800; font-size: 16px; cursor: pointer; margin-top: 4px; margin-bottom: 24px; width: 100%; box-shadow: 0 4px 15px rgba(142, 84, 233, 0.25); flex-shrink:0; transition: transform 0.2s ease;}
+.rapor-btn:active { transform: scale(0.96); }
 #print-report-area { display: none; }
 
-/* =======================================================
-   DOKTOR RAPORU PDF/ÇIKTI OPTİMİZASYONU (SİHİRLİ DOKUNUŞ)
-   ======================================================= */
+/* DOKTOR RAPORU YAZDIRMA CSS'İ */
 @media print {
   @page { margin: 10mm; } 
   html, body { position: static !important; overflow: visible !important; height: auto !important; width: auto !important; display: block !important; background: white !important; padding: 0 !important; margin: 0 !important; }
   body > :not(#print-report-area) { display: none !important; }
   #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
-  
   .rap-baslik { font-size: 20px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; color: #111; }
-  .rap-bolum { margin-bottom: 16px; /* page-break-inside: avoid KALDIRILDI */ } 
+  .rap-bolum { margin-bottom: 16px; } 
   .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
-  
   .rap-bolum-ilac { margin-bottom: 8px; page-break-after: avoid; } 
-  .rap-bolum-tablo { margin-top: 0; /* page-break-before: avoid KALDIRILDI */ }
-  
+  .rap-bolum-tablo { margin-top: 0; }
   .rap-tablo { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; } 
   .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 5px; text-align: center; }
   .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 11px; } 
   .rap-alert { color: red; font-weight: bold; }
-  
-  /* page-break-inside: avoid KALDIRILDI */
   .ai-rapor-kutu { background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px; margin-top: 8px; font-size: 12px; line-height: 1.5; border-radius: 4px; }
 }
 </style>
@@ -343,131 +318,57 @@ const ilacAciklamalari = {
     "Akciğerlerine kalkan olur ve uykudaki bakterilerin uyanmasına asla izin vermez. Tedavini güvenle sürdürmen için arka planda sessizce çalışır.",
     "Ağır romatizma ilaçları kullanırken akciğerlerinin en büyük destekçisidir. Seni olası hastalıklara karşı görünmez bir zırh gibi sarar.",
     "Vücudunu dışarıdan gelebilecek tehditlere karşı her an hazırlıklı tutar. Senin hissetmediğin tehlikeleri önceden sezerek hastalanmanı engeller.",
-    "Romatizma tedavini sorunsuz bir şekilde atlatabilmen için göğsüne siper olur. Uykuda olabilecek mikropları tamamen etkisiz hale getirerek içini ferah tutar.",
-    "Tedavinin pürüzsüz ilerlemesi için akciğerlerinde sağlam bir güvenlik duvarı örer. Bu sayede sen günlük hayatına sağlıkla devam edebilirsin.",
-    "Bağışıklık baskılayıcı ilaçlar bedenini yorarken o senin koruyucu meleğin olur. Akciğer sağlığını her gün yeniden güvence altına alır.",
-    "Mikropların fırsat bulup güçlenmesini engelleyen çok değerli bir nöbetçidir. Nefesinin her zaman taze ve sağlıklı kalması için çabalar.",
-    "Romatizma ile savaşırken diğer cephelerin açık kalmasını önler. Akciğerlerini güvenli bir liman gibi koruyarak bedenine huzur verir."
+    "Romatizma tedavini sorunsuz bir şekilde atlatabilmen için göğsüne siper olur. Uykuda olabilecek mikropları tamamen etkisiz hale getirerek içini ferah tutar."
   ],
   "Balık Yağı": [
     "Eklemlerini hücresel boyutta yağlayarak sabahları daha esnek uyanmanı sağlar. Aynı zamanda kalbini koruyarak güne zinde başlamana destek olur.",
     "Doğal yapısıyla vücudundaki iltihabın ve şişkinliğin sönmesine yardımcı olur. Damarlarının sağlıklı çalışmasını sağlayarak ritmini korur.",
-    "Gün boyu hareketli kalman için hücrelerine enerji ve canlılık taşır. Eklemlerindeki sürtünmeyi azaltarak adımlarını yumuşatır.",
-    "Hem kalbine hem de hafızana iyi gelerek bütünsel sağlığını kucaklar. Romatizmanın bedeninde yarattığı yangıyı hafifleten doğal bir kalkandır.",
-    "Kan akışını düzenleyerek el ve ayaklarının daha sıcak kalmasına yardım eder. Vücudunun yenilenme sürecine katılarak yorgunluğunu alır.",
-    "Hücrelerini derinden besleyerek hem cildine hem de iskelet sistemine şifa olur. Kemiklerini güçlendirerek hareket özgürlüğünü geri kazandırır.",
-    "Vücudundaki onarım sürecini hızlandıran ve ağrılarını dindiren doğal bir destektir. Her gün hücrelerini tazeleyerek bedensel direncini artırır.",
-    "Kalp ve damar sağlığını güvence altına alırken eklem sıvını da zenginleştirir. Böylece hareket ederken hissettiğin tutukluğu en aza indirir.",
-    "Zihnini berraklaştırır ve gün içindeki yorgunluk hissini hafifletir. Romatizmanın yıpratıcı etkilerini vücudundan usulca uzaklaştırır.",
-    "Doğanın sana sunduğu bu şifa, eklemlerinin paslanmasını engeller. Bedenine esneklik katarak günlük işlerini ağrısız yapmanı kolaylaştırır."
+    "Gün boyu hareketli kalman için hücrelerine enerji ve canlılık taşır. Eklemlerindeki sürtünmeyi azaltarak adımlarını yumuşatır."
   ],
   "Göz Damlası": [
     "Gözlerindeki kuruluk hissini alarak sana net ve pırıl pırıl bir görüş sağlar. Sjögren'in yarattığı batma ve kumlanma hissini anında ferahlatır.",
     "Gözyaşı kanallarını nemlendirip göz kapaklarının acımadan kırpılmasını sağlar. Günlük hayatında göz yorgunluğunu silip atarak bakışlarını dinlendirir.",
-    "Rüzgar ve güneşin gözlerinde yaratabileceği hassasiyeti ve kızarıklığı önler. Göz yüzeyini adeta bir kalkan gibi sararak ince çizilmeleri engeller.",
-    "Gözlerine çok ihtiyacı olan o nemi vererek berrak ve acısız bakmanı sağlar. Ekran ışığı veya havadan kaynaklı yanma hissini ortadan kaldırır.",
-    "Göz pınarlarını şefkatle besleyerek Sjögren kuruluğuna karşı kalkan olur. Uykudayken veya uyanıkken gözlerini neme doyurarak huzur verir.",
-    "Sabah uyandığında gözlerini açarken hissettiğin o kuruluğu ve acıyı alır. Gözlerinin içine serin bir su serpilmiş gibi eşsiz bir tazelik katar.",
-    "Gözlerinin kendi kendini temizleme sistemine destek olarak bulanıklığı giderir. Kitap okurken veya televizyon izlerken gözlerini yormadan odaklanmanı sağlar.",
-    "Hava değişimlerinin göz bebeklerinde yarattığı stresi ve gerginliği azaltır. Gözlerini zararlı dış etkenlere karşı pamuk gibi sarıp sarmalar.",
-    "Nemini kaybeden gözlerine can suyu olarak gününü daha konforlu geçirmeni sağlar. Gözyaşının kalitesini artırarak doğal bir koruma perdesi oluşturur.",
-    "Sadece ıslatmakla kalmaz, aynı zamanda gözyaşının çabuk buharlaşmasını önler. Böylece gözlerin uzun saatler boyunca nemli ve sağlıklı kalır."
+    "Rüzgar ve güneşin gözlerinde yaratabileceği hassasiyeti ve kızarıklığı önler. Göz yüzeyini adeta bir kalkan gibi sararak ince çizilmeleri engeller."
   ],
   "Benexol": [
     "Sinir uçlarını besleyerek ellerindeki ve ayaklarındaki batmaları önler. Ağır ilaçların yarattığı yorgunluğu siler, gün ortasında enerjini yeniler.",
     "Unutkanlık ve beyin sisini dağıtarak zihnini berraklaştırır ve odaklanmanı kolaylaştırır. Vücudunun sinir ağını bir kazak gibi örerek onarır ve güçlendirir.",
-    "İlaçların sinir sistemine verebileceği uyuşma ve karıncalanma hissini sıfırlar. Zayıflayan sinir kılıflarını tamir ederek vücuduna sağlamlık katar.",
-    "Vücudundaki enerji santrallerini yeniden çalıştırarak derin bitkinliğini alır. Hem zihinsel hem de bedensel direncini artırarak seni canlandırır.",
-    "Hasar gören hücreleri onararak ağrı eşiğini yükseltir ve seni rahatlatır. Hücrelerinin ihtiyacı olan gücü sağlayarak güne sağlam devam etmeni sağlar.",
-    "Sinir ağrılarını kaynağında yumuşatarak bedenini adeta sakinleştirici bir kılıfla sarar. Sinir sisteminin daha düzenli mesaj iletmesine yardımcı olur.",
-    "Günün stresine ve yorgunluğuna karşı sinirlerine güçlü bir kalkan oluşturur. Hafızanı tazeleyerek günlük işlerini daha kolay hatırlamanı sağlar.",
-    "İlaçların yapabileceği ufak tefek uyuşuklukları anında tamir eden usta bir vitamindir. Kaslarındaki seğirmeleri ve istemsiz gerilmeleri engeller.",
-    "İçindeki vitamin kompleksi ile ruh halini dengeler ve yaşam enerjini yükseltir. Vücudunun iç iletişim ağını kusursuz hale getirerek sağlığını korur.",
-    "Vücudundaki hücrelerin nefes almasını ve daha verimli çalışmasını sağlar. Nörolojik yorgunluğunu alıp yerine taptaze bir dinçlik bırakır."
+    "İlaçların sinir sistemine verebileceği uyuşma ve karıncalanma hissini sıfırlar. Zayıflayan sinir kılıflarını tamir ederek vücuduna sağlamlık katar."
   ],
   "Plaquenil": [
     "Eklemlerindeki iltihabı yavaşça ve derinden temizleyen temel ilacındır. Vücudunun kendi kendine zarar vermesini engelleyen şefkatli bir dengeleyicidir.",
     "Romatizmanın hızını keserek eklemlerini geleceğe dönük güvence altına alır. Hastalığın alevlenmesini önleyerek yarın sabah çok daha rahat uyanmanı sağlar.",
-    "Eklem kıkırdaklarını koruyan ve yıkımı sessizce durduran en büyük dostundur. Şişlik ve ağrıların geri gelmemesi için arka planda yorulmadan çalışır.",
-    "Bağışıklık sistemini sakinleştirip hastalık aktivitesini derin bir uykuya yatırır. Uzun vadede eklemlerinin şeklini ve hareket kabiliyetini korur.",
-    "Vücuttaki yangı ateşini kısarak seni içeriden ferahlatır ve rahatlatır. Günün yorgunluğunu atarken romatizmayı da seninle birlikte uyutur.",
-    "Eklemlerindeki tahribatı hücre hücre durdurarak hayat kaliteni geri kazandırır. Ağrıların zamanla tamamen silinmesi için temel taşı niteliğinde bir tedavidir.",
-    "İltihap hücrelerinin eklem sıvısında birikmesini engelleyerek seni korur. Senin fark etmediğin ufak hasarları bile büyümeden onarmaya başlar.",
-    "Romatizmanın alevlenip seni yatağa düşürmesini kesin bir dille reddeder. Zamanın eklemlerine vereceği zararı en aza indirerek seni genç tutar.",
-    "Uzun soluklu sağlığın için bedeninde görünmez bir restorasyon çalışması yapar. Hastalığı bir alev olmaktan çıkarıp sönmüş bir küle dönüştürür.",
-    "Vücudunun kendi dokularıyla barışmasını sağlayarak içsel bir huzur ortamı yaratır. Eklem sağlığını koruma konusunda senin en istikrarlı yol arkadaşındır."
+    "Eklem kıkırdaklarını koruyan ve yıkımı sessizce durduran en büyük dostundur. Şişlik ve ağrıların geri gelmemesi için arka planda yorulmadan çalışır."
   ],
   "Quantavir": [
     "Vücudun zorlu tedavilerle meşgulken karaciğerini yorulmaktan korur. İlaçların karaciğerine zarar vermemesi için sağlam ve güçlü bir zırh oluşturur.",
     "Geçmişte uyuyan virüslerin bir daha asla uyanmasına izin vermez. Karaciğer enzimlerini dengede tutarak midenin bulanmasını tamamen engeller.",
-    "Ağır romatizma tedavilerinin karaciğerde yaratacağı yükü pamuk gibi hafifletir. Senin hissetmediğin tehlikelere karşı karaciğerinin sarsılmaz nöbetçisidir.",
-    "Diğer ilaçlarını gönül rahatlığıyla kullanabilmen için güvenli bir alan yaratır. Vücudun dinlenirken o arka planda karaciğer hücrelerini temizler ve yeniler.",
-    "En hayati organlarından olan karaciğerini bir kalkan gibi şefkatle korur. Karaciğerinin yorulmadan saat gibi tıkır tıkır çalışmasını güvenceye alır.",
-    "Karaciğerini toksinlerden arındırarak vücudunun ana filtresini tertemiz tutar. Romatizma ilaçlarının olası yan etkilerini sıfırlayarak bedenini rahatlatır.",
-    "Vücudunda gizlenen virüslerin bağışıklık zayıfladığında kapıyı çalmasını önler. Böylece sadece romatizmana odaklanıp hızla iyileşmeni sağlar.",
-    "Tedavinin yan etkilerine karşı karaciğerinin yıpranmasını engelleyen sadık bir dosttur. Mide bulantılarını ve sebepsiz yorgunlukları bu sayede hayatından çıkarır.",
-    "Karaciğer hücrelerine güç vererek ağır tedavilere karşı direncini artırır. Vücudundaki detoks sisteminin kesintisiz ve kusursuz işlemesine destek olur.",
-    "Sadece karaciğerini değil, tüm vücudunun zehirlerden arınma gücünü artırır. Sen şifana odaklanırken o sessizce organlarının güvenliğini sağlar."
+    "Ağır romatizma tedavilerinin karaciğerde yaratacağı yükü pamuk gibi hafifletir. Senin hissetmediğin tehlikelere karşı karaciğerinin sarsılmaz nöbetçisidir."
   ],
   "Deltacortril": [
     "Eklemlerindeki alevi ve şişliği saniyeler içinde söndüren en hızlı itfaiyecidir. Sabah yataktan çok daha ağrısız ve enerjik bir şekilde kalkmanı sağlar.",
     "Vücudundaki dayanılmaz ağrı döngüsünü hızla kırıp seni anında ferahlatır. Bağışıklık sisteminin aşırı tepkisini hemen frenleyerek bedenine huzur verir.",
-    "Tutukluk hissini ortadan kaldırıp hareketlerini ve adımlarını özgürleştirir. Şiddetli eklem iltihaplarına karşı vücudunun en acil durum müdahalesidir.",
-    "Hastalığın aniden kontrolden çıkmasını engelleyen en keskin ve kesin çözümdür. İçeriden gelen yangı hissini yatıştırıp eklemlerine derin bir nefes aldırır.",
-    "Zor günlerinde ağrılarını bir sünger gibi emerek hayatını ciddi anlamda kolaylaştırır. Gününü sevdiklerinle daha ağrısız ve kaliteli geçirmen için en büyük destekçindir.",
-    "Eklemlerini saran kızarıklığı ve ateşi bir buz kütlesi gibi serinleterek yok eder. Beklenmedik anlarda gelen şiddetli sızıları bıçak gibi keserek durdurur.",
-    "Bedenindeki isyanı bastırarak sistemin yeniden düzenli çalışmasını sağlar. Yürümeni ve iş yapmanı engelleyen o görünmez kelepçeleri çözüp atar.",
-    "Şişliklerin inmesini sağlayarak eklemlerinin normal görünümüne kavuşmasına yardım eder. Seni ağrının esaretinden kurtarıp yeniden hayata bağlayan çok güçlü bir kalkandır.",
-    "Kriz anlarında vücudunun imdadına yetişerek seni o zorlu durumdan çekip çıkarır. Acıyı beynine ulaşmadan dindirerek ruh halini ve motivasyonunu yüksek tutar.",
-    "Sadece bir ilaç değil, en ağrılı anlarında tutunacağın sağlam bir daldır. Hareket etme isteğini geri getirerek bedenine canlılık ve umut pompalar."
+    "Tutukluk hissini ortadan kaldırıp hareketlerini ve adımlarını özgürleştirir. Şiddetli eklem iltihaplarına karşı vücudunun en acil durum müdahalesidir."
   ],
   "Coledan-D3": [
     "Kortizonun kemiklerini zayıflatmasına izin vermeyen sapasağlam bir kalkandır. Eklemlerine ve kemiklerine ihtiyaç duyduğu gücü ve kalsiyumu eksiksiz taşır.",
     "Kaslarındaki güçsüzlüğü ve yorgunluğu alarak vücut direncini hissedilir şekilde artırır. Kemiklerinin yapısını beton gibi sağlamlaştırıp erimeleri ve çatlamaları önler.",
-    "Güneşin şifasını vücuduna taşıyarak iskelet sistemini yıllar boyu dimdik ayakta tutar. Bağışıklık sistemini dengede tutarak hastalıklara karşı direncini katlayarak artırır.",
-    "Romatizma ilaçlarının kemikler üzerindeki yıpratıcı etkisini tamamen sıfırlar. Bedeninin yapıtaşlarını şefkatle besleyerek duruşunu ve adımlarını sağlamlaştırır.",
-    "Haftalık D vitamini deponu doldurarak gün boyu çok daha dinç kalmanı sağlar. Eklemlerini içeriden onararak hareket kabiliyetini yıllar boyu güvence altına alır.",
-    "Kemiklerine kaybettiği yoğunluğu geri kazandırarak kırılma korkusunu hayatından çıkarır. Bedensel dayanıklılığını artırarak her sabah daha sağlam yere basmanı sağlar.",
-    "Eklemlerindeki hücre yenilenmesini destekleyip içten içe bir bakım yapar. Vücudunun dik durmasını sağlayan kolonları güçlendirerek sağlığını destekler.",
-    "Sadece kemiklerine değil, genel enerji seviyene de harika bir canlılık katar. İskelet sistemini bir zırh gibi sararak zamanın yıpratıcı etkisinden korur.",
-    "Kortizonla bir arada çalışırken olası zararları engelleyen mükemmel bir dengeleyicidir. Kalsiyumun tam olarak nerede kullanılması gerektiğini bedenine akıllıca öğretir.",
-    "İskelet sağlığını koruyarak yaşının getirebileceği sıkıntıları senin için öteler. Bedenini içeriden destekleyip hayata daha güçlü ve güvenli adımlar atmanı sağlar."
+    "Güneşin şifasını vücuduna taşıyarak iskelet sistemini yıllar boyu dimdik ayakta tutar. Bağışıklık sistemini dengede tutarak hastalıklara karşı direncini katlayarak artırır."
   ],
   "Metoartcon": [
     "Romatizmanın kalıcı hasar bırakmasını önleyen en güçlü ana tedavi yöntemindir. Hastalığı derin bir uykuya yatırarak eklemlerini şekil bozukluklarından kurtarır.",
     "İltihap hücrelerinin çoğalmasını durdurup hastalığın kökünü temelli kurutur. Zamanla oluşabilecek eklem eğriliklerini (deformasyonları) kesin olarak engeller.",
-    "Bağışıklık sistemine şefkatli bir dur diyerek kendi vücuduna saldırmasının önüne geçer. Haftalık uygulanan bu ufak iğne, uzun yıllar boyunca rahatça yürüyebilmeni garantiler.",
-    "Romatizmanın yakan ateşini temelinden keserek tüm vücudunu rahata kavuşturur. Hastalığı en etkili şekilde frenleyerek o özlediğin hareket özgürlüğünü sana geri verir.",
-    "Vücudundaki hatalı çalışan sistemi düzene sokan son derece akıllı bir yönlendiricidir. Gece sen uyurken hastalığın hücrelerine nüfuz edip onu tamamen etkisiz bırakır.",
-    "Ellerini ve dizlerini koruma altına alarak ileride yaşanacak sorunları bugünden çözer. Romatizmaya karşı vücudunun en donanımlı ve güvenilir savunma ordusudur.",
-    "İltihabın eklem zarını kalınlaştırmasını engelleyerek hareketlerinin takılmasını önler. Sadece ağrıyı değil, hastalığın bizzat kendini ortadan kaldırmaya odaklanmıştır.",
-    "Tüm hücrelerine barış mesajı göndererek iç savaşı bitiren son derece kritik bir ajandır. Şişmiş ve sızlayan dokuların inmesine yardım ederek esnekliğini geri kazandırır.",
-    "Hastalığın vücudunda ilerlemesine set çeken ve onu olduğu yere hapseden güçlü bir ilaçtır. Sağlıklı bir gelecek ve aktif bir yaşam için bedeninin vazgeçilmez bir parçasıdır.",
-    "Romatizmanı hücresel düzeyde silahsızlandırıp bedensel bütünlüğünü korur. Yaşam konforunu en üst seviyede tutabilmek için aralıksız çalışan koruyucu kalkanındır."
+    "Bağışıklık sistemine şefkatli bir dur diyerek kendi vücuduna saldırmasının önüne geçer. Haftalık uygulanan bu ufak iğne, uzun yıllar boyunca rahatça yürüyebilmeni garantiler."
   ],
   "Folbiol": [
     "İğnenin sende yaratabileceği bitkinlik, bulantı ve yorgunluğu adeta silip atar. Ağzında yara çıkmasını (aft) ve saçlarının zayıflamasını hücresel boyutta kesinlikle önler.",
     "Metotreksatın tüm yan etkilerini sıfırlayarak karaciğerini ve mideni tamamen güvene alır. Vücudunda yepyeni ve sağlıklı kan hücrelerinin yapılmasına kesintisiz destek olur.",
-    "Pazartesi iğnesinden sonra vücudunu tazeleyip yenileyen çok değerli bir şifa vitaminidir. Hücre bölünmesini destekleyerek cildini ve iç dokularını her zaman koruma altına alır.",
-    "İğne sonrası oluşabilecek halsizliği engelleyerek haftaya bomba gibi enerjik devam etmeni sağlar. Romatizma tedavisinin vücuduna zarar vermeden sadece şifa olmasını bizzat garantiler.",
-    "Senin hissetmediğin ufak eksiklikleri hızla tamamlayarak kusursuz bir beden dengesi kurar. İğneden kaynaklı mide ve bağırsak hassasiyetlerini yatıştırıp iç huzuru verir.",
-    "Vücudunun yenilenme hızını artırarak tedavinin getirdiği yükü omuzlarından hafifçe alır. Sana özel bu vitamin kalkanı sayesinde ağır iğne bile vücudunda sadece iyilik yapar.",
-    "Hücrelerinin DNA onarımına yardım ederek dokularının genç ve sağlıklı kalmasını sağlar. İğne gününün ertesi sabahı yataktan yorgun değil, gayet dinç kalkmana yardımcı olur.",
-    "Ağır tedavinin kemik iliğini yormasına izin vermeden kan değerlerini yüksek tutar. İğnenin geçici olarak düşürdüğü enerjini hızla yukarı çekerek seni motive eder.",
-    "Cildine canlılık verip dudak kenarlarında oluşabilecek çatlak ve kurulukları önler. Sisteminin tıkır tıkır çalışması için gereken eksik parçayı mükemmel şekilde tamamlar.",
-    "Tedavi protokolünün en nazik ama bir o kadar da elzem olan altın değerindeki koruyucusudur. Bedenini yormadan sadece tamir edip şifalanma sürecini keyifli hale getirir."
+    "Pazartesi iğnesinden sonra vücudunu tazeleyip yenileyen çok değerli bir şifa vitaminidir. Hücre bölünmesini destekleyerek cildini ve iç dokularını her zaman koruma altına alır."
   ],
   "Cimzia İğnesi": [
     "Diğer ilaçların gücünün yetmediği inatçı iltihabı kaynağında akıllıca bulur ve yok eder. Doğrudan hedefleme ile sadece eklemlerdeki sorunlu bölgeyi tespit eder ve dondurur.",
     "Romatizmanın ilerlemesini tamamen durdurup yaşam kaliteni en üst seviyeye güvenle taşır. Seni yoran o şişlik ve ağrı döngüsünü bıçak gibi kesen en modern ve ileri tedavidir.",
-    "Sadece hastalıklı hücrelere odaklanarak bedeninin geri kalanına gereksiz yük bindirmez. Hastalığı derin bir uykuda tutarak sabahları çok daha zinde, esnek ve ağrısız kalkmanı sağlar.",
-    "Eklem tahribatını kalıcı olarak engelleyen üst düzey bir biyolojik ve teknolojik kalkandır. Normal hayatına hiçbir kısıtlama olmadan ve özgürce devam edebilmen için özel geliştirilmiştir.",
-    "Vücudundaki yangı üreten fabrikaları tek tek kapatarak bedenine derin bir nefes aldırır. İki haftada bir uygulanan bu sihirli dokunuş, eklemlerine resmen gençliğini geri verir.",
-    "Nokta atışı tedavi uygulayarak sadece iltihap proteinlerini bloke eder ve romatizmayı kör eder. Günden güne kendini daha güçlü ve kendi bedenine daha hakim hissetmeni sağlar.",
-    "Daha önce seni rahatsız eden hareket kısıtlılıklarını çözüp eklem menteşelerini yağlar. İleri teknoloji ürünü bu ilaç sayesinde ağrıların sadece kötü bir anı olarak maziye karışır.",
-    "Diğer ilaçların yanında en güçlü silahımız olarak romatizmaya son ve kesin darbeyi indirir. Kalıcı şifaya giden yolda vücudunun en değerli, en akıllı ve en sadık rehberidir.",
-    "İltihabın sana hissettirdiği o ağır yükü üzerinden kaldırıp yerine kuş gibi bir hafiflik bırakır. Sağlam formülü sayesinde hastalığın tekrar uyanmasını haftalar boyunca başarıyla engeller.",
-    "Yaşam enerjini çalan romatizmayı kökünden durdurup seni yeniden hayata sımsıkı bağlar. Bedeninde adeta bir kalkan oluşturarak her adımda güvenle ve ağrısız ilerlemeni sağlar."
+    "Sadece hastalıklı hücrelere odaklanarak bedeninin geri kalanına gereksiz yük bindirmez. Hastalığı derin bir uykuda tutarak sabahları çok daha zinde, esnek ve ağrısız kalkmanı sağlar."
   ]
 };
 
@@ -477,13 +378,12 @@ function rastgeleAciklama(ilacAdi) {
   return liste[Math.floor(Math.random() * liste.length)];
 }
 
-// --- MANUEL YENİLEME FONKSİYONU ---
 function manuelYenile() {
     if(fetchDevamEdiyor) return;
     const syncElement = document.getElementById('last-sync');
-    syncElement.innerHTML = `🔄 Tazeleniyor...`;
+    syncElement.innerHTML = `<span class="spinning-icon">🔄</span> Tazeleniyor...`;
     syncElement.style.color = "var(--vip-gold)";
-    sonBasariZamani = 0; // Tiktak sayacını sıfırlamak için
+    sonBasariZamani = 0;
     veriCek();
     fetchWeather();
 }
@@ -501,7 +401,6 @@ async function fetchWeather() {
         const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
         if (uv > 5) { advIcon = "🕶️"; advColor = "var(--warning)"; adviceList = ["Güneş (UV) bugün çok dik geliyor. İlaçların cildini hassas yapabilir, lütfen koruyucu sür ve gölgede kal."]; } 
-        // --- YENİ RÜZGAR UYARISI (SJÖGREN İÇİN) ---
         else if (w > 20) { icon = "🌬️"; advIcon = "💧"; advColor = "var(--early)"; adviceList = ["Dışarıda esintili bir hava var. En ufak rüzgar bile Sjögren'li gözleri anında kurutur, damlanı almadan çıkma."]; } 
         else if (h > 70 && t < 15) { icon = "🌧️"; advIcon = "⚠️"; advColor = "var(--danger)"; adviceList = [`Hava soğuk ve nemli (%${h}). Nem eklem sıvılarının basıncını değiştirip ağrı yapabilir. Lütfen dizlerini sıcak tut.`]; } 
         else if (t < 12) { icon = "🥶"; advIcon = "🧣"; advColor = "var(--warning)"; adviceList = ["Dışarısı oldukça soğuk. Soğuk hava eklemleri sertleştirir, lütfen kat kat giyinmeyi ihmal etme."]; } 
@@ -536,6 +435,10 @@ function saniyeTiktak() {
     const dNow = new Date();
     
     clockElement.textContent = dNow.getDate() + " " + dNow.toLocaleDateString('tr-TR', {month:'short'}) + " • " + String(dNow.getHours()).padStart(2,'0') + ':' + String(dNow.getMinutes()).padStart(2,'0');
+    
+    // Eğer yükleme devam ediyorsa animasyonu bozmamak için text'i elleme
+    if(fetchDevamEdiyor) return;
+
     const farkSaniye = sonBasariZamani > 0 ? Math.floor((simdi - sonBasariZamani) / 1000) : 999;
     
     if (sonBasariZamani === 0) { syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)"; } 
@@ -910,7 +813,6 @@ function ekraniCiz() {
             if(isDone) sTC++; 
             const iconHTML = isDone ? `<div class="check-icon done">${svgCheck}</div>` : `<div class="check-icon"></div>`;
             
-            // --- NÖROLOJİ ETKİSİ: İÇİLEN İLAÇLARI ÇİZME ---
             const doneClass = isDone ? "is-done" : "";
             medsHTML += `<div class="history-item ${doneClass}">${iconHTML}<div class="med-info"><span class="drug-title">${m.name}</span><span class="drug-purpose">${m.purpose}</span></div></div>`; 
         });
