@@ -60,6 +60,20 @@ body {
 @keyframes pulse-purple { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } } 
 @keyframes pulse-blue { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
+/* YENİ HEADER EFEKTLERİ */
+.sticky-top-wrapper { position: relative; z-index: 100; flex-shrink: 0; margin-bottom: 10px; }
+.header-compact { text-align: center; background: linear-gradient(145deg, #1e293b, #0f172a); padding: 16px 12px; border-radius: 16px; border: 1px solid var(--line); box-shadow:0 6px 20px rgba(0,0,0,0.4); cursor: pointer; user-select: none; transition: transform 0.1s ease, filter 0.1s ease; -webkit-tap-highlight-color: transparent; }
+.header-compact:active { transform: scale(0.96); filter: brightness(0.8); }
+.app-title { font-size: 20px; font-weight: 900; letter-spacing: 0px; margin-bottom: 6px; color: #fff; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
+.app-title .greeting { font-size: 17px; font-weight: 700; opacity: 0.9; }
+.app-title .name-tag { font-size: 20px; white-space: nowrap; color: #fff; }
+.header-sub { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 10px; transition: color 0.3s; }
+.header-info { display: flex; justify-content: center; align-items: center; gap: 10px; }
+.clock-text { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.85); }
+.sync-badge { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 8px; background: rgba(0,0,0,0.3); color: #fff; display: flex; align-items: center; gap: 4px; }
+@keyframes spin-anim { 100% { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin-anim 1s linear infinite; }
+
 /* YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ (SİHİRLİ ZARF) */
 @keyframes premium-glow { 
   0% { box-shadow: 0 0 0 0 rgba(175, 82, 222, 0.4); transform: translateY(0); } 
@@ -68,7 +82,6 @@ body {
 }
 @keyframes shimmer-bg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 @keyframes badge-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes spin-anim { 100% { transform: rotate(360deg); } }
 
 .new-report-pulse { 
   animation: premium-glow 2.5s infinite ease-in-out, shimmer-bg 4s ease infinite !important; 
@@ -85,17 +98,6 @@ body {
 @media (prefers-color-scheme: dark) {
   .new-report-pulse { background: linear-gradient(270deg, #2A1B38, #1C1C1E, #2A1B38) !important; background-size: 200% 200% !important; }
 }
-
-.vip-header { background: var(--vip-bg); border-radius: 20px; padding: 16px; margin-bottom: 10px; box-shadow: var(--vip-shadow); color: var(--vip-text); position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); flex-shrink: 0; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease;}
-.vip-header:active { transform: scale(0.97); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-.app-title { font-size: 22px; font-weight: 900; letter-spacing: -0.5px; margin-bottom: 8px; display: flex; justify-content: center; align-items: baseline; gap: 8px; flex-wrap: wrap; position: relative; z-index: 1;}
-.app-title .greeting { font-size: 17px; font-weight: 700; color: var(--vip-muted); }
-.app-title .name-tag { font-size: 22px; white-space: nowrap; color: var(--vip-text); }
-.header-info { display: flex; justify-content: center; align-items: center; gap: 10px; position: relative; z-index: 1;}
-.clock-text { font-size: 15px; font-weight: 700; color: var(--vip-muted); }
-
-.sync-badge { font-size: 13px; font-weight: 800; padding: 6px 12px; border-radius: 12px; background: rgba(255,255,255,0.1); color: var(--vip-text); backdrop-filter: blur(4px); pointer-events: none; display: flex; align-items: center; gap: 4px;}
-.spinning-icon { display: inline-block; animation: spin-anim 1s linear infinite; }
 
 .premium-card { background: var(--card); border-radius: 20px; padding: 12px 14px; border: 1px solid var(--card-border); margin-bottom: 8px; box-shadow: var(--card-shadow); transition: transform 0.2s ease, box-shadow 0.2s ease; overflow: hidden; flex-shrink: 0; }
 .ios-weather-card { padding: 16px; background: linear-gradient(135deg, #EAF4FF 0%, #D4E6FF 100%); border: 1px solid #BADCFF; }
@@ -212,40 +214,43 @@ body {
 
 <div id="alertsArea"></div>
 
-<div class="vip-header" onclick="manuelYenile()">
-    <div class="app-title">
-        <span class="greeting" id="greetingText">Günaydın,</span> 
-        <span class="name-tag">Nurten Hanım 🌼</span>
-    </div>
-    <div class="header-info">
-        <div id="clock" class="clock-text">--:--</div>
-        <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
-    </div>
-</div>
-
-<div class="premium-card ios-weather-card">
-    <div class="ios-w-top">
-        <div class="ios-w-city">📍 Avrupark Hayat</div>
-        <div class="ios-w-right-group">
-            <div class="ios-w-temp" id="wTempText">--°</div>
-            <div class="ios-w-icon" id="wMainIcon">🌥️</div>
-            <div class="ios-w-hum" id="wHumText">%-- Nem</div>
+<div class="sticky-top-wrapper">
+    <div class="header-compact" onclick="manuelYenile()" id="dynamicHeaderBg">
+        <div class="app-title">
+            <span class="greeting" id="greetingText">Günaydın,</span> 
+            <span class="name-tag">Nurten Hanım 🌼</span>
+            <span id="sync-icon" style="display:inline-block; font-size: 16px; margin-left: 2px;">🔄</span>
         </div>
-    </div>
-    <div class="ios-w-divider"></div>
-    <div class="ios-w-advice">
-        <div class="ios-w-adv-icon" id="wAdvIcon">🩺</div>
-        <div class="ios-w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
+        <div class="header-sub" id="update-text">Verileri Güncellemek İçin Dokunun</div>
+        <div class="header-info">
+            <div id="clock" class="clock-text">--:--</div>
+            <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
+        </div>
     </div>
 </div>
 
 <div class="vertical-list">
     
+    <div class="premium-card ios-weather-card">
+        <div class="ios-w-top">
+            <div class="ios-w-city">📍 Avrupark Hayat</div>
+            <div class="ios-w-right-group">
+                <div class="ios-w-temp" id="wTempText">--°</div>
+                <div class="ios-w-icon" id="wMainIcon">🌥️</div>
+                <div class="ios-w-hum" id="wHumText">%-- Nem</div>
+            </div>
+        </div>
+        <div class="ios-w-divider"></div>
+        <div class="ios-w-advice">
+            <div class="ios-w-adv-icon" id="wAdvIcon">🩺</div>
+            <div class="ios-w-adv-text" id="wAdvice">Hastalık teşhis motoru yükleniyor...</div>
+        </div>
+    </div>
+
     <div id="healthDiaryArea"></div>
     <div id="timelineArea"></div>
 
     <div id="statsArea">
-        
         <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed'); markStatAsRead('buAy', 'card-stat-this-month')">
             <div class="card-header">
                 <div class="drug-name">📊 <span id="title-buAy">Bu Ayki Özet</span></div>
@@ -277,7 +282,6 @@ body {
         </div>
         
         <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
-
     </div>
 
 </div>
@@ -307,9 +311,8 @@ document.getElementById('greetingText').innerText = `${gMsg},`;
 const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 if(document.getElementById('currentYearText')) document.getElementById('currentYearText').innerText = now.getFullYear();
 
-const vipHeader = document.querySelector('.vip-header');
-if (vipHeader) { vipHeader.style.background = vipBg; vipHeader.style.border = "none"; }
-document.querySelectorAll('.app-title .greeting, .clock-text').forEach(el => el.style.color = "rgba(255, 255, 255, 0.85)");
+const dynamicHeaderBg = document.getElementById('dynamicHeaderBg');
+if (dynamicHeaderBg) { dynamicHeaderBg.style.background = vipBg; dynamicHeaderBg.style.border = "none"; }
 
 const ilacAciklamalari = {
   "INH": [
@@ -380,9 +383,16 @@ function rastgeleAciklama(ilacAdi) {
 
 function manuelYenile() {
     if(fetchDevamEdiyor) return;
+    
+    const updateText = document.getElementById('update-text');
+    const syncIcon = document.getElementById('sync-icon');
+    if(updateText) { updateText.innerHTML = "⏳ Veriler Tazeleniyor..."; updateText.style.color = "#4ade80"; }
+    if(syncIcon) syncIcon.classList.add("spin");
+
     const syncElement = document.getElementById('last-sync');
-    syncElement.innerHTML = `<span class="spinning-icon">🔄</span> Tazeleniyor...`;
+    syncElement.innerHTML = `🔄 Tazeleniyor...`;
     syncElement.style.color = "var(--vip-gold)";
+
     sonBasariZamani = 0;
     veriCek();
     fetchWeather();
@@ -786,7 +796,13 @@ async function veriCek() {
         ekraniCiz(); 
         istatistikleriCiz(); 
         renderHealthDiary(); 
-    } catch(e) { console.error(e); } finally { fetchDevamEdiyor = false; }
+    } catch(e) { console.error(e); } finally { 
+        fetchDevamEdiyor = false; 
+        const updateText = document.getElementById('update-text');
+        const syncIcon = document.getElementById('sync-icon');
+        if(updateText) { updateText.innerHTML = "Verileri Güncellemek İçin Dokunun"; updateText.style.color = "var(--muted)"; }
+        if(syncIcon) syncIcon.classList.remove("spin");
+    }
 }
 
 function ekraniCiz() {
