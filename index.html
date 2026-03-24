@@ -45,8 +45,8 @@ body {
     padding: max(12px, env(safe-area-inset-top)) 12px 0 12px; position: fixed; top: 0; left: 0; right: 0; bottom: 0; 
     height: 100dvh; width: 100vw; display: flex; flex-direction: column; overflow: hidden; 
     -webkit-font-smoothing: antialiased; transition: background 0.3s, color 0.3s;
-    -webkit-user-select: none; user-select: none; /* Metin seçimini engelle */
-    overscroll-behavior-y: none; /* Rubber-band efektini engelle */
+    -webkit-user-select: none; user-select: none;
+    overscroll-behavior-y: none;
 }
 
 #alertsArea { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; flex-shrink: 0; }
@@ -62,7 +62,8 @@ body {
 
 /* YENİ HEADER EFEKTLERİ */
 .sticky-top-wrapper { position: relative; z-index: 100; flex-shrink: 0; margin-bottom: 10px; }
-.header-compact { text-align: center; background: linear-gradient(145deg, #1e293b, #0f172a); padding: 16px 12px; border-radius: 16px; border: 1px solid var(--line); box-shadow:0 6px 20px rgba(0,0,0,0.4); user-select: none; -webkit-tap-highlight-color: transparent; }
+.header-compact { text-align: center; background: linear-gradient(145deg, #1e293b, #0f172a); padding: 16px 12px; border-radius: 16px; border: 1px solid var(--line); box-shadow:0 6px 20px rgba(0,0,0,0.4); user-select: none; -webkit-tap-highlight-color: transparent; transition: transform 0.15s ease, opacity 0.15s ease; touch-action: manipulation; }
+.header-compact:active { transform: scale(0.90) !important; opacity: 0.8 !important; }
 .app-title { font-size: 20px; font-weight: 900; letter-spacing: 0px; margin-bottom: 6px; color: #fff; display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
 .app-title .greeting { font-size: 17px; font-weight: 700; opacity: 0.9; }
 .app-title .name-tag { font-size: 20px; white-space: nowrap; color: #fff; }
@@ -73,7 +74,7 @@ body {
 @keyframes spin-anim { 100% { transform: rotate(360deg); } }
 .spin { display: inline-block; animation: spin-anim 1s linear infinite; }
 
-/* YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ (SİHİRLİ ZARF) */
+/* YENİ VE HEYECAN VERİCİ RAPOR EFEKTLERİ */
 @keyframes premium-glow { 
   0% { box-shadow: 0 0 0 0 rgba(175, 82, 222, 0.4); transform: translateY(0); } 
   50% { box-shadow: 0 0 0 12px rgba(175, 82, 222, 0); transform: translateY(-2px); } 
@@ -118,25 +119,39 @@ body {
   .ios-w-hum { background: rgba(0,0,0,0.4); } 
 }
 
-/* YENİ GÜNLÜK ASİSTAN KARTI */
-.diary-card { padding: 16px 18px; border-radius: 22px; margin-bottom: 12px; transition: transform 0.2s ease, box-shadow 0.2s ease; flex-shrink: 0; cursor: pointer; border: none; overflow: hidden; position: relative;}
+/* YENİ PREMIUM ASİSTAN KARTI (Tamamen farklılaştı) */
+.diary-card { 
+    padding: 16px 18px; border-radius: 22px; margin-bottom: 12px; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease; flex-shrink: 0; cursor: pointer; 
+    overflow: hidden; position: relative;
+    background: linear-gradient(135deg, #F9F0FF 0%, #F0F4FF 100%);
+    border: 1px solid rgba(175, 82, 222, 0.2);
+    box-shadow: 0 8px 24px rgba(175, 82, 222, 0.08);
+}
 .diary-card:active { transform: scale(0.98); }
 
-.diary-mood-good { background: linear-gradient(135deg, #DCF8E3 0%, #F0FFF4 100%); box-shadow: 0 8px 20px rgba(52, 199, 89, 0.12); border: 1px solid #BFEBCB; }
-.diary-mood-rest { background: linear-gradient(135deg, #FFF0D1 0%, #FFF8EB 100%); box-shadow: 0 8px 20px rgba(255, 149, 0, 0.12); border: 1px solid #FDE0B4; }
 .diary-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.diary-title { font-size: 19px; font-weight: 800; color: #1E293B; margin: 0; letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; line-height: 1.2;}
-.diary-toggle-icon { font-size: 12px; font-weight: 900; color: #64748B; transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: rgba(255,255,255,0.7); border-radius: 50%; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.04);}
+.diary-title { font-size: 19px; font-weight: 800; color: var(--purple); margin: 0; letter-spacing: -0.3px; display: flex; align-items: center; gap: 6px; line-height: 1.2; text-shadow: 0 1px 2px rgba(175, 82, 222, 0.1);}
+.diary-toggle-icon { font-size: 12px; font-weight: 900; color: var(--purple); transition: transform 0.3s ease; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; background: rgba(255,255,255,0.7); border-radius: 50%; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.04);}
 .diary-card.collapsed .diary-toggle-icon { transform: rotate(180deg); } 
-.diary-ai-box { margin-top: 16px; background: rgba(255, 255, 255, 0.55); padding: 16px; border-radius: 16px; font-size: 18px; font-weight: 600; letter-spacing: 0.1px; color: #334155; line-height: 1.6; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.6); }
+
+.diary-ai-box { 
+    margin-top: 16px; background: rgba(255, 255, 255, 0.6); padding: 16px; border-radius: 16px; 
+    font-size: 18px; /* FONT KÜÇÜLTÜLDÜ */
+    font-weight: 500; letter-spacing: 0.1px; color: #334155; line-height: 1.6; 
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.8); 
+}
 .diary-card.collapsed .diary-ai-box { display: none; }
 
 @media (prefers-color-scheme: dark) { 
-  .diary-mood-good { background: linear-gradient(135deg, #132E22 0%, #061A10 100%); border-color: #1A4D35; } 
-  .diary-mood-rest { background: linear-gradient(135deg, #3A260F 0%, #1E1205 100%); border-color: #5C3D15; } 
-  .diary-title { color: #F8FAFC; } 
-  .diary-ai-box { background: rgba(0,0,0,0.25); color: #E2E8F0; border-color: rgba(255,255,255,0.05); } 
-  .diary-toggle-icon { background: rgba(0,0,0,0.3); color: #F8FAFC; }
+  .diary-card { 
+      background: linear-gradient(135deg, #251B3D 0%, #15192B 100%); 
+      border-color: rgba(175, 82, 222, 0.3); 
+      box-shadow: 0 8px 24px rgba(175, 82, 222, 0.15);
+  }
+  .diary-title { color: #D8B4F8; text-shadow: none; } 
+  .diary-ai-box { background: rgba(0,0,0,0.3); color: #E2E8F0; border-color: rgba(255,255,255,0.05); } 
+  .diary-toggle-icon { background: rgba(0,0,0,0.3); color: #D8B4F8; }
 }
 
 .stat-card { padding: 12px 16px; margin-bottom: 12px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
@@ -150,11 +165,15 @@ body {
 .stat-missed-list { font-size: 15px; color: var(--muted); font-style: italic; font-weight: 600;}
 
 /* BÜYÜTÜLMÜŞ İSTATİSTİK YAPAY ZEKA KUTUSU */
-.stat-ai-summary { background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; font-size: 18px; font-weight: 600; letter-spacing: 0.1px; line-height: 1.6; color: #1E293B; margin-bottom: 16px; border-left: 4px solid var(--purple); }
+.stat-ai-summary { 
+    background: rgba(255,255,255,0.75); padding: 16px 20px; border-radius: 14px; 
+    font-size: 18px; /* FONT KÜÇÜLTÜLDÜ */
+    font-weight: 500; letter-spacing: 0.1px; line-height: 1.6; color: #1E293B; margin-bottom: 16px; border-left: 4px solid var(--purple); 
+}
 .stat-ai-summary strong { color: var(--purple); font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 10px; }
 
 @media (prefers-color-scheme: dark) { 
-  .stat-ai-summary { background: rgba(0,0,0,0.3); color: #F8FAFC; border-left-color: #BF5AF2; font-weight: 500; } 
+  .stat-ai-summary { background: rgba(0,0,0,0.3); color: #F8FAFC; border-left-color: #BF5AF2; font-weight: 400; } 
   .stat-ai-summary strong { color: #BF5AF2; } 
 }
 
@@ -214,7 +233,7 @@ body {
 <div id="alertsArea"></div>
 
 <div class="sticky-top-wrapper">
-    <div class="header-compact" id="dynamicHeaderBg">
+    <div class="header-compact" id="dynamicHeaderBg" ontouchstart="">
         <div class="app-title">
             <span class="greeting" id="greetingText">Günaydın,</span> 
             <span class="name-tag">Nurten Hanım 🌼</span>
@@ -476,24 +495,23 @@ function getDailyProgram(dateObj) {
 function renderHealthDiary() {
     if (!apiData || !apiData.ai) return;
     let aiMsg = apiData.ai.gunluk || "Veriler değerlendiriliyor...";
-    let moodClass = aiMsg.includes("Alevlenme") || aiMsg.includes("Terleme") || aiMsg.includes("Sinir") ? "diary-mood-rest" : "diary-mood-good";
     
     let lastReadReport = localStorage.getItem('lastRead_gunluk');
     let isNew = (aiMsg && !aiMsg.includes("değerlendiriliyor") && !aiMsg.includes("güncellenemiyor") && lastReadReport !== aiMsg);
     
     let pulseClass = isNew ? "new-report-pulse" : "";
-    let badgeHTML = isNew ? `<span class="new-badge">💌 YENİ MESAJ</span>` : "";
+    let badgeHTML = isNew ? `<span class="new-badge">✨ YENİ</span>` : `<span style="font-size:10px; color:var(--purple); font-weight:900; background: rgba(175, 82, 222, 0.1); padding: 4px 8px; border-radius: 8px; letter-spacing:0.5px;">YAPAY ZEKA</span>`;
 
     let finalHTML = `
-        <div class="diary-card ${moodClass} ${pulseClass} collapsed" id="aiDiaryCard" data-new-text="${isNew ? aiMsg : ''}" onclick="markStatAsRead('gunluk', 'aiDiaryCard'); this.classList.toggle('collapsed')">
+        <div class="diary-card ${pulseClass} collapsed" id="aiDiaryCard" data-new-text="${isNew ? aiMsg : ''}" onclick="markStatAsRead('gunluk', 'aiDiaryCard'); this.classList.toggle('collapsed')">
             <div class="diary-header">
-                <h3 class="diary-title" id="title-gunluk">✨ Asistan Yorumu ${badgeHTML}</h3>
+                <h3 class="diary-title" id="title-gunluk">💫 Asistan Analizi ${badgeHTML}</h3>
                 <div class="diary-toggle-icon">▲</div>
             </div>
             <div class="diary-ai-box">
                 ${aiMsg}
-                <div style='font-size:14px; color:var(--muted); font-weight:500; display:flex; align-items:center; gap:6px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 12px; margin-top: 14px;'>
-                    🕒 Her gün 10:00 ve 22:00'da güncellenir.
+                <div style='font-size:13px; color:var(--muted); font-weight:600; display:flex; align-items:center; gap:6px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 12px; margin-top: 14px;'>
+                    🕒 Her gün 10:00 ve 22:00'da Tıbbi Konsey günceller.
                 </div>
             </div>
         </div>`;
@@ -509,7 +527,7 @@ window.markStatAsRead = function(statType, cardId) {
             card.removeAttribute('data-new-text');
             card.classList.remove('new-report-pulse');
             let titleSpan = document.getElementById('title-' + statType);
-            if(titleSpan) titleSpan.innerHTML = titleSpan.innerHTML.replace(/\s*<span class="new-badge[^>]*>.*?<\/span>/gi, '');
+            if(titleSpan) titleSpan.innerHTML = titleSpan.innerHTML.replace(/\s*<span class="new-badge[^>]*>.*?<\/span>/gi, `<span style="font-size:10px; color:var(--purple); font-weight:900; background: rgba(175, 82, 222, 0.1); padding: 4px 8px; border-radius: 8px; letter-spacing:0.5px;">YAPAY ZEKA</span>`);
         }
     }
 };
