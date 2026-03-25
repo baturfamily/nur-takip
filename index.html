@@ -737,46 +737,52 @@ function doktorRaporuOlustur() {
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "Yapay zeka analiz raporu oluşturulamadı.";
     
     var raporHTML = `
-        <div class="rap-baslik">Nurten BATUR - Romatoloji Raporu</div>
-        <div class="rap-bolum" style="margin-bottom: 12px;">
-            <h3 style="margin-bottom: 6px;">📋 Veri Analizi</h3>
-            <div class="ai-rapor-kutu" style="padding: 10px; margin-top: 4px;">
-                ${aiRaporu}
-            </div>
+                <div class="rap-baslik">Nurten BATUR - Romatoloji Raporu</div>
+        <div class="rap-bolum" style="margin-bottom: 12px;">
+            <h3 style="margin-bottom: 6px;">📋 Veri Analizi</h3>
+            <div class="ai-rapor-kutu" style="padding: 10px; margin-top: 4px; line-height: 1.6;">
+                ${aiRaporu}
+            </div>
+        </div>
+
+        <div style="page-break-before: always; margin-top: 20px;">
+            <h3 style="border-bottom: 2px solid #ccc; padding-bottom: 6px; color: #222;">🩺 Hekim Değerlendirmesi ve Klinik Notlar</h3>
+            <div style="height: 600px; border: 1px dashed #ccc; border-radius: 8px; margin-top: 15px; background: #fafafa;"></div>
+            <span style="font-size: 10px; color: #888; float: right; margin-top: 5px;">Nur Takip Projesi - Fiziksel Muayene Not Alanı</span>
         </div>
 
-        <div class="rap-bolum rap-bolum-ilac" style="margin-bottom: 8px;">
-            <h3 style="margin-bottom: 6px;">💊 Aktif Tedavi ve İlaç Şeması</h3>
-            <table class="rap-tablo">
-                <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
-                <tbody>
-                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
-                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
-                </tbody>
-            </table>
-        </div>
+                <div class="rap-bolum rap-bolum-ilac" style="page-break-before: always; margin-bottom: 8px;">
+            <h3 style="margin-bottom: 6px;">💊 Aktif Tedavi ve İlaç Şeması</h3>
+            <table class="rap-tablo">
+                <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                </tbody>
+            </table>
+        </div>
 
-        <div class="rap-bolum rap-bolum-tablo" style="margin-top: 0; page-break-before: always;">
-            <h3 style="margin-bottom: 6px;">📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></h3>
-            <table class="rap-tablo">
-                <thead>
-                    <tr>
-                        <th style="width:9%;">Tarih</th>
-                        <th style="width:13%;">Sistemik</th>
-                        <th style="width:13%;">Sabah Tutuk.</th>
-                        <th style="width:16%;">Eklem Durumu</th>
-                        <th style="width:11%;">Kuruluk</th>
-                        <th style="width:13%;">Mide & Cilt</th>
-                        <th style="width:14%;">Uyku & Enerji</th>
-                        <th style="width:11%;">Aktivite</th>
-                    </tr>
-                </thead>
-                <tbody>${tabloSatirlari}</tbody>
-            </table>
-        </div>`;
+                <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; margin-top: 0;">
+            <h3 style="margin-bottom: 6px;">📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></h3>
+            <table class="rap-tablo">
+                <thead>
+                    <tr>
+                        <th style="width:9%;">Tarih</th>
+                        <th style="width:13%;">Sistemik</th>
+                        <th style="width:13%;">Sabah Tutuk.</th>
+                        <th style="width:16%;">Eklem Durumu</th>
+                        <th style="width:11%;">Kuruluk</th>
+                        <th style="width:13%;">Mide & Cilt</th>
+                        <th style="width:14%;">Uyku & Enerji</th>
+                        <th style="width:11%;">Aktivite</th>
+                    </tr>
+                </thead>
+                <tbody>${tabloSatirlari}</tbody>
+            </table>
+        </div>`;
 
     document.getElementById("print-report-area").innerHTML = raporHTML;
     setTimeout(function() { window.print(); }, 250);
