@@ -205,24 +205,23 @@ body {
 #print-report-area { display: none; }
 
 /* DOKTOR RAPORU YAZDIRMA CSS'İ */
-/* DOKTOR RAPORU YAZDIRMA CSS'İ */
 @media print {
-  @page { margin: 10mm; } 
-  html, body { position: static !important; overflow: visible !important; height: auto !important; width: auto !important; display: block !important; background: white !important; padding: 0 !important; margin: 0 !important; }
-  body > :not(#print-report-area) { display: none !important; }
-  #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
-  .rap-baslik { font-size: 20px; font-weight: bold; text-align: left; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; color: #111; }
-  .rap-bolum { margin-bottom: 16px; } 
-  .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
-  .rap-bolum-ilac { margin-bottom: 8px; page-break-after: avoid; } 
-  .rap-bolum-tablo { margin-top: 0; }
-  .rap-tablo { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; } 
-  .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 5px; text-align: center; }
-  .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 11px; } 
-  .rap-alert { color: red; font-weight: bold; }
-  .ai-rapor-kutu { background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px; margin-top: 8px; font-size: 12px; line-height: 1.5; border-radius: 4px; text-align: left !important; }
-  /* YZ'DAN GELEN GÖMÜLÜ MERKEZLEME KODLARINI ZORLA SOLA ALIR */
-  .ai-rapor-kutu * { text-align: left !important; }
+  @page { margin: 10mm; } 
+  html, body { position: static !important; overflow: visible !important; height: auto !important; width: auto !important; display: block !important; background: white !important; padding: 0 !important; margin: 0 !important; }
+  body > :not(#print-report-area) { display: none !important; }
+  #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
+  .rap-baslik { font-size: 20px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; color: #111; }
+  .rap-bolum { margin-bottom: 16px; } 
+  .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
+  .rap-bolum-ilac { margin-bottom: 8px; page-break-after: avoid; } 
+  .rap-bolum-tablo { margin-top: 0; }
+  .rap-tablo { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 4px; } 
+  .rap-tablo th, .rap-tablo td { border: 1px solid #000; padding: 5px; text-align: center; }
+  .rap-tablo th { background-color: #eaeaea; font-weight: bold; font-size: 11px; } 
+  .rap-alert { color: red; font-weight: bold; }
+  .ai-rapor-kutu { background-color: #f8f9fa; border-left: 4px solid #007aff; padding: 10px; margin-top: 8px; font-size: 12px; line-height: 1.5; border-radius: 4px; text-align: left !important; }
+  .ai-rapor-kutu * { text-align: left !important; }
+  center { text-align: left !important; display: block; }
 }
 </style>
 </head>
@@ -740,46 +739,46 @@ function doktorRaporuOlustur() {
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "Yapay zeka analiz raporu oluşturulamadı.";
     
     var raporHTML = `
-                <div class="rap-baslik">Nurten BATUR - Romatoloji Raporu</div>
-        <div class="rap-bolum" style="margin-bottom: 12px;">
-            <h3 style="margin-bottom: 6px;">📋 Veri Analizi</h3>
-                        <div class="ai-rapor-kutu" style="padding: 10px; margin-top: 4px; text-align: left;">
-                ${aiRaporu}
-            </div>
-        </div>
+                <div class="rap-baslik">Nurten BATUR - Romatoloji Raporu</div>
+        <div class="rap-bolum" style="margin-bottom: 12px;">
+            <h3 style="margin-bottom: 6px;">📋 Veri Analizi</h3>
+                        <div class="ai-rapor-kutu" style="padding: 10px; margin-top: 4px; text-align: left;">
+                ${aiRaporu}
+            </div>
+        </div>
 
-                <div class="rap-bolum rap-bolum-ilac" style="page-break-before: always; break-before: page; margin-bottom: 8px;">
-            <h3 style="margin-bottom: 6px;">💊 Aktif Tedavi ve İlaç Şeması</h3>
-            <table class="rap-tablo">
-                <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
-                <tbody>
-                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
-                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
-                </tbody>
-            </table>
-        </div>
+                <div class="rap-bolum rap-bolum-ilac" style="page-break-before: always; break-before: page; margin-bottom: 8px;">
+            <h3 style="margin-bottom: 6px;">💊 Aktif Tedavi ve İlaç Şeması</h3>
+            <table class="rap-tablo">
+                <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                </tbody>
+            </table>
+        </div>
 
-                <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; break-before: page; margin-top: 0;">
-            <h3 style="margin-bottom: 6px;">📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></h3>
-            <table class="rap-tablo">
-                <thead>
-                    <tr>
-                        <th style="width:9%;">Tarih</th>
-                        <th style="width:13%;">Sistemik</th>
-                        <th style="width:13%;">Sabah Tutuk.</th>
-                        <th style="width:16%;">Eklem Durumu</th>
-                        <th style="width:11%;">Kuruluk</th>
-                        <th style="width:13%;">Mide & Cilt</th>
-                        <th style="width:14%;">Uyku & Enerji</th>
-                        <th style="width:11%;">Aktivite</th>
-                    </tr>
-                </thead>
-                <tbody>${tabloSatirlari}</tbody>
-            </table>
-        </div>`;
+                <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; break-before: page; margin-top: 0;">
+            <h3 style="margin-bottom: 6px;">📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></h3>
+            <table class="rap-tablo">
+                <thead>
+                    <tr>
+                        <th style="width:9%;">Tarih</th>
+                        <th style="width:13%;">Sistemik</th>
+                        <th style="width:13%;">Sabah Tutuk.</th>
+                        <th style="width:16%;">Eklem Durumu</th>
+                        <th style="width:11%;">Kuruluk</th>
+                        <th style="width:13%;">Mide & Cilt</th>
+                        <th style="width:14%;">Uyku & Enerji</th>
+                        <th style="width:11%;">Aktivite</th>
+                    </tr>
+                </thead>
+                <tbody>${tabloSatirlari}</tbody>
+            </table>
+        </div>`;
 
     document.getElementById("print-report-area").innerHTML = raporHTML;
     setTimeout(function() { window.print(); }, 250);
