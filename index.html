@@ -206,15 +206,10 @@ body {
 
 /* DOKTOR RAPORU YAZDIRMA CSS'İ */
 @media print {
-  /* Tarayıcının varsayılan header/footer ve URL basma huyunu tamamen sıfırlar */
-  @page { margin: 0; } 
-  
+  @page { margin: 10mm; } 
   html, body { position: static !important; overflow: visible !important; height: auto !important; width: auto !important; display: block !important; background: white !important; padding: 0 !important; margin: 0 !important; }
   body > :not(#print-report-area) { display: none !important; }
-  
-  /* URL silindiği için yazılar kenara yapışmasın diye kağıt boşluğunu içeriden (padding) veriyoruz */
-  #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 15mm !important; box-sizing: border-box !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
-  
+  #print-report-area { display: block !important; position: relative !important; width: 100% !important; padding: 10px !important; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important; color: #000 !important; font-size: 12px !important; }
   .rap-baslik { font-size: 20px; font-weight: bold; text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 16px; color: #111; }
   .rap-bolum { margin-bottom: 16px; } 
   .rap-bolum h3 { font-size: 15px; border-bottom: 2px solid #ccc; padding-bottom: 4px; margin-bottom: 8px; color: #222; }
