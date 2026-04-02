@@ -268,7 +268,10 @@ body {
     <div id="statsArea">
         <div class="premium-card card collapsed stat-card" id="card-stat-this-month" onclick="this.classList.toggle('collapsed'); markStatAsRead('buAy', 'card-stat-this-month')">
             <div class="card-header">
-                <div class="drug-name">📊 <span id="title-buAy">Bu Ayki Özet</span></div>
+                <div class="drug-name">
+                    <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    <span id="title-buAy">Bu Ayki Özet</span>
+                </div>
                 <div class="badge badge-wait" id="thisMonthBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="thisMonthDetails">
@@ -278,7 +281,10 @@ body {
 
         <div class="premium-card card collapsed stat-card" id="card-stat-last-month" onclick="this.classList.toggle('collapsed'); markStatAsRead('gecenAy', 'card-stat-last-month')">
             <div class="card-header">
-                <div class="drug-name">⏪ <span id="title-gecenAy">Geçen Ayın Özeti</span></div>
+                <div class="drug-name">
+                    <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 22v-6h6"/></svg>
+                    <span id="title-gecenAy">Geçen Ayın Özeti</span>
+                </div>
                 <div class="badge badge-wait" id="lastMonthBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="lastMonthDetails">
@@ -288,7 +294,10 @@ body {
 
         <div class="premium-card card collapsed stat-card" id="card-stat-yearly" onclick="this.classList.toggle('collapsed'); markStatAsRead('yillik', 'card-stat-yearly')">
             <div class="card-header">
-                <div class="drug-name">🏆 <span id="title-yillik">Yıllık Karne (<span id="currentYearText"></span>)</span></div>
+                <div class="drug-name">
+                    <svg class="card-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                    <span id="title-yillik">Yıllık Karne (<span id="currentYearText"></span>)</span>
+                </div>
                 <div class="badge badge-wait" id="yearlyBadge">%-- <span class="exp-arrow">▲</span></div>
             </div>
             <div class="meds-container stat-details" id="yearlyDetails">
@@ -296,7 +305,10 @@ body {
             </div>
         </div>
         
-        <button onclick="doktorRaporuOlustur()" class="rapor-btn">🩺 Doktor Raporu (PDF Çıktısı Al)</button>
+        <button onclick="doktorRaporuOlustur()" class="rapor-btn" style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Doktor Raporu (PDF Çıktısı Al)
+        </button>
     </div>
 
 </div>
@@ -478,11 +490,11 @@ function saniyeTiktak() {
 function getDailyProgram(dateObj) {
     let day = dateObj.getDay(); let mid = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate());
     let p = [
-      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '🌅', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: rastgeleAciklama('INH') }] },
-      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '🍳', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: rastgeleAciklama('Balık Yağı') }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: rastgeleAciklama('Göz Damlası') }] },
-      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '☀️', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: rastgeleAciklama('Benexol') }] },
-      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '🌙', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: rastgeleAciklama('Plaquenil') }] },
-      { id: 'gece', title: 'GECE', time: '21:00', icon: '🛌', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: rastgeleAciklama('Quantavir') }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: rastgeleAciklama('Göz Damlası') }] }
+      { id: 'sabah-ac', title: 'SABAH AÇ', time: '06:00', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; margin-bottom: 2px;"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M2 12h2"/><path d="m4.93 19.07 1.41-1.41"/><path d="M12 22v-2"/><path d="m19.07 19.07-1.41-1.41"/><path d="M22 12h-2"/><path d="m19.07 4.93-1.41 1.41"/><circle cx="12" cy="12" r="4"/></svg>', meds: [{ key: 'SABAH_AC_INH', name: 'INH', purpose: rastgeleAciklama('INH') }] },
+      { id: 'sabah-tok', title: 'SABAH TOK', time: '10:00', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; margin-bottom: 2px;"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>', meds: [{ key: 'SABAH_TOK_BALIK', name: 'Balık Yağı', purpose: rastgeleAciklama('Balık Yağı') }, { key: 'SABAH_TOK_GOZ', name: 'Göz Damlası', purpose: rastgeleAciklama('Göz Damlası') }] },
+      { id: 'ogle', title: 'ÖĞLE', time: '13:00', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; margin-bottom: 2px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>', meds: [{ key: 'OGLE_BENEXOL', name: 'Benexol', purpose: rastgeleAciklama('Benexol') }] },
+      { id: 'aksam', title: 'AKŞAM', time: '18:00', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; margin-bottom: 2px;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>', meds: [{ key: 'AKSAM_PLAQUENIL', name: 'Plaquenil', purpose: rastgeleAciklama('Plaquenil') }] },
+      { id: 'gece', title: 'GECE', time: '21:00', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px; margin-bottom: 2px;"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>', meds: [{ key: 'GECE_QUANTAVIR', name: 'Quantavir', purpose: rastgeleAciklama('Quantavir') }, { key: 'GECE_GOZ', name: 'Göz Damlası', purpose: rastgeleAciklama('Göz Damlası') }] }
     ];
     const dS = new Date(2026, 1, 16); 
     if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: rastgeleAciklama('Deltacortril') });
@@ -506,7 +518,10 @@ function renderHealthDiary() {
     let finalHTML = `
         <div class="diary-card ${pulseClass} collapsed" id="aiDiaryCard" data-new-text="${isNew ? aiMsg : ''}" onclick="markStatAsRead('gunluk', 'aiDiaryCard'); this.classList.toggle('collapsed')">
             <div class="diary-header">
-                <h3 class="diary-title" id="title-gunluk">💫 Asistan Analizi ${badgeHTML}</h3>
+                <h3 class="diary-title" id="title-gunluk">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                    Asistan Analizi ${badgeHTML}
+                </h3>
                 <div class="diary-toggle-icon">▲</div>
             </div>
             <div class="diary-ai-box">
