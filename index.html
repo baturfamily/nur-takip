@@ -135,11 +135,11 @@ body {
 /* HAVA DURUMU - Daha solid, monokrom, okunabilir */
 .ios-weather-card { padding: 18px; background: var(--card); }
 .ios-w-top { display: flex; justify-content: space-between; align-items: center; }
-.ios-w-city { font-size: 13px; font-weight: 700; color: var(--muted); margin: 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: 0.5px;}
+.ios-w-city { font-size: 13px; font-weight: 700; color: var(--muted); margin: 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0;}
 .ios-w-right-group { display: flex; align-items: center; gap: 10px; }
 .ios-w-temp { font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin: 0; color: var(--text); }
 .ios-w-icon { font-size: 26px; line-height: 1; margin: 0; }
-.ios-w-hum { font-size: 13px; font-weight: 700; background: var(--wait-badge-bg); color: var(--text); padding: 6px 12px; border-radius: 10px; margin: 0; }
+.ios-w-hum { font-size: 13px; font-weight: 700; background: var(--wait-badge-bg); color: var(--text); padding: 0 12px; border-radius: 10px; margin: 0; display: inline-flex; align-items: center; justify-content: center; height: 28px; }
 .ios-w-divider { height: 1px; background: var(--line); margin: 16px 0; }
 .ios-w-advice { display: flex; gap: 12px; align-items: flex-start; }
 .ios-w-adv-icon { font-size: 22px; margin-top: 2px; }
@@ -193,7 +193,7 @@ body {
 .card.done-card { border-color: var(--done-border); background: var(--done-bg); box-shadow: none; }
 .card-header { display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 16px; width: 100%; padding: 4px 0; }
 .drug-name { font-size: 19px; font-weight: 800; display: flex; align-items: center; gap: 8px; margin: 0; white-space: nowrap; color: var(--text); letter-spacing: -0.3px;}
-.badge { padding: 6px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
+.badge { padding: 6px 10px; border-radius: 8px; font-weight: 800; font-size: 11px; text-transform: uppercase; margin: 0 4px 0 0; white-space: nowrap; display: flex; align-items: center; gap: 4px; letter-spacing: 0.3px;}
 .badge-safe { background: rgba(16, 185, 129, 0.1); color: var(--accent); } .badge-wait { background: var(--wait-badge-bg); color: var(--wait-badge-text); } .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); } 
 .exp-arrow { transition: transform 0.3s ease; display: inline-block; font-size: 10px; } .card.collapsed .exp-arrow { transform: rotate(180deg); } 
 .check-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--muted); flex-shrink: 0; transition: 0.2s; background: var(--card); }
