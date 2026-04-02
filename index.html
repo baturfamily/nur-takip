@@ -887,7 +887,7 @@ function doktorRaporuOlustur() {
 
         let beslenmeSuHTML = "";
         if (beslenme) beslenmeSuHTML += `T: ${beslenme}<br>`;
-        if (su) beslenmeSuHTML += `<span style="font-size:9.5px; color:#444;">S: ${su}</span>`;
+        if (su) beslenmeSuHTML += `<span style="font-size:9.5px; color:#444;">Su: ${su}</span>`;
 
         let isAlevlenme = false; 
         if (tut && tut.includes("Saat")) isAlevlenme = true;
@@ -945,11 +945,11 @@ function doktorRaporuOlustur() {
 
         <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; break-before: page; margin-top: 0;">
             <h3 style="margin-bottom: 6px; display:flex; justify-content:space-between; align-items:flex-end;">
-                <span>📅 Günlük Detay Çizelgesi</span>
+                <span>📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></span>
             </h3>
             
             <div style="font-size: 10px; color: #333; background: #f0f0f0; padding: 6px 10px; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; text-align: center; font-weight: normal;">
-                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>S:</b> Su Tüketimi
+                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>Su:</b> Su Tüketimi
             </div>
 
             <table class="rap-tablo" style="width: 100%; table-layout: fixed;">
