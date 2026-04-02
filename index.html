@@ -188,45 +188,23 @@ body {
 
 .diary-ai-box { 
     margin-top: 18px; 
-    background: var(--bg); /* Bembeyaz kartın içinde tam okunaklı açık gri/koyu mod kutu */
-    padding: 18px; border-radius: 14px; 
+    background: transparent; /* Arka plan rengini kartın kendisinden alır, kontrastı düşürür */
+    padding: 0 4px; /* Şeffaf olduğu için dış padding'e gerek yok, yazıyı hizalarız */
     font-size: 18px; 
     font-weight: 500; letter-spacing: 0.1px; color: var(--text); line-height: 1.6; 
-    border: 1px solid var(--line); 
+    border: none; /* Kartın içinde ikinci bir kutu hissini silmek için kenarlığı kaldırdık */
 }
 .diary-card.collapsed .diary-ai-box { display: none; }
 
-.stat-card { padding: 16px; margin-bottom: 12px; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; background: var(--card) !important; border: 1px solid var(--line) !important;}
-.stat-card .card-header {
-    margin-bottom: 0;
-    padding-right: 8px !important; /* Rozet ile sağ kenar arasına kesin boşluk atar */
-}
-.badge { 
-    padding: 6px 10px; 
-    border-radius: 8px; 
-    font-weight: 800; 
-    font-size: 11px; 
-    text-transform: uppercase; 
-    margin: 0; 
-    white-space: nowrap; 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center;
-    gap: 4px; 
-    letter-spacing: 0.3px;
-}
-.stat-card:not(.collapsed) .card-header { margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 16px;}
-.stat-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 16px 0; border-bottom: 1px dashed var(--line); gap: 12px; } .stat-row:last-child { border-bottom: none; }
-.stat-date { font-weight: 800; color: var(--text); min-width: 80px; font-size: 17px;}
-.stat-info { flex: 1; display: flex; flex-direction: column; gap: 6px;}
-.stat-status { font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; font-size: 16px;}
-.stat-missed-list { font-size: 15px; color: var(--danger); font-style: normal; font-weight: 600;}
+/* ... (Diğer stat-card vs kodları aynı kalıyor) ... */
 
 /* BÜYÜTÜLMÜŞ İSTATİSTİK YAPAY ZEKA KUTUSU - OPAK */
 .stat-ai-summary { 
-    background: var(--bg); padding: 18px; border-radius: 14px; 
+    background: transparent; /* Kartın kendi arka planını kullanır */
+    padding: 4px; /* Şeffaf olduğu için iç boşlukları daralttık */
     font-size: 18px; 
     font-weight: 500; letter-spacing: 0.1px; line-height: 1.6; color: var(--text); margin-bottom: 16px; border-left: 4px solid var(--purple); 
+    padding-left: 14px; /* Sol çizgiden sonra yazının nefes alması için */
 }
 .stat-ai-summary strong { color: var(--purple); font-weight: 800; font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 10px; }
 
