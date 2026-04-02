@@ -790,7 +790,7 @@ function doktorRaporuOlustur() {
             
             let valStr = String(v[k] || "").trim();
             
-            // --- TIBBİ KISALTMA ALGORİTMASI (PDF'i Rahatlatmak İçin) ---
+            // --- TIBBİ KISALTMA ALGORİTMASI ---
             if (cl === "ates" || cl === "ateş") ates = valStr;
             else if (cl === "gece_terlemesi" || cl.includes("terleme")) {
                 if(valStr.includes("Hayır")) terleme = "Yok";
@@ -871,10 +871,10 @@ function doktorRaporuOlustur() {
         if (terleme) sysHTML += `<span style="font-size:9.5px; color:#444;">Ter: ${terleme}</span>`;
 
         let uykuZihinHTML = "";
-        if (uyku) uykuZihinHTML += `${uyku}<br>`;
+        if (uyku) uykuZihinHTML += `U: ${uyku}<br>`;
         let altZihin = [];
-        if (enerji) altZihin.push(`E:${enerji}`);
-        if (zihin) altZihin.push(`Z:${zihin}`);
+        if (enerji) altZihin.push(`E: ${enerji}`);
+        if (zihin) altZihin.push(`Z: ${zihin}`);
         if (altZihin.length > 0) uykuZihinHTML += `<span style="font-size:9px; color:#444;">${altZihin.join(" | ")}</span>`;
 
         let eklemHTML = "";
@@ -886,8 +886,8 @@ function doktorRaporuOlustur() {
         if (agiz) mideCiltHTML += `<span style="font-size:9.5px; color:#444;">${agiz}</span>`;
 
         let beslenmeSuHTML = "";
-        if (beslenme) beslenmeSuHTML += `${beslenme}<br>`;
-        if (su) beslenmeSuHTML += `<span style="font-size:9.5px; color:#444;">Su: ${su}</span>`;
+        if (beslenme) beslenmeSuHTML += `T: ${beslenme}<br>`;
+        if (su) beslenmeSuHTML += `<span style="font-size:9.5px; color:#444;">S: ${su}</span>`;
 
         let isAlevlenme = false; 
         if (tut && tut.includes("Saat")) isAlevlenme = true;
@@ -944,7 +944,14 @@ function doktorRaporuOlustur() {
         </div>
 
         <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; break-before: page; margin-top: 0;">
-            <h3 style="margin-bottom: 6px;">📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></h3>
+            <h3 style="margin-bottom: 6px; display:flex; justify-content:space-between; align-items:flex-end;">
+                <span>📅 Günlük Detay Çizelgesi</span>
+            </h3>
+            
+            <div style="font-size: 10px; color: #333; background: #f0f0f0; padding: 6px 10px; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; text-align: center; font-weight: normal;">
+                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>S:</b> Su Tüketimi
+            </div>
+
             <table class="rap-tablo" style="width: 100%; table-layout: fixed;">
                 <thead>
                     <tr>
