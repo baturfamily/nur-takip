@@ -677,10 +677,31 @@ function renderMonthStat(prefix, data, statType, cardId) {
 
     let html = `<div class="stat-ai-summary"><strong>✨ Dönem Özeti</strong>${aiText}</div>`;
     data.breakdown.forEach(day => {
+        let ayIsmi = aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3);
         if (day.isAllDone) {
-            html += `<div class="stat-row"><span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span><div class="stat-info" style="flex-direction: row; align-items: center; gap: 6px;"><div class="check-icon done">${svgCheck}</div><span class="stat-status" style="color: var(--text); margin:0;">Tüm ilaçlar alındı</span></div></div>`;
+            html += `
+            <div class="stat-row">
+                <span class="stat-date">${day.dayNum} ${ayIsmi}</span>
+                <div class="stat-info">
+                    <div class="stat-status" style="color: var(--accent);">
+                        <div class="check-icon done">${svgCheck}</div>
+                        Tüm ilaçlar alındı
+                    </div>
+                </div>
+            </div>`;
         } else {
-            html += `<div class="stat-row"><span class="stat-date">${day.dayNum} ${aylar[parseInt(day.dateStr.split('.')[1])-1].substring(0,3)}</span><div class="stat-info"><span class="stat-status" style="color: var(--text);">⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç</span><span class="stat-missed-list" style="color: var(--muted);">Eksik: ${day.missedNames.join(', ')}</span></div></div>`;
+            html += `
+            <div class="stat-row">
+                <span class="stat-date">${day.dayNum} ${ayIsmi}</span>
+                <div class="stat-info">
+                    <div class="stat-status" style="color: var(--text);">
+                        ⚠️ ${day.totalCount - day.missedCount}/${day.totalCount} İlaç
+                    </div>
+                    <div class="stat-missed-list" style="color: var(--danger);">
+                        Eksik: ${day.missedNames.join(', ')}
+                    </div>
+                </div>
+            </div>`;
         }
     });
     detailsEl.innerHTML = html;
