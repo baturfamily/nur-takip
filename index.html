@@ -232,14 +232,19 @@ body {
 <div class="sticky-top-wrapper">
     <div class="header-compact" id="dynamicHeaderBg" ontouchstart="">
         <div class="app-title">
-            <span class="greeting" id="greetingText">Günaydın,</span> 
+            <span class="greeting" id="greetingText" style="display: flex; align-items: center;"></span> 
             <span class="name-tag">Nurten Hanım 🌼</span>
-            <span id="sync-icon" style="display:inline-block; font-size: 16px; margin-left: 2px;">🔄</span>
+            <span id="sync-icon" style="display:inline-flex; align-items:center; margin-left: 4px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+            </span>
         </div>
         <div class="header-sub" id="update-text">Güncellemek İçin Aşağı Kaydırın</div>
         <div class="header-info">
             <div id="clock" class="clock-text">--:--</div>
-            <div id="last-sync" class="sync-badge">🔄 Bağlanıyor...</div>
+            <div id="last-sync" class="sync-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                Bağlanıyor...
+            </div>
         </div>
     </div>
 </div>
@@ -322,15 +327,31 @@ let fetchDevamEdiyor = false;
 let apiData = {}; 
 
 const svgCheck = `<svg viewBox="0 0 14 10"><polyline points="1.5 5 5 8.5 12.5 1"></polyline></svg>`;
+const svgSync = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>`;
+const svgWait = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`;
 
 const now = new Date();
 const hour = now.getHours();
 let gMsg = "İyi Geceler"; let vipBg = "linear-gradient(135deg, #2C2C2E 0%, #1C1C1E 100%)";
-if (hour >= 5 && hour < 12) { gMsg = "Günaydın"; vipBg = "linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%)"; } 
-else if (hour >= 12 && hour < 17) { gMsg = "Tünaydın"; vipBg = "linear-gradient(135deg, #32ADE6 0%, #007AFF 100%)"; } 
-else if (hour >= 17 && hour < 22) { gMsg = "İyi Akşamlar"; vipBg = "linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%)"; }
+let greetingIcon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 6px;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
 
-document.getElementById('greetingText').innerText = `${gMsg},`;
+if (hour >= 5 && hour < 12) { 
+    gMsg = "Günaydın"; 
+    vipBg = "linear-gradient(135deg, #FF9500 0%, #FF5E3A 100%)"; 
+    greetingIcon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 6px;"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="m20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>';
+} 
+else if (hour >= 12 && hour < 17) { 
+    gMsg = "Tünaydın"; 
+    vipBg = "linear-gradient(135deg, #32ADE6 0%, #007AFF 100%)"; 
+    greetingIcon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 6px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>';
+} 
+else if (hour >= 17 && hour < 22) { 
+    gMsg = "İyi Akşamlar"; 
+    vipBg = "linear-gradient(135deg, #AF52DE 0%, #5E5CE6 100%)"; 
+    greetingIcon = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 6px;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+}
+
+document.getElementById('greetingText').innerHTML = `${greetingIcon}${gMsg},`;
 const aylar = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 if(document.getElementById('currentYearText')) document.getElementById('currentYearText').innerText = now.getFullYear();
 
@@ -409,11 +430,11 @@ function manuelYenile() {
     
     const updateText = document.getElementById('update-text');
     const syncIcon = document.getElementById('sync-icon');
-    if(updateText) { updateText.innerHTML = "⏳ Veriler Tazeleniyor..."; updateText.style.color = "#4ade80"; }
+    if(updateText) { updateText.innerHTML = `${svgWait} Veriler Tazeleniyor...`; updateText.style.color = "#4ade80"; }
     if(syncIcon) syncIcon.classList.add("spin");
 
     const syncElement = document.getElementById('last-sync');
-    syncElement.innerHTML = `🔄 Tazeleniyor...`;
+    syncElement.innerHTML = `${svgSync} Tazeleniyor...`;
     syncElement.style.color = "var(--vip-gold)";
 
     sonBasariZamani = 0;
@@ -481,7 +502,7 @@ function saniyeTiktak() {
 
     const farkSaniye = sonBasariZamani > 0 ? Math.floor((simdi - sonBasariZamani) / 1000) : 999;
     
-    if (sonBasariZamani === 0) { syncElement.innerHTML = `🔄 Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)"; } 
+    if (sonBasariZamani === 0) { syncElement.innerHTML = `${svgSync} Bağlanıyor...`; syncElement.style.color = "var(--vip-gold)"; } 
     else if (farkSaniye < 20) { const d = new Date(sonBasariZamani); syncElement.innerHTML = `🟢 Canlı (${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')})`; syncElement.style.color = "#4ADE80"; } 
     else if (farkSaniye < 60) { syncElement.innerHTML = `🟡 Gecikme: ${farkSaniye} sn`; syncElement.style.color = "var(--vip-gold)"; } 
     else { syncElement.innerHTML = `🔴 Bağlantı Yok`; syncElement.style.color = "#FF453A"; }
@@ -527,7 +548,7 @@ function renderHealthDiary() {
             <div class="diary-ai-box">
                 ${aiMsg}
                 <div style='font-size:13px; color:var(--muted); font-weight:600; display:flex; align-items:center; gap:6px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 12px; margin-top: 14px;'>
-                    🕒 Her gün 10:00 ve 22:00'da Tıbbi Konsey günceller.
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Her gün 10:00 ve 22:00'da Tıbbi Konsey günceller.
                 </div>
             </div>
         </div>`;
@@ -664,7 +685,7 @@ function istatistikleriCiz() {
     
     let yillikText = (apiData.ai && apiData.ai.yillik) ? apiData.ai.yillik : "İstatistik bekleniyor...";
     if(yDetails) {
-        yDetails.innerHTML = `<div class="stat-ai-summary"><strong>🏆 ${currentYear} Yılı Özeti</strong>${yillikText}</div>`;
+        yDetails.innerHTML = `<div class="stat-ai-summary"><strong><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: text-bottom; margin-right: 4px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> ${currentYear} Yılı Özeti</strong>${yillikText}</div>`;
         
         if (yillikText && !yillikText.includes("bekleniyor") && !yillikText.includes("güncellenemiyor")) {
             let lastRead = localStorage.getItem('lastRead_yillik');
@@ -830,7 +851,7 @@ async function veriCek() {
         fetchDevamEdiyor = false; 
         const updateText = document.getElementById('update-text');
         const syncIcon = document.getElementById('sync-icon');
-        if(updateText) { updateText.innerHTML = "Güncellemek İçin Aşağı Kaydırın"; updateText.style.color = "rgba(255, 255, 255, 0.95)"; }
+        if(updateText) { updateText.innerHTML = `Güncellemek İçin Aşağı Kaydırın`; updateText.style.color = "rgba(255, 255, 255, 0.95)"; }
         if(syncIcon) syncIcon.classList.remove("spin");
     }
 }
@@ -913,7 +934,7 @@ document.addEventListener('touchmove', (e) => {
     let diff = pCurrentY - pStartY;
     const uText = document.getElementById('update-text');
     if (diff > 60) {
-        if(uText) uText.innerHTML = "Bırakın Güncellensin 🔄";
+        if(uText) uText.innerHTML = `Bırakın Güncellensin ${svgSync}`;
     }
 }, {passive: true});
 
