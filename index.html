@@ -783,7 +783,7 @@ function doktorRaporuOlustur() {
             tarihSutunuHTML += `<br><span style="font-size:9px; color:#555;">Deltacortril</span>`;
         }
         
-        let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "", mide = "", agiz = "";
+        let ates = "", terleme = "", uyku = "", enerji = "", agri = "", bolge = "", sjogren = "", akt = "", tut = "", mide = "", agiz = "", beslenme = "", su = "", zihin = "";
         
         for (let k in v) {
             let cl = k.toLowerCase();
@@ -802,15 +802,21 @@ function doktorRaporuOlustur() {
             else if (cl === "aktivite" || cl.includes("aktivite")) akt = valStr;
             else if (cl === "mide_durumu" || cl.includes("mide")) mide = valStr;
             else if (cl === "agiz_cilt" || cl.includes("ağız") || cl.includes("cilt")) agiz = valStr;
+            else if (cl === "beslenme_kacamak" || cl.includes("beslen") || cl.includes("kaçamak") || cl.includes("kacamak")) beslenme = valStr;
+            else if (cl === "su_tuketimi" || cl.includes("su")) su = valStr;
+            else if (cl === "zihinsel_durum" || cl.includes("zihin")) zihin = valStr;
         }
 
         let sysHTML = "";
         if (ates) sysHTML += `${ates}°C<br>`;
         if (terleme) sysHTML += `<span style="font-size:10px; color:#444;">Terleme: ${terleme}</span>`;
 
-        let uykuHTML = "";
-        if (uyku) uykuHTML += `${uyku}<br>`;
-        if (enerji) uykuHTML += `<span style="font-size:10px; color:#444;">Enerji: ${enerji}</span>`;
+        let uykuZihinHTML = "";
+        if (uyku) uykuZihinHTML += `${uyku}<br>`;
+        let altZihin = [];
+        if (enerji) altZihin.push(`E: ${enerji}`);
+        if (zihin) altZihin.push(`Z: ${zihin}`);
+        if (altZihin.length > 0) uykuZihinHTML += `<span style="font-size:9px; color:#444;">${altZihin.join(" | ")}</span>`;
 
         let eklemHTML = "";
         if (agri) eklemHTML += `${agri}<br>`;
@@ -819,6 +825,10 @@ function doktorRaporuOlustur() {
         let mideCiltHTML = "";
         if (mide) mideCiltHTML += `${mide}<br>`;
         if (agiz) mideCiltHTML += `<span style="font-size:10px; color:#444;">${agiz}</span>`;
+
+        let beslenmeSuHTML = "";
+        if (beslenme) beslenmeSuHTML += `${beslenme}<br>`;
+        if (su) beslenmeSuHTML += `<span style="font-size:10px; color:#444;">Su: ${su}</span>`;
 
         let isAlevlenme = false; 
         if (tut.toLowerCase().includes("1-2 saat") || tut.toLowerCase().includes("öğlene")) isAlevlenme = true;
@@ -837,7 +847,8 @@ function doktorRaporuOlustur() {
             <td>${eklemHTML || '-'}</td>
             <td>${sjogren || '-'}</td>
             <td>${mideCiltHTML || '-'}</td>
-            <td>${uykuHTML || '-'}</td>
+            <td>${beslenmeSuHTML || '-'}</td>
+            <td>${uykuZihinHTML || '-'}</td>
             <td>${akt || '-'}</td>
         </tr>`;
     });
@@ -872,14 +883,15 @@ function doktorRaporuOlustur() {
             <table class="rap-tablo">
                 <thead>
                     <tr>
-                        <th style="width:9%;">Tarih</th>
-                        <th style="width:13%;">Sistemik</th>
-                        <th style="width:13%;">Sabah Tutuk.</th>
-                        <th style="width:16%;">Eklem Durumu</th>
-                        <th style="width:11%;">Kuruluk</th>
-                        <th style="width:13%;">Mide & Cilt</th>
-                        <th style="width:14%;">Uyku & Enerji</th>
-                        <th style="width:11%;">Aktivite</th>
+                        <th style="width:8%;">Tarih</th>
+                        <th style="width:10%;">Sistemik</th>
+                        <th style="width:10%;">Sabah Tutuk.</th>
+                        <th style="width:14%;">Eklem Durumu</th>
+                        <th style="width:10%;">Kuruluk</th>
+                        <th style="width:12%;">Mide & Cilt</th>
+                        <th style="width:13%;">Beslenme & Su</th>
+                        <th style="width:14%;">Uyku, E. & Zihin</th>
+                        <th style="width:9%;">Aktivite</th>
                     </tr>
                 </thead>
                 <tbody>${tabloSatirlari}</tbody>
