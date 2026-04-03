@@ -914,7 +914,6 @@ function doktorRaporuOlustur() {
     var raporHTML = `
         <style>
             @media print {
-                /* 30 Gün (1 Ay) Sığdıracak CSS Optimizasyonu */
                 .rap-tablo { font-size: 9px !important; }
                 .rap-tablo th { padding: 5px 2px !important; }
                 .rap-tablo td { padding: 3px 2px !important; line-height: 1.2 !important; }
@@ -924,7 +923,10 @@ function doktorRaporuOlustur() {
                 
                 h3 { margin-bottom: 5px !important; font-size: 13px !important; }
                 .rap-bolum { margin-bottom: 10px !important; }
-                .ai-rapor-kutu { padding: 8px !important; font-size: 10.5px !important; line-height: 1.35 !important; margin-top: 3px !important; }
+                
+                /* YAPAY ZEKA METİN FONTU BÜYÜTÜLDÜ (10.5px -> 12px) */
+                .ai-rapor-kutu { padding: 8px !important; font-size: 12px !important; line-height: 1.45 !important; margin-top: 3px !important; }
+                
                 .rap-baslik { margin-bottom: 10px !important; padding-bottom: 5px !important; font-size: 16px !important; }
             }
         </style>
