@@ -916,6 +916,8 @@ function doktorRaporuOlustur() {
             @media print {
                 .rap-tablo { font-size: 9.5px !important; }
                 .rap-tablo th, .rap-tablo td { padding: 4px 3px !important; line-height: 1.25 !important; }
+                #ilac-tablosu { font-size: 11.5px !important; }
+                #ilac-tablosu th, #ilac-tablosu td { padding: 6px 5px !important; line-height: 1.4 !important; }
             }
         </style>
         <div class="rap-baslik">Nurten BATUR - Romatoloji Raporu</div>
@@ -928,14 +930,14 @@ function doktorRaporuOlustur() {
 
         <div class="rap-bolum rap-bolum-ilac" style="page-break-before: always; break-before: page; margin-bottom: 8px;">
             <h3 style="margin-bottom: 6px;">💊 Aktif Tedavi ve İlaç Şeması</h3>
-            <table class="rap-tablo">
+            <table class="rap-tablo" id="ilac-tablosu">
                 <thead><tr><th style="width: 15%;">Zaman</th><th>Kullanılan İlaçlar ve Rutinleri</th></tr></thead>
                 <tbody>
-                    <tr><td><strong>🌅 Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🍳 Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
-                    <tr><td><strong>☀️ Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🌙 Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>🛌 Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>Sabah Aç</strong><br><span style="font-size:10px; color:#000;">(06:00-08:00)</span></td><td style="text-align: left;">INH <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
+                    <tr><td><strong>Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
                 </tbody>
             </table>
         </div>
@@ -945,8 +947,9 @@ function doktorRaporuOlustur() {
                 <span>📅 Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></span>
             </h3>
             
-            <div style="font-size: 10px; color: #333; background: #f0f0f0; padding: 6px 10px; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; text-align: center; font-weight: normal;">
-                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>Su:</b> Su Tüketimi
+            <div style="font-size: 9.5px; color: #333; background: #f0f0f0; padding: 6px 10px; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; text-align: center; font-weight: normal; line-height: 1.5;">
+                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>Su:</b> Su Tüketimi <br>
+                <b>Sorunsuz:</b> Mide şikayeti yok &nbsp;|&nbsp; <b>Temiz:</b> Ağız yarası veya cilt döküntüsü yok
             </div>
 
             <table class="rap-tablo" style="width: 100%; table-layout: fixed;">
