@@ -754,7 +754,6 @@ function istatistikleriCiz() {
         }
     }
 }
-
 function doktorRaporuOlustur() {
     if (!apiData || !apiData.tumVeriler) { alert("Henüz veri yüklenmedi. Lütfen bekleyin."); return; }
 
@@ -765,14 +764,26 @@ function doktorRaporuOlustur() {
         .filter(t => new Date(t.split('.')[2], t.split('.')[1]-1, t.split('.')[0]) >= new Date(2026, 2, 7) && t !== bugunStr)
         .sort((a,b) => new Date(a.split('.')[2], a.split('.')[1]-1, a.split('.')[0]) - new Date(b.split('.')[2], b.split('.')[1]-1, b.split('.')[0]));
     
-    let tabloSatirlari = "";
     const deltaMilat = new Date(2026, 1, 16); 
+    
+    // --- AYLARA GÖRE GRUPLAMA İÇİN YENİ DEĞİŞKENLER ---
+    let aylarVerisi = {};
+    let siraliAylar = [];
     
     tarihler.forEach(function(tarihStr) {
         let v = apiData.tumVeriler[tarihStr];
         let p = tarihStr.split('.');
         let currentDayObj = new Date(p[2], p[1]-1, p[0]);
         let isDeltaDay = Math.round((currentDayObj - deltaMilat)/(1000*60*60*24)) % 2 === 0;
+        
+        // O günün "Ay Yıl" başlığını buluyoruz (Örn: "Mart 2026")
+        let ayIsmi = aylar[parseInt(p[1])-1] + " " + p[2];
+        
+        // Eğer bu ay ilk defa işleniyorsa, hafızada onun için bir dizi açıyoruz
+        if (!aylarVerisi[ayIsmi]) {
+            aylarVerisi[ayIsmi] = "";
+            siraliAylar.push(ayIsmi);
+        }
         
         let tarihSutunuHTML = `<strong>${tarihStr.substring(0,5)}</strong>`;
         if (isDeltaDay) {
@@ -896,7 +907,7 @@ function doktorRaporuOlustur() {
             sysHTML = `<strong style="font-size:8px; border-bottom:1px solid #000; display:inline-block; margin-bottom:1px;">ALEVLENME</strong><br>` + sysHTML;
         }
 
-        tabloSatirlari += `<tr ${rowStyle}>
+        let satirHTML = `<tr ${rowStyle}>
             <td>${tarihSutunuHTML}</td>
             <td>${sysHTML || '-'}</td>
             <td>${tut || '-'}</td>
@@ -907,9 +918,45 @@ function doktorRaporuOlustur() {
             <td>${uykuZihinHTML || '-'}</td>
             <td>${akt || '-'}</td>
         </tr>`;
+        
+        // İlgili aya ait HTML blokuna satırı ekliyoruz
+        aylarVerisi[ayIsmi] += satirHTML;
     });
 
     let aiRaporu = apiData.ai && apiData.ai.rapor ? apiData.ai.rapor : "Yapay zeka analiz raporu oluşturulamadı.";
+    
+    // --- HER AY İÇİN AYRI TABLO ÜRETME DÖNGÜSÜ ---
+    let aylikTablolarHTML = "";
+    siraliAylar.forEach(ayKey => {
+        aylikTablolarHTML += `
+        <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; break-before: page; margin-top: 0;">
+            <h3 style="margin-bottom: 6px; display:flex; justify-content:space-between; align-items:flex-end;">
+                <span>Günlük Detay Çizelgesi - <strong>${ayKey}</strong> <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></span>
+            </h3>
+            
+            <div style="font-size: 9.5px; color: #333; background: #f0f0f0; padding: 6px 10px; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; text-align: center; font-weight: normal; line-height: 1.5;">
+                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>Su:</b> Su Tüketimi <br>
+                <b>Sorunsuz:</b> Mide şikayeti yok &nbsp;|&nbsp; <b>Temiz:</b> Ağız yarası veya cilt döküntüsü yok
+            </div>
+
+            <table class="rap-tablo" style="width: 100%; table-layout: fixed;">
+                <thead>
+                    <tr>
+                        <th style="width:8%;">Tarih</th>
+                        <th style="width:10%;">Sistemik</th>
+                        <th style="width:11%;">Sabah Tutuk.</th>
+                        <th style="width:14%;">Eklem Durumu</th>
+                        <th style="width:10%;">Kuruluk</th>
+                        <th style="width:12%;">Mide & Cilt</th>
+                        <th style="width:13%;">Beslenme/Su</th>
+                        <th style="width:14%;">Uyku & Zihin</th>
+                        <th style="width:8%;">Aktivite</th>
+                    </tr>
+                </thead>
+                <tbody>${aylarVerisi[ayKey]}</tbody>
+            </table>
+        </div>`;
+    });
     
     var raporHTML = `
         <style>
@@ -924,7 +971,6 @@ function doktorRaporuOlustur() {
                 h3 { margin-bottom: 5px !important; font-size: 13px !important; }
                 .rap-bolum { margin-bottom: 10px !important; }
                 
-                /* YAPAY ZEKA METİN FONTU BÜYÜTÜLDÜ (10.5px -> 12px) */
                 .ai-rapor-kutu { padding: 8px !important; font-size: 12px !important; line-height: 1.45 !important; margin-top: 3px !important; }
                 
                 .rap-baslik { margin-bottom: 10px !important; padding-bottom: 5px !important; font-size: 16px !important; }
@@ -952,33 +998,8 @@ function doktorRaporuOlustur() {
             </table>
         </div>
 
-        <div class="rap-bolum rap-bolum-tablo" style="page-break-before: always; break-before: page; margin-top: 0;">
-            <h3 style="margin-bottom: 6px; display:flex; justify-content:space-between; align-items:flex-end;">
-                <span>Günlük Detay Çizelgesi <span style="font-weight: normal; font-size: 11px; color: #555;">(Veriler her akşam 21.00'da sisteme kaydedilmektedir.)</span></span>
-            </h3>
-            
-            <div style="font-size: 9.5px; color: #333; background: #f0f0f0; padding: 6px 10px; border: 1px solid #ccc; margin-bottom: 6px; border-radius: 4px; text-align: center; font-weight: normal; line-height: 1.5;">
-                <strong>SÖZLÜK:</strong> &nbsp;&nbsp; <b>U:</b> Uyku Kalitesi &nbsp;|&nbsp; <b>E:</b> Enerji Seviyesi &nbsp;|&nbsp; <b>Z:</b> Zihinsel Durum &nbsp;|&nbsp; <b>T:</b> Tatlı/Beslenme &nbsp;|&nbsp; <b>Su:</b> Su Tüketimi <br>
-                <b>Sorunsuz:</b> Mide şikayeti yok &nbsp;|&nbsp; <b>Temiz:</b> Ağız yarası veya cilt döküntüsü yok
-            </div>
-
-            <table class="rap-tablo" style="width: 100%; table-layout: fixed;">
-                <thead>
-                    <tr>
-                        <th style="width:8%;">Tarih</th>
-                        <th style="width:10%;">Sistemik</th>
-                        <th style="width:11%;">Sabah Tutuk.</th>
-                        <th style="width:14%;">Eklem Durumu</th>
-                        <th style="width:10%;">Kuruluk</th>
-                        <th style="width:12%;">Mide & Cilt</th>
-                        <th style="width:13%;">Beslenme/Su</th>
-                        <th style="width:14%;">Uyku & Zihin</th>
-                        <th style="width:8%;">Aktivite</th>
-                    </tr>
-                </thead>
-                <tbody>${tabloSatirlari}</tbody>
-            </table>
-        </div>`;
+        ${aylikTablolarHTML}
+    `;
 
     document.getElementById("print-report-area").innerHTML = raporHTML;
     setTimeout(function() { window.print(); }, 250);
