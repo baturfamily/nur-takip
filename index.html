@@ -985,24 +985,29 @@ function doktorRaporuOlustur() {
 }
 
 async function veriCek() {
-    if (fetchDevamEdiyor) return;
-    fetchDevamEdiyor = true;
-    const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
-    try {
-        const res = await fetch(`${API_URL}?tarih=${todayStr}`);
-        if (!res.ok) throw new Error("Ağ Hatası");
-        apiData = await res.json();
-        sonBasariZamani = Date.now();
-        ekraniCiz(); 
-        istatistikleriCiz(); 
-        renderHealthDiary(); 
-    } catch(e) { console.error(e); } finally { 
-        fetchDevamEdiyor = false; 
-        const updateText = document.getElementById('update-text');
-        const syncIcon = document.getElementById('sync-icon');
-        if(updateText) { updateText.innerHTML = `Güncellemek İçin Aşağı Kaydırın`; updateText.style.color = "rgba(255, 255, 255, 0.95)"; }
-        if(syncIcon) syncIcon.classList.remove("spin");
-    }
+    if (fetchDevamEdiyor) return;
+    fetchDevamEdiyor = true;
+    
+    // İlk açılışta ve arka plan güncellemelerinde ikonun dönmesini başlatır
+    const syncIconTop = document.getElementById('sync-icon');
+    if(syncIconTop) syncIconTop.classList.add("spin");
+
+    const todayStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
+    try {
+        const res = await fetch(`${API_URL}?tarih=${todayStr}`);
+        if (!res.ok) throw new Error("Ağ Hatası");
+        apiData = await res.json();
+        sonBasariZamani = Date.now();
+        ekraniCiz(); 
+        istatistikleriCiz(); 
+        renderHealthDiary(); 
+    } catch(e) { console.error(e); } finally { 
+        fetchDevamEdiyor = false; 
+        const updateText = document.getElementById('update-text');
+        const syncIcon = document.getElementById('sync-icon');
+        if(updateText) { updateText.innerHTML = `Güncellemek İçin Aşağı Kaydırın`; updateText.style.color = "rgba(255, 255, 255, 0.95)"; }
+        if(syncIcon) syncIcon.classList.remove("spin");
+    }
 }
 
 function ekraniCiz() {
