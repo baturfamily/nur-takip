@@ -661,11 +661,19 @@ function renderMonthStat(prefix, data, statType, cardId) {
         const lmKey = "saved_gecenAy_" + lmy + "_" + lm;
         
         let savedLm = localStorage.getItem(lmKey);
+        
+        // 🚨 HATA TEMİZLEYİCİ: Eğer geçmişte yanlışlıkla hata mesajı kaydedildiyse onu kalıcı olarak sil!
+        if (savedLm && (savedLm.includes("Koruma") || savedLm.includes("güncellenemiyor") || savedLm.includes("yoğunluk"))) {
+            localStorage.removeItem(lmKey);
+            savedLm = null;
+        }
+
         if (savedLm) {
             aiText = savedLm; 
         } else {
             aiText = (apiData.ai && apiData.ai.gecenAy) ? apiData.ai.gecenAy : "";
-            if (aiText && !aiText.includes("güncellenemiyor") && !aiText.includes("yoğunluk")) {
+            // YENİ KALKAN: Koruma modunu asla telefon hafızasına alma
+            if (aiText && !aiText.includes("güncellenemiyor") && !aiText.includes("yoğunluk") && !aiText.includes("Koruma")) {
                 localStorage.setItem(lmKey, aiText);
             }
         }
