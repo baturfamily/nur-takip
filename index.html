@@ -551,6 +551,7 @@ function getDailyProgram(dateObj) {
     const dS = new Date(2026, 1, 16); 
     if(Math.round((mid - dS)/(1000*60*60*24)) % 2 === 0) p[1].meds.push({ key: 'SABAH_TOK_DELTA', name: 'Deltacortril', purpose: rastgeleAciklama('Deltacortril') });
     if(day === 2) { p[1].meds.push({ key: 'SABAH_TOK_COLEDAN', name: 'Coledan-D3', purpose: rastgeleAciklama('Coledan-D3') }); p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: rastgeleAciklama('Folbiol') }); }
+    if(day === 5 && mid >= new Date(2026, 4, 1)) { p[4].meds.push({ key: 'GECE_FOLBIOL', name: 'Folbiol', purpose: rastgeleAciklama('Folbiol') }); }
     if(day === 1) p[4].meds.push({ key: 'GECE_METOARTCON', name: 'Metoartcon', purpose: rastgeleAciklama('Metoartcon') });
     const cS = new Date(2026, 1, 12);
     if(Math.round((mid - cS)/(1000*60*60*24)) % 14 === 0) p[4].meds.push({ key: 'GECE_CIMZIA', name: 'Cimzia İğnesi', purpose: rastgeleAciklama('Cimzia İğnesi') });
@@ -1001,7 +1002,7 @@ function doktorRaporuOlustur() {
                     <tr><td><strong>Sabah Tok</strong><br><span style="font-size:10px; color:#000;">(10:00-12:00)</span></td><td style="text-align: left;">Deltacortril <em>(Gün aşırı)</em>, Balık Yağı, Göz Damlası, Coledan-D3 <em>(Sadece Salı)</em></td></tr>
                     <tr><td><strong>Öğle</strong><br><span style="font-size:10px; color:#000;">(13:00-14:00)</span></td><td style="text-align: left;">Benexol B12 <em>(Her gün)</em></td></tr>
                     <tr><td><strong>Akşam</strong><br><span style="font-size:10px; color:#000;">(18:00-19:00)</span></td><td style="text-align: left;">Plaquenil <em>(Her gün)</em></td></tr>
-                    <tr><td><strong>Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Sadece Salı)</em></td></tr>
+                    <tr><td><strong>Gece</strong><br><span style="font-size:10px; color:#000;">(21:00-22:00)</span></td><td style="text-align: left;">Quantavir, Göz Damlası, <strong>Metoartcon</strong> <em>(İğne - Her Pzt)</em>, <strong>Cimzia</strong> <em>(İğne - 14 günde bir Prş)</em>, Folbiol <em>(Salı ve Cuma)</em></td></tr>
                 </tbody>
             </table>
         </div>
@@ -1049,6 +1050,7 @@ function ekraniCiz() {
         s.meds.forEach(m => {
             if(m.key === 'SABAH_TOK_DELTA') alertsHTML += `<div class="safety-shield shield-red" style="display:block;">🚨 Bugün Deltacortril Günü</div>`;
             if(m.key === 'SABAH_TOK_COLEDAN' && !alertsHTML.includes('Vitamin')) alertsHTML += `<div class="safety-shield shield-yellow" style="display:block;">☀️ Bugün Vitamin ve Folbiol Günü</div>`;
+            if(m.key === 'GECE_FOLBIOL' && dNow.getDay() === 5 && !alertsHTML.includes('Folbiol')) alertsHTML += `<div class="safety-shield shield-yellow" style="display:block;">💊 Bugün Folbiol Günü</div>`;
             if(m.key === 'GECE_METOARTCON') alertsHTML += `<div class="safety-shield shield-blue" style="display:block;">🧬 Bugün Metoartcon İğne Günü</div>`;
             if(m.key === 'GECE_CIMZIA') alertsHTML += `<div class="safety-shield shield-purple" style="display:block;">💉 Bugün Cimzia İğne Günü! Şifa olsun.</div>`;
         });
