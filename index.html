@@ -660,11 +660,11 @@ function renderMonthStat(prefix, data, statType, cardId) {
         let lm = currentMonth - 1; let lmy = currentYear;
         if (lm < 0) { lm = 11; lmy--; }
         
-        // 🔥 HAFIZAYI ZORLA SIFIRLAMAK İÇİN ANAHTARI DEĞİŞTİRDİK (v2)
-        const lmKey = "saved_gecenAy_v2_" + lmy + "_" + lm;
+                // 🔥 HAFIZAYI ZORLA SIFIRLAMAK İÇİN ANAHTARI DEĞİŞTİRDİK (v3)
+        const lmKey = "saved_gecenAy_v3_" + lmy + "_" + lm;
         
-        // Eski inatçı Mart kaydını sonsuza dek telefon hafızasından sil:
-        localStorage.removeItem("saved_gecenAy_" + lmy + "_" + lm); 
+        // Eski inatçı v2 kaydını sonsuza dek telefon hafızasından sil:
+        localStorage.removeItem("saved_gecenAy_v2_" + lmy + "_" + lm);  
         
         let savedLm = localStorage.getItem(lmKey);
         
