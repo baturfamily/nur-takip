@@ -663,14 +663,25 @@ function renderMonthStat(prefix, data, statType, cardId) {
         
         let savedLm = localStorage.getItem(lmKey);
         
-        // 🚨 HATA TEMİZLEYİCİ: Eğer geçmişte yanlışlıkla hata mesajı kaydedildiyse onu kalıcı olarak sil!
+                // 🚨 HATA TEMİZLEYİCİ: Eğer geçmişte yanlışlıkla hata mesajı kaydedildiyse onu kalıcı olarak sil!
         if (savedLm && (savedLm.includes("Koruma") || savedLm.includes("güncellenemiyor") || savedLm.includes("yoğunluk"))) {
             localStorage.removeItem(lmKey);
             savedLm = null;
         }
 
+        // 🚨 YANLIŞ AY TEMİZLEYİCİ: Geçen ayın raporunda, ondan önceki ayın ismi geçiyorsa o hatalı kaydı sil!
+        let ikiAyOnce = currentMonth - 2;
+        if (ikiAyOnce < 0) ikiAyOnce += 12;
+        const ikiAyOnceIsim = aylar[ikiAyOnce];
+        const gecenAyIsim = aylar[lm];
+        
+        if (savedLm && savedLm.includes(ikiAyOnceIsim) && !savedLm.includes(gecenAyIsim)) {
+            localStorage.removeItem(lmKey);
+            savedLm = null;
+        }
+
         if (savedLm) {
-            aiText = savedLm; 
+            aiText = savedLm;  
         } else {
             aiText = (apiData.ai && apiData.ai.gecenAy) ? apiData.ai.gecenAy : "";
             // YENİ KALKAN: Koruma modunu asla telefon hafızasına alma
