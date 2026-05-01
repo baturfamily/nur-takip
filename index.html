@@ -655,36 +655,41 @@ function renderMonthStat(prefix, data, statType, cardId) {
     
     let aiText = "";
     
-    if (statType === 'gecenAy') {
+        if (statType === 'gecenAy') {
         const currentMonth = now.getMonth(); const currentYear = now.getFullYear();
         let lm = currentMonth - 1; let lmy = currentYear;
         if (lm < 0) { lm = 11; lmy--; }
-        const lmKey = "saved_gecenAy_" + lmy + "_" + lm;
+        
+        // 🔥 HAFIZAYI ZORLA SIFIRLAMAK İÇİN ANAHTARI DEĞİŞTİRDİK (v2)
+        const lmKey = "saved_gecenAy_v2_" + lmy + "_" + lm;
+        
+        // Eski inatçı Mart kaydını sonsuza dek telefon hafızasından sil:
+        localStorage.removeItem("saved_gecenAy_" + lmy + "_" + lm); 
         
         let savedLm = localStorage.getItem(lmKey);
         
-                // 🚨 HATA TEMİZLEYİCİ: Eğer geçmişte yanlışlıkla hata mesajı kaydedildiyse onu kalıcı olarak sil!
+        // 🚨 HATA TEMİZLEYİCİ:
         if (savedLm && (savedLm.includes("Koruma") || savedLm.includes("güncellenemiyor") || savedLm.includes("yoğunluk"))) {
             localStorage.removeItem(lmKey);
             savedLm = null;
         }
 
-        // 🚨 YANLIŞ AY TEMİZLEYİCİ: Geçen ayın raporunda, ondan önceki ayın ismi geçiyorsa o hatalı kaydı sil!
+        // 🚨 YANLIŞ AY TEMİZLEYİCİ (Güçlendirilmiş Versiyon):
         let ikiAyOnce = currentMonth - 2;
         if (ikiAyOnce < 0) ikiAyOnce += 12;
         const ikiAyOnceIsim = aylar[ikiAyOnce];
         const gecenAyIsim = aylar[lm];
         
-        if (savedLm && savedLm.includes(ikiAyOnceIsim) && !savedLm.includes(gecenAyIsim)) {
+        // Eğer beklediğimiz ayın adı (Nisan) geçmiyorsa veya eski ayın adı (Mart) inatla geçiyorsa sil!
+        if (savedLm && (!savedLm.includes(gecenAyIsim) || savedLm.includes(ikiAyOnceIsim))) {
             localStorage.removeItem(lmKey);
             savedLm = null;
         }
 
         if (savedLm) {
-            aiText = savedLm;  
+            aiText = savedLm; 
         } else {
             aiText = (apiData.ai && apiData.ai.gecenAy) ? apiData.ai.gecenAy : "";
-            // YENİ KALKAN: Koruma modunu asla telefon hafızasına alma
             if (aiText && !aiText.includes("güncellenemiyor") && !aiText.includes("yoğunluk") && !aiText.includes("Koruma")) {
                 localStorage.setItem(lmKey, aiText);
             }
